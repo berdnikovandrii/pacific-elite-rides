@@ -1488,10 +1488,10 @@ function setLang(lang) {
 
   // Show/hide language spans via inline style (most reliable)
   document.querySelectorAll('.lang-en').forEach(el => {
-    el.style.display = isEs ? 'none' : '';
+    el.style.display = isEs ? 'none' : 'inline';
   });
   document.querySelectorAll('.lang-es').forEach(el => {
-    el.style.display = isEs ? '' : 'none';
+    el.style.display = isEs ? 'inline' : 'none';
   });
 
   // Update <option> text
