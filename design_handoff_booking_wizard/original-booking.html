@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book a Ride | Pacific Elite Rides — Luxury Black Car San Diego</title>
+  <meta name="description" content="Book your luxury black car ride in San Diego. Airport transfers, corporate rides, Sprinter van. Instant confirmation within 15 minutes."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    window.EMAILJS_PUBLIC  = 'YOUR_EMAILJS_PUBLIC_KEY';
+    window.EMAILJS_SERVICE = 'YOUR_SERVICE_ID';
+    window.EMAILJS_TEMPLATE= 'YOUR_TEMPLATE_ID';
+    window.SQUARE_APP_ID   = 'YOUR_SQUARE_APP_ID';
+    window.SQUARE_LOCATION_ID = 'YOUR_SQUARE_LOCATION_ID';
+    if (typeof emailjs !== 'undefined') emailjs.init(window.EMAILJS_PUBLIC);
+  </script>
+</head>
+<body>
+
+<!-- ══════════════════════════ MOBILE MENU ══════════════════════════ -->
+<div class="mobile-menu" id="mobileMenu">
+  <nav style="display:flex;flex-direction:column;align-items:center;gap:28px">
+    <a href="index.html" onclick="closeMenu()">Home</a>
+    <a href="services.html" onclick="closeMenu()">Services</a>
+    <a href="about.html" onclick="closeMenu()">About</a>
+    <a href="booking.html" onclick="closeMenu()">Book a Ride</a>
+    <a href="tel:+16193940452" style="color:var(--gold)" onclick="closeMenu()">(619) 394-0452</a>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button id="mbBtnEn" class="btn btn-sm btn-outline active" onclick="setLang('en')">EN</button>
+      <button id="mbBtnEs" class="btn btn-sm btn-outline" onclick="setLang('es')">ES</button>
+    </div>
+  </nav>
+</div>
+
+<!-- ══════════════════════════ NAVBAR ══════════════════════════ -->
+<header class="navbar" id="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-name">Pacific Elite Rides</span>
+      <span class="nav-logo-tag">Luxury Transportation</span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="services.html" class="nav-link">Services</a>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="booking.html" class="nav-link active">Book a Ride</a>
+    </nav>
+    <div class="nav-right">
+      <a href="tel:+16193940452" class="nav-phone">(619) 394-0452</a>
+      <div style="display:flex;gap:6px">
+        <button id="btnEn" class="btn btn-sm btn-outline active" onclick="setLang('en')">EN</button>
+        <button id="btnEs" class="btn btn-sm btn-outline" onclick="setLang('es')">ES</button>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════ BOOKING LAYOUT ══════════════════════════ -->
+<section class="booking-page">
+  <div class="container">
+    <div class="booking-layout">
+
+      <!-- LEFT: FORM -->
+      <div class="booking-form-col">
+        <div class="booking-form-header">
+          <div class="label">
+            <span class="lang-en">Reservation</span>
+            <span class="lang-es">Reservación</span>
+          </div>
+          <h1 class="heading-lg" style="margin-top:12px">
+            <span class="lang-en">Book Your <em class="gold">Ride</em></span>
+            <span class="lang-es">Reserva Tu <em class="gold">Viaje</em></span>
+          </h1>
+          <p class="body-sm" style="margin-top:8px;opacity:.7">
+            <span class="lang-en">Fill in the details below. We confirm within 15 minutes — day or night.</span>
+            <span class="lang-es">Completa los detalles a continuación. Confirmamos en 15 minutos — día o noche.</span>
+          </p>
+        </div>
+
+        <div id="formToast" class="toast" style="display:none"></div>
+
+        <form id="rideForm" novalidate>
+
+          <!-- TRIP DETAILS -->
+          <div class="form-section-title">
+            <span class="lang-en">Trip Details</span>
+            <span class="lang-es">Detalles del Viaje</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="serviceType">
+                <span class="lang-en">Service Type *</span>
+                <span class="lang-es">Tipo de Servicio *</span>
+              </label>
+              <select class="form-ctrl" id="serviceType" required>
+                <option value="" data-en="Select service…" data-es="Seleccionar servicio…">Select service…</option>
+                <option value="Airport Transfer" data-en="Airport Transfer (SAN/LAX/ONT)" data-es="Traslado Aeropuerto (SAN/LAX/ONT)">Airport Transfer (SAN/LAX/ONT)</option>
+                <option value="Corporate Ride" data-en="Corporate Ride" data-es="Viaje Corporativo">Corporate Ride</option>
+                <option value="Hourly Charter" data-en="Hourly Charter" data-es="Alquiler por Horas">Hourly Charter</option>
+                <option value="Sprinter Van" data-en="Sprinter Van (Groups)" data-es="Sprinter Van (Grupos)">Sprinter Van (Groups)</option>
+                <option value="Special Event" data-en="Special Event / VIP" data-es="Evento Especial / VIP">Special Event / VIP</option>
+                <option value="Other" data-en="Other (describe in notes)" data-es="Otro (describir en notas)">Other (describe in notes)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="vehicle">
+                <span class="lang-en">Vehicle Preference</span>
+                <span class="lang-es">Preferencia de Vehículo</span>
+              </label>
+              <select class="form-ctrl" id="vehicle">
+                <option value="Any" data-en="Any available" data-es="Cualquier disponible">Any available</option>
+                <option value="Suburban" data-en="Chevrolet Suburban" data-es="Chevrolet Suburban">Chevrolet Suburban</option>
+                <option value="Escalade" data-en="Cadillac Escalade" data-es="Cadillac Escalade">Cadillac Escalade</option>
+                <option value="Sprinter" data-en="Mercedes Sprinter" data-es="Mercedes Sprinter">Mercedes Sprinter</option>
+                <option value="Limo" data-en="Stretch Limousine" data-es="Limusina">Stretch Limousine</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="rideDate">
+                <span class="lang-en">Date *</span>
+                <span class="lang-es">Fecha *</span>
+              </label>
+              <input type="date" class="form-ctrl" id="rideDate" required/>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="rideTime">
+                <span class="lang-en">Pickup Time *</span>
+                <span class="lang-es">Hora de Recogida *</span>
+              </label>
+              <input type="time" class="form-ctrl" id="rideTime" required/>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="passengers">
+                <span class="lang-en">Passengers</span>
+                <span class="lang-es">Pasajeros</span>
+              </label>
+              <select class="form-ctrl" id="passengers">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7-10" data-en="7–10 (Sprinter)" data-es="7–10 (Sprinter)">7–10 (Sprinter)</option>
+                <option value="11-14" data-en="11–14 (Sprinter)" data-es="11–14 (Sprinter)">11–14 (Sprinter)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="flight">
+                <span class="lang-en">Flight Number <span style="opacity:.6">(if airport)</span></span>
+                <span class="lang-es">Número de Vuelo <span style="opacity:.6">(si aeropuerto)</span></span>
+              </label>
+              <input type="text" class="form-ctrl" id="flight" placeholder="e.g. WN 1234"/>
+            </div>
+          </div>
+
+          <!-- ROUTE -->
+          <div class="form-section-title">
+            <span class="lang-en">Route</span>
+            <span class="lang-es">Ruta</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="pickup">
+              <span class="lang-en">Pickup Address *</span>
+              <span class="lang-es">Dirección de Recogida *</span>
+            </label>
+            <div class="addr-wrap">
+              <svg class="addr-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 00-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 00-8-8z"/></svg>
+              <input type="text" class="form-ctrl" id="pickup" required
+                placeholder="Enter pickup address…" autocomplete="off"/>
+            </div>
+          </div>
+
+          <div class="stops-section">
+            <div id="stopsList"></div>
+            <button type="button" class="add-stop-btn" id="addStop">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span class="lang-en">Add stop</span>
+              <span class="lang-es">Agregar parada</span>
+            </button>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="dropoff">
+              <span class="lang-en">Drop-off Address *</span>
+              <span class="lang-es">Dirección de Destino *</span>
+            </label>
+            <div class="addr-wrap">
+              <svg class="addr-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <input type="text" class="form-ctrl" id="dropoff" required
+                placeholder="Enter drop-off address…" autocomplete="off"/>
+            </div>
+          </div>
+
+          <!-- CONTACT -->
+          <div class="form-section-title">
+            <span class="lang-en">Your Information</span>
+            <span class="lang-es">Tu Información</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="clientName">
+                <span class="lang-en">Full Name *</span>
+                <span class="lang-es">Nombre Completo *</span>
+              </label>
+              <input type="text" class="form-ctrl" id="clientName" required
+                placeholder="John Smith"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="clientPhone">
+                <span class="lang-en">Phone *</span>
+                <span class="lang-es">Teléfono *</span>
+              </label>
+              <input type="tel" class="form-ctrl" id="clientPhone" required
+                placeholder="(619) 000-0000"/>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="clientEmail">
+              <span class="lang-en">Email *</span>
+              <span class="lang-es">Correo Electrónico *</span>
+            </label>
+            <input type="email" class="form-ctrl" id="clientEmail" required
+              placeholder="you@example.com"/>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="notes">
+              <span class="lang-en">Special Requests</span>
+              <span class="lang-es">Solicitudes Especiales</span>
+            </label>
+            <textarea class="form-ctrl" id="notes" rows="3"
+              placeholder="Baby seat, luggage details, specific route, event type…"></textarea>
+          </div>
+
+          <!-- PAYMENT -->
+          <div class="form-section-title">
+            <span class="lang-en">Payment</span>
+            <span class="lang-es">Pago</span>
+          </div>
+
+          <div class="pay-toggle">
+            <button type="button" class="pay-btn active" id="payLater" onclick="selectPay('later')">
+              <div class="pay-btn-icon">💬</div>
+              <div>
+                <div class="pay-btn-title"><span class="lang-en">Pay Later</span><span class="lang-es">Pagar Después</span></div>
+                <div class="pay-btn-sub"><span class="lang-en">Cash, Zelle, or card on the day</span><span class="lang-es">Efectivo, Zelle o tarjeta el día</span></div>
+              </div>
+            </button>
+            <button type="button" class="pay-btn" id="payNow" onclick="selectPay('now')">
+              <div class="pay-btn-icon">💳</div>
+              <div>
+                <div class="pay-btn-title"><span class="lang-en">Pay Now</span><span class="lang-es">Pagar Ahora</span></div>
+                <div class="pay-btn-sub"><span class="lang-en">Secure card payment online</span><span class="lang-es">Pago seguro con tarjeta</span></div>
+              </div>
+            </button>
+          </div>
+
+          <div id="sqWrap" style="display:none;margin-top:16px">
+            <div class="sq-card-label">
+              <span class="lang-en">Card Details</span>
+              <span class="lang-es">Datos de la Tarjeta</span>
+            </div>
+            <div id="sq-card" class="sq-card-field"></div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full btn-xl" id="submitBtn" style="margin-top:24px">
+            <span class="lang-en">Send Booking Request →</span>
+            <span class="lang-es">Enviar Solicitud de Reserva →</span>
+          </button>
+
+          <p class="form-note">
+            <span class="lang-en">We confirm within 15 minutes. No charge until confirmed.</span>
+            <span class="lang-es">Confirmamos en 15 minutos. Sin cobro hasta confirmar.</span>
+          </p>
+        </form>
+      </div>
+
+      <!-- RIGHT: SIDEBAR INFO -->
+      <aside class="booking-sidebar">
+
+        <!-- Quick contact -->
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">
+            <span class="lang-en">Prefer to Call?</span>
+            <span class="lang-es">¿Prefieres Llamar?</span>
+          </div>
+          <a href="tel:+16193940452" class="sidebar-phone-link">(619) 394-0452</a>
+          <p class="sidebar-note">
+            <span class="lang-en">Available 24/7. We pick up — no voicemail.</span>
+            <span class="lang-es">Disponibles 24/7. Contestamos — sin buzón de voz.</span>
+          </p>
+          <a href="https://wa.me/16193940452" target="_blank" rel="noopener" class="btn btn-outline btn-full" style="margin-top:12px">
+            <span class="lang-en">WhatsApp Us</span>
+            <span class="lang-es">Escríbenos por WhatsApp</span>
+          </a>
+        </div>
+
+        <!-- Pricing summary -->
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">
+            <span class="lang-en">Pricing at a Glance</span>
+            <span class="lang-es">Precios Rápidos</span>
+          </div>
+          <div class="sidebar-price-list">
+            <div class="sidebar-price-row">
+              <span><span class="lang-en">Airport Transfer</span><span class="lang-es">Traslado Aeropuerto</span></span>
+              <span class="sidebar-price-amt">$80</span>
+            </div>
+            <div class="sidebar-price-row">
+              <span><span class="lang-en">Hourly Charter</span><span class="lang-es">Alquiler por Hora</span></span>
+              <span class="sidebar-price-amt">$90/hr</span>
+            </div>
+            <div class="sidebar-price-row">
+              <span><span class="lang-en">Sprinter Van</span><span class="lang-es">Sprinter Van</span></span>
+              <span class="sidebar-price-amt">$90/hr</span>
+            </div>
+            <div class="sidebar-price-row">
+              <span><span class="lang-en">Special Events</span><span class="lang-es">Eventos Especiales</span></span>
+              <span class="sidebar-price-amt"><span class="lang-en">Quote</span><span class="lang-es">Cotización</span></span>
+            </div>
+          </div>
+          <p class="sidebar-note" style="margin-top:12px">
+            <span class="lang-en">All prices include fuel, tolls & gratuity. No hidden fees.</span>
+            <span class="lang-es">Todos los precios incluyen combustible, peajes y propina. Sin cargos ocultos.</span>
+          </p>
+        </div>
+
+        <!-- Trust signals -->
+        <div class="sidebar-card">
+          <div class="sidebar-trust-items">
+            <div class="sidebar-trust-item">
+              <span class="sidebar-trust-icon">✓</span>
+              <span><span class="lang-en">Confirm within 15 min</span><span class="lang-es">Confirmamos en 15 min</span></span>
+            </div>
+            <div class="sidebar-trust-item">
+              <span class="sidebar-trust-icon">✓</span>
+              <span><span class="lang-en">Flight tracking included</span><span class="lang-es">Seguimiento de vuelo incluido</span></span>
+            </div>
+            <div class="sidebar-trust-item">
+              <span class="sidebar-trust-icon">✓</span>
+              <span><span class="lang-en">Licensed & insured</span><span class="lang-es">Licenciado y asegurado</span></span>
+            </div>
+            <div class="sidebar-trust-item">
+              <span class="sidebar-trust-icon">✓</span>
+              <span><span class="lang-en">4.9★ rated drivers</span><span class="lang-es">Conductores 4.9★</span></span>
+            </div>
+            <div class="sidebar-trust-item">
+              <span class="sidebar-trust-icon">✓</span>
+              <span><span class="lang-en">Available 24/7</span><span class="lang-es">Disponible 24/7</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fleet mini preview -->
+        <div class="sidebar-fleet">
+          <div class="sidebar-card-title" style="padding:0 0 12px">
+            <span class="lang-en">Our Fleet</span>
+            <span class="lang-es">Nuestra Flota</span>
+          </div>
+          <img src="img-escalade.png" alt="Cadillac Escalade" loading="lazy" style="width:100%;border-radius:4px;object-fit:cover;max-height:180px"/>
+          <img src="img-sprinter.png" alt="Mercedes Sprinter" loading="lazy" style="width:100%;border-radius:4px;object-fit:cover;max-height:180px;margin-top:8px"/>
+        </div>
+
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ FOOTER ══════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="nav-logo">
+          <span class="nav-logo-name">Pacific Elite Rides</span>
+          <span class="nav-logo-tag" style="margin-top:4px">New Beginning Transport LLC</span>
+        </a>
+        <p class="footer-brand-desc">
+          <span class="lang-en">San Diego's premier luxury black car service.</span>
+          <span class="lang-es">El servicio premium de auto negro en San Diego.</span>
+        </p>
+        <div class="footer-socials">
+          <a href="https://www.instagram.com/pacificeliterides" target="_blank" rel="noopener" class="social-btn" aria-label="Instagram">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="tel:+16193940452" class="social-btn" aria-label="Phone">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.92a16 16 0 006.17 6.17l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title"><span class="lang-en">Services</span><span class="lang-es">Servicios</span></div>
+        <div class="footer-links">
+          <a href="services.html#airport"><span class="lang-en">Airport Transfers</span><span class="lang-es">Traslados Aeropuerto</span></a>
+          <a href="services.html#corporate"><span class="lang-en">Corporate Rides</span><span class="lang-es">Viajes Corporativos</span></a>
+          <a href="services.html#sprinter"><span class="lang-en">Sprinter Van</span><span class="lang-es">Sprinter</span></a>
+          <a href="services.html#events"><span class="lang-en">Special Events</span><span class="lang-es">Eventos Especiales</span></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title"><span class="lang-en">Company</span><span class="lang-es">Empresa</span></div>
+        <div class="footer-links">
+          <a href="about.html"><span class="lang-en">About Us</span><span class="lang-es">Sobre Nosotros</span></a>
+          <a href="index.html#faq">FAQ</a>
+          <a href="index.html#reviews"><span class="lang-en">Reviews</span><span class="lang-es">Reseñas</span></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title"><span class="lang-en">Contact</span><span class="lang-es">Contacto</span></div>
+        <div class="footer-contact-list">
+          <div class="footer-contact-row">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.92a16 16 0 006.17 6.17l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            <a href="tel:+16193940452">(619) 394-0452</a>
+          </div>
+          <div class="footer-contact-row">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <a href="mailto:berdnikov@pacificeliterides.com">berdnikov@pacificeliterides.com</a>
+          </div>
+          <div class="footer-contact-row">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>24 / 7 Available</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2025 Pacific Elite Rides · New Beginning Transport LLC.</span>
+      <div class="footer-legal">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_PLACES_API_KEY&libraries=places&callback=initPlaces"></script>
+<script src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

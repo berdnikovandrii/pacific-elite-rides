@@ -1125,10 +1125,10 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
 
 .wiz-page {
   min-height: 100vh;
-  background: radial-gradient(120% 80% at 50% -10%, #1a160c 0%, #0b0a08 52%);
+  background: radial-gradient(ellipse 100% 60% at 50% 0%, #1e190e 0%, #0d0c0a 60%);
   display: flex;
   justify-content: center;
-  padding: 110px 18px 60px;
+  padding: 120px 18px 80px;
 }
 .wiz-outer { width: 100%; max-width: 720px; }
 
@@ -1160,10 +1160,10 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
 
 /* Card */
 .wiz-card {
-  background: #131210;
-  border: 1px solid var(--gold-line);
+  background: #1c1912;
+  border: 1px solid rgba(201,164,74,0.32);
   border-radius: 18px;
-  box-shadow: 0 34px 90px rgba(0,0,0,.55);
+  box-shadow: 0 8px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.03);
   overflow: hidden;
 }
 .wiz-header { padding: 34px 38px 0; }
@@ -1203,11 +1203,11 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
 .svc-card {
   display: flex; flex-direction: column; gap: 5px; text-align: left;
   padding: 16px; border-radius: 11px; cursor: pointer;
-  background: rgba(255,255,255,.02); border: 1px solid var(--gold-line);
-  font-family: var(--font-body); transition: all .16s;
+  background: rgba(255,255,255,.055); border: 1px solid rgba(201,164,74,0.25);
+  font-family: var(--font-body); transition: all .18s;
 }
-.svc-card:hover { border-color: var(--gold); background: rgba(255,255,255,.045); }
-.svc-card.selected { background: var(--gold-faint); border-color: var(--gold); }
+.svc-card:hover { border-color: var(--gold); background: rgba(255,255,255,.09); }
+.svc-card.selected { background: rgba(201,164,74,0.14); border-color: var(--gold); }
 .svc-card-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .svc-card-name { font-family: var(--font-head); font-size: 17.5px; font-weight: 600; color: #f3efe6; }
 .svc-card-check { color: var(--gold); font-size: 15px; }
@@ -1221,8 +1221,8 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
 }
 .wiz-input {
   width: 100%; padding: 14px 15px;
-  background: rgba(255,255,255,.025);
-  border: 1px solid var(--gold-line);
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(201,164,74,0.28);
   border-radius: 9px; color: #f3efe6;
   font-size: 16px; font-family: var(--font-body);
   outline: none; transition: border-color .18s, box-shadow .18s;
@@ -1281,11 +1281,11 @@ input[type=time].wiz-input::-webkit-calendar-picker-indicator {
 .wiz-pay-card {
   display: flex; flex-direction: column; gap: 6px; text-align: left;
   padding: 18px; border-radius: 11px; cursor: pointer;
-  background: rgba(255,255,255,.02); border: 1px solid var(--gold-line);
-  font-family: var(--font-body); transition: all .16s;
+  background: rgba(255,255,255,.055); border: 1px solid rgba(201,164,74,0.25);
+  font-family: var(--font-body); transition: all .18s;
 }
-.wiz-pay-card:hover { border-color: var(--gold); }
-.wiz-pay-card.selected { background: var(--gold-faint); border-color: var(--gold); }
+.wiz-pay-card:hover { border-color: var(--gold); background: rgba(255,255,255,.09); }
+.wiz-pay-card.selected { background: rgba(201,164,74,0.14); border-color: var(--gold); }
 .wiz-pay-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
 .wiz-pay-title { font-family: var(--font-head); font-size: 18px; font-weight: 600; color: #f3efe6; }
 .wiz-pay-check { color: var(--gold); }

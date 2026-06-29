@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0}
+  input,select,textarea,button{font-family:'Inter',sans-serif}
+  select option{background:#15140f;color:#f3efe6}
+  ::placeholder{color:rgba(243,239,230,.30)}
+  input[type=date]::-webkit-calendar-picker-indicator,
+  input[type=time]::-webkit-calendar-picker-indicator{filter:invert(.65) sepia(1) saturate(2.5) hue-rotate(2deg);cursor:pointer;opacity:.85}
+  @keyframes stepSlide{from{transform:translateY(14px)}to{transform:none}}
+  @keyframes stepFade{from{opacity:0}to{opacity:1}}
+  @keyframes barGrow{from{transform:scaleX(.4);opacity:.6}to{transform:scaleX(1);opacity:1}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;width:100%;background:radial-gradient(120% 80% at 50% -10%, #1a160c 0%, #0b0a08 52%);font-family:'Inter',sans-serif;display:flex;justify-content:center;padding:28px 18px 60px;color:#f3efe6">
+  <div style="{{ rootStyle }}width:100%;max-width:720px">
+
+    <!-- BRAND BAR -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+      <div style="display:flex;flex-direction:column">
+        <span style="font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:var(--gold);letter-spacing:.01em">Pacific Elite Rides</span>
+        <span style="font-size:9.5px;letter-spacing:.32em;text-transform:uppercase;color:rgba(243,239,230,.45);margin-top:2px">{{ t.brandTag }}</span>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button onClick="{{ setEn }}" style="{{ enStyle }}">EN</button>
+        <button onClick="{{ setEs }}" style="{{ esStyle }}">ES</button>
+      </div>
+    </div>
+
+    <!-- CARD -->
+    <div style="background:#131210;border:1px solid var(--gold-line);border-radius:18px;box-shadow:0 34px 90px rgba(0,0,0,.55);overflow:hidden">
+
+      <!-- WIZARD -->
+      <sc-if value="{{ notSubmitted }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:34px 38px 0">
+          <!-- PROGRESS -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <span style="font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:600">{{ t.eyebrow }}</span>
+            <span style="font-size:11px;letter-spacing:.04em;color:rgba(243,239,230,.5)">{{ t.stepWord }} {{ stepNum }} {{ t.ofWord }} 6 · {{ stepName }}</span>
+          </div>
+          <div style="height:4px;border-radius:3px;background:rgba(255,255,255,.06);overflow:hidden">
+            <div style="height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold),var(--gold-bright));width:{{ progressPct }};transition:width .45s cubic-bezier(.4,0,.2,1)"></div>
+          </div>
+        </div>
+
+        <div style="padding:30px 38px 36px">
+
+          <!-- STEP 0 — SERVICE -->
+          <sc-if value="{{ isStep0 }}" hint-placeholder-val="{{ true }}">
+            <div style="animation:{{ stepAnim }}">
+              <h2 style="font-family:'Playfair Display',serif;font-size:29px;font-weight:600;line-height:1.16;margin:0 0 6px">{{ t.s0Title }}</h2>
+              <p style="margin:0 0 22px;font-size:14px;color:rgba(243,239,230,.55)">{{ t.s0Sub }}</p>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px">
+                <sc-for list="{{ services }}" as="svc" hint-placeholder-count="6">
+                  <button onClick="{{ svc.onSelect }}" style="{{ svc.style }}" style-hover="border-color:var(--gold);background:rgba(255,255,255,.045)">
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                      <span style="font-family:'Playfair Display',serif;font-size:17.5px;font-weight:600;color:#f3efe6">{{ svc.t }}</span>
+                      <sc-if value="{{ svc.sel }}" hint-placeholder-val="{{ false }}"><span style="color:var(--gold);font-size:15px">✓</span></sc-if>
+                    </div>
+                    <span style="font-size:12.5px;color:rgba(243,239,230,.5);line-height:1.4">{{ svc.d }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- STEP 1 — TRIP DETAILS -->
+          <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ false }}">
+            <div style="animation:{{ stepAnim }}">
+              <h2 style="font-family:'Playfair Display',serif;font-size:29px;font-weight:600;line-height:1.16;margin:0 0 6px">{{ t.s1Title }}</h2>
+              <p style="margin:0 0 24px;font-size:14px;color:rgba(243,239,230,.55)">{{ t.s1Sub }}</p>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px">
+                <div>
+                  <label style="{{ labelStyle }}">{{ t.dateL }} *</label>
+                  <input type="date" value="{{ f.date.value }}" onChange="{{ f.date.onChange }}" style="{{ f.date.style }}" style-focus="border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-faint)"/>
+                  <sc-if value="{{ f.date.err }}" hint-placeholder-val="{{ false }}"><div style="{{ errTextStyle }}">{{ f.date.errMsg }}</div></sc-if>
+                </div>
+                <div>
+                  <label style="{{ labelStyle }}">{{ t.timeL }} *</label>
+                  <input type="time" value="{{ f.time.value }}" onChange="{{ f.time.onChange }}" style="{{ f.time.style }}" style-focus="border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-faint)"/>
+                  <sc-if value="{{ f.time.err }}" hint-placeholder-val="{{ false }}"><div style="{{ errTextStyle }}">{{ f.time.errMsg }}</div></sc-if>
+                </div>
+                <div>
+                  <label style="{{ labelStyle }}">{{ t.paxL }}</label>
+                  <div style="position:relative">
+                    <select value="{{ f.passengers.value }}" onChange="{{ f.passengers.onChange }}" style="{{ selectStyle }}" style-focus="border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-faint)">
+                      <sc-for list="{{ paxOpts }}" as="o" hint-placeholder-count="6"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+                    </select>
+                    <span style="{{ chevStyle }}">▾</span>
+                  </div>
+                </div>
+                <div>
+                  <label style="{{ labelStyle }}">{{ t.vehicleL }}</label>
+                  <div style="position:relative">
+                    <select value="{{ f.vehicle.value }}" onChange="{{ f.vehicle.onChange }}" style="{{ selectStyle }}" style-focus="border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-faint)">
+                      <sc-for list="{{ vehicles }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+                    </select>
+                    <span style="{{ chevStyle }}">▾</span>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top:18px">
+                <label style="{{ labelStyle }}">{{ t.flightL }} <span style="opacity:.55;text-transform:none;letter-spacing:0">{{ t.flightHint }}</span></label>
+                <input type="text" value="{{ f.flight.value }}" onChange="{{ f.flight.onChange }}" placeholder="e.g. WN 1234" style="{{ inputStyleBase }}" style-focus="border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-faint)"/>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- STEP 2 — ROUTE -->
+          <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+            <div style="animation:{{ stepAnim }}">
+              <h2 style="font-family:'Playfair Display',serif;font-size:29px;font-weight:600;line-height:1.16;margin:0 0 6px">{{ t.s2Title }}</h2>
+              <p style="margin:0 0 24px;font-size:14px;color:rgba(243,239,230,.55)">{{ t.s2Sub }}</p>
+              <div style="margin-bottom:14px">
+                <label style="{{ labelStyle }}">{{ t.pickupL }} *</label>
+                <div style="position:relative">
+                  <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);width:9px;height:9px;border-radius:50%;border:2px solid var(--gold);box-sizing:border-box"></span>
+                  <input type="text" value="{{ f.pickup.value }}" onChange="{{ f.pickup.onChange }}" placeholder="{{ t.pickupPh }}" style="{{ f.pickup.style }}" style-focus="border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-faint)"/>
+                </div>
+                <sc-if value="{{ f.pickup.err }}" hint-placeholder-val="{{ false }}"><div style="{{ errTextStyle }}">{{ f.pickup.errMsg }}</div></sc-if>
+              </div>
+
+              <sc-for list="{{ stopItems }}" as="st" hint-placeholder-count="0">
+                <div style="margin-bottom:14px">
+                  <label style="{{ labelStyle }}">{{ st.label }}</label>
+                  <div style="display:flex;gap:8px">
+                    <div style="position:relative;flex:1">
+                      <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);width:9px;height:9px;border-radius:50%;background:var(--gold-line);border:2px solid var(--gold);box-sizing:border-box"></span>
+                      <input type="text" value="{{ st.value }}" onChange="{{ st.onChange }}" placeholder="{{ t.stopPh }}" style="{{ inputStylePad }}" style-focus="border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-faint)"/>
+                    </div>
+                    <button onClick="{{ st.onRemove }}" style="flex:none;width:46px;border-radius:9px;background:transparent;border:1px solid var(--gold-line);color:rgba(243,239,230,.55);cursor:pointer;font-size:18px" style-hover="border-color:#d46a5a;color:#d46a5a">×</button>
+                  </div>
+                </div>
+              </sc-for>
+
+              <button onClick="{{ addStop }}" style="width:100%;padding:13px;margin-bottom:18px;background:transparent;border:1px dashed var(--gold-line);border-radius:9px;color:var(--gold);font-size:13.5px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px" style-hover="border-color:var(--gold);background:var(--gold-faint)">
+                <span style="font-size:15px;line-height:1">+</span> {{ t.addStop }}
+              </button>
+
+              <div>
+                <label style="{{ labelStyle }}">{{ t.dropoffL }} *</label>
+                <div style="position:relative">
+                  <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);width:9px;height:9px;border-radius:50%;background:var(--gold);box-sizing:border-box"></span>
+                  <input type="text" value="{{ f.dropoff.value }}" onChange="{{ f.dropoff.onChange }}" placeholder="{{ t.dropoffPh }}" style="{{ f.dropoff.style }}" style-focus="border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-faint)"/>
+                </div>
+                <sc-if value="{{ f.dropoff.err }}" hint-placeholder-val="{{ false }}"><div style="{{ errTextStyle }}">{{ f.dropoff.errMsg }}</div></sc-if>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- STEP 3 — CONTACT -->
+          <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+            <div style="animation:{{ stepAnim }}">
+              <h2 style="font-family:'Playfair Display',serif;font-size:29px;font-weight:600;line-height:1.16;margin:0 0 6px">{{ t.s3Title }}</h2>
+              <p style="margin:0 0 24px;font-size:14px;color:rgba(243,239,230,.55)">{{ t.s3Sub }}</p>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-bottom:18px">
+                <div>
+                  <label style="{{ labelStyle }}">{{ t.nameL }} *</label>
+                  <input type="text" value="{{ f.name.value }}" onChange="{{ f.name.onChange }}" placeholder="{{ t.namePh }}" style="{{ f.name.style }}" style-focus="border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-faint)"/>
+                  <sc-if value="{{ f.name.err }}" hint-placeholder-val="{{ false }}"><div style="{{ errTextStyle }}">{{ f.name.errMsg }}</div></sc-if>
+                </div>
+                <div>
+                  <label style="{{ labelStyle }}">{{ t.phoneL }} *</label>
+                  <input type="tel" value="{{ f.phone.value }}" onChange="{{ f.phone.onChange }}" placeholder="{{ t.phonePh }}" style="{{ f.phone.style }}" style-focus="border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-faint)"/>
+                  <sc-if value="{{ f.phone.err }}" hint-placeholder-val="{{ false }}"><div style="{{ errTextStyle }}">{{ f.phone.errMsg }}</div></sc-if>
+                </div>
+              </div>
+              <div style="margin-bottom:18px">
+                <label style="{{ labelStyle }}">{{ t.emailL }} *</label>
+                <input type="email" value="{{ f.email.value }}" onChange="{{ f.email.onChange }}" placeholder="{{ t.emailPh }}" style="{{ f.email.style }}" style-focus="border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-faint)"/>
+                <sc-if value="{{ f.email.err }}" hint-placeholder-val="{{ false }}"><div style="{{ errTextStyle }}">{{ f.email.errMsg }}</div></sc-if>
+              </div>
+              <div>
+                <label style="{{ labelStyle }}">{{ t.notesL }}</label>
+                <textarea rows="3" value="{{ f.notes.value }}" onChange="{{ f.notes.onChange }}" placeholder="{{ t.notesPh }}" style="{{ inputStyleBase }}resize:vertical;min-height:84px" style-focus="border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-faint)"></textarea>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- STEP 4 — PAYMENT -->
+          <sc-if value="{{ isStep4 }}" hint-placeholder-val="{{ false }}">
+            <div style="animation:{{ stepAnim }}">
+              <h2 style="font-family:'Playfair Display',serif;font-size:29px;font-weight:600;line-height:1.16;margin:0 0 6px">{{ t.s4Title }}</h2>
+              <p style="margin:0 0 24px;font-size:14px;color:rgba(243,239,230,.55)">{{ t.s4Sub }}</p>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+                <button onClick="{{ payLater }}" style="{{ payLaterStyle }}" style-hover="border-color:var(--gold)">
+                  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+                    <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:600">{{ t.payLaterT }}</span>
+                    <sc-if value="{{ isPayLater }}" hint-placeholder-val="{{ true }}"><span style="color:var(--gold)">✓</span></sc-if>
+                  </div>
+                  <span style="font-size:12.5px;color:rgba(243,239,230,.5);line-height:1.4">{{ t.payLaterS }}</span>
+                </button>
+                <button onClick="{{ payNow }}" style="{{ payNowStyle }}" style-hover="border-color:var(--gold)">
+                  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+                    <span style="font-family:'Playfair Display',serif;font-size:18px;font-weight:600">{{ t.payNowT }}</span>
+                    <sc-if value="{{ isPayNow }}" hint-placeholder-val="{{ false }}"><span style="color:var(--gold)">✓</span></sc-if>
+                  </div>
+                  <span style="font-size:12.5px;color:rgba(243,239,230,.5);line-height:1.4">{{ t.payNowS }}</span>
+                </button>
+              </div>
+              <sc-if value="{{ isPayNow }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:16px">
+                  <label style="{{ labelStyle }}">{{ t.cardL }}</label>
+                  <div style="padding:18px 16px;border:1px dashed var(--gold-line);border-radius:9px;color:rgba(243,239,230,.4);font-size:13.5px;background:rgba(255,255,255,.015)">{{ t.cardPh }}</div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <!-- STEP 5 — REVIEW -->
+          <sc-if value="{{ isStep5 }}" hint-placeholder-val="{{ false }}">
+            <div style="animation:{{ stepAnim }}">
+              <h2 style="font-family:'Playfair Display',serif;font-size:29px;font-weight:600;line-height:1.16;margin:0 0 6px">{{ t.s5Title }}</h2>
+              <p style="margin:0 0 22px;font-size:14px;color:rgba(243,239,230,.55)">{{ t.s5Sub }}</p>
+
+              <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px">
+                <sc-for list="{{ reviewGroups }}" as="g" hint-placeholder-count="4">
+                  <div style="border:1px solid var(--gold-line);border-radius:12px;padding:16px 18px;background:rgba(255,255,255,.015)">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+                      <span style="font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600">{{ g.title }}</span>
+                      <button onClick="{{ g.onEdit }}" style="background:transparent;border:none;color:var(--gold);font-size:12px;font-weight:500;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0">{{ t.edit }}</button>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:7px">
+                      <sc-for list="{{ g.rows }}" as="row" hint-placeholder-count="3">
+                        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px">
+                          <span style="font-size:12.5px;color:rgba(243,239,230,.45);flex:none">{{ row.k }}</span>
+                          <span style="font-size:14px;color:#f3efe6;text-align:right">{{ row.v }}</span>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+
+              <!-- Sidebar info surfaced at summary -->
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:8px">
+                <div style="border:1px solid var(--gold-line);border-radius:12px;padding:16px 18px;background:rgba(255,255,255,.015)">
+                  <div style="font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:10px">{{ t.priceT }}</div>
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <sc-for list="{{ priceRows }}" as="p" hint-placeholder-count="4">
+                      <div style="display:flex;justify-content:space-between;font-size:13.5px">
+                        <span style="color:rgba(243,239,230,.7)">{{ p.k }}</span>
+                        <span style="color:var(--gold);font-weight:600">{{ p.v }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <p style="margin:12px 0 0;font-size:11.5px;color:rgba(243,239,230,.4);line-height:1.5">{{ t.priceNote }}</p>
+                </div>
+                <div style="border:1px solid var(--gold-line);border-radius:12px;padding:16px 18px;background:rgba(255,255,255,.015)">
+                  <div style="display:flex;flex-direction:column;gap:9px">
+                    <sc-for list="{{ trustItems }}" as="ti" hint-placeholder-count="5">
+                      <div style="display:flex;align-items:center;gap:9px;font-size:13.5px">
+                        <span style="color:var(--gold);font-size:13px">✓</span>
+                        <span style="color:rgba(243,239,230,.78)">{{ ti.v }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <p style="margin:13px 0 0;font-size:12px;color:rgba(243,239,230,.5);line-height:1.5">{{ t.callNote }} <a href="tel:+16193940452" style="color:var(--gold);text-decoration:none;white-space:nowrap">(619) 394-0452</a></p>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- NAV ROW -->
+          <sc-if value="{{ showNav }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;gap:12px;margin-top:30px">
+              <sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ back }}" style="padding:14px 22px;background:transparent;border:1px solid var(--gold-line);border-radius:10px;color:rgba(243,239,230,.8);font-size:14.5px;font-weight:500;cursor:pointer" style-hover="border-color:var(--gold);color:#f3efe6">← {{ t.back }}</button>
+              </sc-if>
+              <button onClick="{{ primaryAction }}" style="flex:1;padding:15px 28px;background:var(--gold);color:#1a1408;border:none;border-radius:10px;font-size:15px;font-weight:600;letter-spacing:.01em;cursor:pointer;box-shadow:0 10px 28px var(--gold-glow)" style-hover="filter:brightness(1.06)">{{ primaryLabel }}</button>
+            </div>
+            <sc-if value="{{ isStep5 }}" hint-placeholder-val="{{ false }}">
+              <p style="text-align:center;margin:14px 0 0;font-size:12px;color:rgba(243,239,230,.4)">{{ t.formNote }}</p>
+            </sc-if>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- SUCCESS -->
+      <sc-if value="{{ submitted }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:60px 40px;text-align:center;animation:stepSlide .45s ease">
+          <div style="width:62px;height:62px;border-radius:50%;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;color:var(--gold);font-size:28px">✓</div>
+          <h2 style="font-family:'Playfair Display',serif;font-size:30px;font-weight:600;margin:0 0 12px">{{ t.successT }}</h2>
+          <p style="margin:0 auto 28px;font-size:15px;color:rgba(243,239,230,.6);line-height:1.55;max-width:420px">{{ t.successMsg }}</p>
+          <button onClick="{{ resetAll }}" style="padding:13px 26px;background:transparent;border:1px solid var(--gold-line);border-radius:10px;color:var(--gold);font-size:14px;font-weight:500;cursor:pointer" style-hover="border-color:var(--gold);background:var(--gold-faint)">{{ t.successBtn }}</button>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 760, &quot;height&quot;: 760 },
+  &quot;accent&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#c9a44a&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;options&quot;: [&quot;#c9a44a&quot;, &quot;#b8924a&quot;, &quot;#c7b07a&quot;, &quot;#a98b3c&quot;], &quot;section&quot;: &quot;Style&quot; },
+  &quot;transitionStyle&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;slide&quot;, &quot;options&quot;: [&quot;slide&quot;, &quot;fade&quot;, &quot;none&quot;], &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Style&quot; },
+  &quot;autoAdvance&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Behavior&quot; }
+}">
+class Component extends DCLogic {
+  state = {
+    lang: "en",
+    step: 0,
+    serviceType: "",
+    vehicle: "Any",
+    date: new Date().toISOString().slice(0, 10),
+    time: "",
+    passengers: "1",
+    flight: "",
+    pickup: "",
+    stops: [],
+    dropoff: "",
+    name: "",
+    phone: "",
+    email: "",
+    notes: "",
+    pay: "later",
+    errors: {},
+    submitted: false
+  };
+
+  DICT = {
+    en: {
+      brandTag: "Luxury Transportation",
+      eyebrow: "Reservation",
+      stepWord: "Step", ofWord: "of",
+      stepNames: ["Service", "Trip", "Route", "Contact", "Payment", "Review"],
+      back: "Back", next: "Continue", review: "Review booking", edit: "Edit",
+      send: "Send Booking Request →",
+      formNote: "We confirm within 15 minutes. No charge until confirmed.",
+      s0Title: "What can we drive you to?", s0Sub: "Choose a service to begin.",
+      services: [
+        { id: "Airport Transfer", t: "Airport Transfer", d: "SAN · LAX · ONT — flat rate from $80" },
+        { id: "Corporate Ride", t: "Corporate Ride", d: "Meetings, roadshows, client pickups" },
+        { id: "Hourly Charter", t: "Hourly Charter", d: "$90/hr — as-directed, you set the pace" },
+        { id: "Sprinter Van", t: "Sprinter Van", d: "Groups of 7–14, luggage friendly" },
+        { id: "Special Event", t: "Special Event / VIP", d: "Weddings, nights out, premieres" },
+        { id: "Other", t: "Something Else", d: "Tell us in the notes" }
+      ],
+      s1Title: "When & how?", s1Sub: "A few details about the trip.",
+      dateL: "Date", timeL: "Pickup Time", paxL: "Passengers", vehicleL: "Vehicle Preference",
+      flightL: "Flight Number", flightHint: "(if airport)",
+      vehicles: [["Any", "Any available"], ["Suburban", "Chevrolet Suburban"], ["Escalade", "Cadillac Escalade"], ["Sprinter", "Mercedes Sprinter"], ["Limo", "Stretch Limousine"]],
+      paxOpts: [["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7-10", "7–10 (Sprinter)"], ["11-14", "11–14 (Sprinter)"]],
+      s2Title: "Where to?", s2Sub: "Pickup, any stops, and your destination.",
+      pickupL: "Pickup Address", pickupPh: "Enter pickup address…",
+      stopLabel: "Stop", stopPh: "Stop address…", addStop: "Add stop",
+      dropoffL: "Drop-off Address", dropoffPh: "Enter drop-off address…",
+      s3Title: "Who should we look for?", s3Sub: "So your driver can reach you.",
+      nameL: "Full Name", namePh: "John Smith", phoneL: "Phone", phonePh: "(619) 000-0000",
+      emailL: "Email", emailPh: "you@example.com", notesL: "Special Requests",
+      notesPh: "Baby seat, luggage details, specific route, event type…",
+      s4Title: "How would you like to pay?", s4Sub: "No charge until we confirm.",
+      payLaterT: "Pay Later", payLaterS: "Cash, Zelle, or card on the day",
+      payNowT: "Pay Now", payNowS: "Secure card payment online",
+      cardL: "Card Details", cardPh: "Secure card field appears here at checkout.",
+      s5Title: "Review your ride", s5Sub: "Check everything, then send — we confirm within 15 minutes.",
+      gTrip: "Service & Trip", gRoute: "Route", gContact: "Contact", gPay: "Payment",
+      none: "—", anyVeh: "Any available",
+      priceT: "Pricing at a Glance",
+      prices: [["Airport Transfer", "$80"], ["Hourly Charter", "$90/hr"], ["Sprinter Van", "$90/hr"], ["Special Events", "Quote"]],
+      priceNote: "All prices include fuel, tolls & gratuity. No hidden fees.",
+      callNote: "Prefer to talk? Available 24/7, no voicemail —",
+      trust: ["Confirm within 15 min", "Flight tracking included", "Licensed & insured", "4.9★ rated drivers", "Available 24/7"],
+      successT: "Request received", successMsg: "Thank you — we'll confirm your ride within 15 minutes by text and email. Keep your phone handy.",
+      successBtn: "Book another ride",
+      errReq: "Required", errEmail: "Enter a valid email"
+    },
+    es: {
+      brandTag: "Transporte de Lujo",
+      eyebrow: "Reservación",
+      stepWord: "Paso", ofWord: "de",
+      stepNames: ["Servicio", "Viaje", "Ruta", "Contacto", "Pago", "Revisar"],
+      back: "Atrás", next: "Continuar", review: "Revisar reserva", edit: "Editar",
+      send: "Enviar Solicitud →",
+      formNote: "Confirmamos en 15 minutos. Sin cobro hasta confirmar.",
+      s0Title: "¿A dónde te llevamos?", s0Sub: "Elige un servicio para comenzar.",
+      services: [
+        { id: "Airport Transfer", t: "Traslado Aeropuerto", d: "SAN · LAX · ONT — desde $80" },
+        { id: "Corporate Ride", t: "Viaje Corporativo", d: "Reuniones, eventos, clientes" },
+        { id: "Hourly Charter", t: "Alquiler por Horas", d: "$90/hr — a tu disposición" },
+        { id: "Sprinter Van", t: "Sprinter Van", d: "Grupos de 7–14, con equipaje" },
+        { id: "Special Event", t: "Evento Especial / VIP", d: "Bodas, salidas, premieres" },
+        { id: "Other", t: "Otro", d: "Cuéntanos en las notas" }
+      ],
+      s1Title: "¿Cuándo y cómo?", s1Sub: "Algunos detalles del viaje.",
+      dateL: "Fecha", timeL: "Hora de Recogida", paxL: "Pasajeros", vehicleL: "Preferencia de Vehículo",
+      flightL: "Número de Vuelo", flightHint: "(si aeropuerto)",
+      vehicles: [["Any", "Cualquier disponible"], ["Suburban", "Chevrolet Suburban"], ["Escalade", "Cadillac Escalade"], ["Sprinter", "Mercedes Sprinter"], ["Limo", "Limusina"]],
+      paxOpts: [["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7-10", "7–10 (Sprinter)"], ["11-14", "11–14 (Sprinter)"]],
+      s2Title: "¿A dónde vamos?", s2Sub: "Recogida, paradas y destino.",
+      pickupL: "Dirección de Recogida", pickupPh: "Ingresa dirección de recogida…",
+      stopLabel: "Parada", stopPh: "Dirección de parada…", addStop: "Agregar parada",
+      dropoffL: "Dirección de Destino", dropoffPh: "Ingresa dirección de destino…",
+      s3Title: "¿A quién buscamos?", s3Sub: "Para que tu conductor te ubique.",
+      nameL: "Nombre Completo", namePh: "Juan Pérez", phoneL: "Teléfono", phonePh: "(619) 000-0000",
+      emailL: "Correo Electrónico", emailPh: "tu@correo.com", notesL: "Solicitudes Especiales",
+      notesPh: "Silla de bebé, equipaje, ruta específica, tipo de evento…",
+      s4Title: "¿Cómo prefieres pagar?", s4Sub: "Sin cobro hasta confirmar.",
+      payLaterT: "Pagar Después", payLaterS: "Efectivo, Zelle o tarjeta el día",
+      payNowT: "Pagar Ahora", payNowS: "Pago seguro con tarjeta",
+      cardL: "Datos de la Tarjeta", cardPh: "El campo seguro de tarjeta aparece al pagar.",
+      s5Title: "Revisa tu viaje", s5Sub: "Verifica todo y envía — confirmamos en 15 minutos.",
+      gTrip: "Servicio y Viaje", gRoute: "Ruta", gContact: "Contacto", gPay: "Pago",
+      none: "—", anyVeh: "Cualquier disponible",
+      priceT: "Precios Rápidos",
+      prices: [["Traslado Aeropuerto", "$80"], ["Alquiler por Hora", "$90/hr"], ["Sprinter Van", "$90/hr"], ["Eventos Especiales", "Cotización"]],
+      priceNote: "Incluye combustible, peajes y propina. Sin cargos ocultos.",
+      callNote: "¿Prefieres llamar? Disponibles 24/7, sin buzón —",
+      trust: ["Confirmamos en 15 min", "Seguimiento de vuelo incluido", "Licenciado y asegurado", "Conductores 4.9★", "Disponible 24/7"],
+      successT: "Solicitud recibida", successMsg: "Gracias — confirmaremos tu viaje en 15 minutos por mensaje y correo. Ten tu teléfono a mano.",
+      successBtn: "Reservar otro viaje",
+      errReq: "Requerido", errEmail: "Correo inválido"
+    }
+  };
+
+  hexA(hex, a) {
+    const h = hex.replace("#", "");
+    const r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), b = parseInt(h.slice(4, 6), 16);
+    return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+  }
+
+  set(field, val) {
+    const errors = { ...this.state.errors };
+    delete errors[field];
+    this.setState({ [field]: val, errors });
+  }
+
+  setLang(l) { this.setState({ lang: l }); }
+
+  pickService(id) {
+    this.setState({ serviceType: id });
+    const auto = this.props.autoAdvance ?? true;
+    if (auto) setTimeout(() => this.setState({ step: 1 }), 170);
+  }
+
+  selectPay(p) { this.setState({ pay: p }); }
+
+  addStop() { this.setState({ stops: [...this.state.stops, ""] }); }
+  updateStop(i, v) { const s = [...this.state.stops]; s[i] = v; this.setState({ stops: s }); }
+  removeStop(i) { const s = [...this.state.stops]; s.splice(i, 1); this.setState({ stops: s }); }
+
+  validateStep(step) {
+    const e = {}, s = this.state;
+    if (step === 1) { if (!s.date) e.date = "req"; if (!s.time) e.time = "req"; }
+    if (step === 2) { if (!s.pickup.trim()) e.pickup = "req"; if (!s.dropoff.trim()) e.dropoff = "req"; }
+    if (step === 3) {
+      if (!s.name.trim()) e.name = "req";
+      if (!s.phone.trim()) e.phone = "req";
+      if (!s.email.trim()) e.email = "req";
+      else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s.email)) e.email = "email";
+    }
+    return e;
+  }
+
+  next() {
+    const e = this.validateStep(this.state.step);
+    if (Object.keys(e).length) { this.setState({ errors: e }); return; }
+    this.setState({ step: Math.min(this.state.step + 1, 5), errors: {} });
+  }
+
+  back() { this.setState({ step: Math.max(this.state.step - 1, 0), errors: {} }); }
+  goToStep(n) { this.setState({ step: n, errors: {} }); }
+
+  submit() {
+    for (const st of [1, 2, 3]) {
+      const e = this.validateStep(st);
+      if (Object.keys(e).length) { this.setState({ step: st, errors: e }); return; }
+    }
+    this.setState({ submitted: true });
+  }
+
+  resetAll() {
+    this.setState({
+      step: 0, serviceType: "", vehicle: "Any",
+      date: new Date().toISOString().slice(0, 10), time: "", passengers: "1", flight: "",
+      pickup: "", stops: [], dropoff: "", name: "", phone: "", email: "", notes: "",
+      pay: "later", errors: {}, submitted: false
+    });
+  }
+
+  inputStyle(err, pad) {
+    let s = "width:100%;padding:14px 15px;background:rgba(255,255,255,.025);border:1px solid " +
+      (err ? "#d46a5a" : "var(--gold-line)") +
+      ";border-radius:9px;color:#f3efe6;font-size:16px;outline:none;transition:border-color .18s,box-shadow .18s";
+    if (pad) s += ";padding-left:34px";
+    if (err) s += ";box-shadow:0 0 0 3px rgba(212,106,90,.13)";
+    return s;
+  }
+
+  field(name, t, pad) {
+    const err = this.state.errors[name];
+    return {
+      value: this.state[name],
+      onChange: (e) => this.set(name, e.target.value),
+      err: !!err,
+      errMsg: err === "email" ? t.errEmail : t.errReq,
+      style: this.inputStyle(!!err, pad)
+    };
+  }
+
+  renderVals() {
+    const t = this.DICT[this.state.lang];
+    const s = this.state;
+    const accent = this.props.accent ?? "#c9a44a";
+    const trans = this.props.transitionStyle ?? "slide";
+    const stepAnim = trans === "fade" ? "stepFade .35s ease" : trans === "none" ? "none" : "stepSlide .4s ease";
+    const auto = this.props.autoAdvance ?? true;
+
+    const rootStyle =
+      "--gold:" + accent +
+      ";--gold-bright:" + accent +
+      ";--gold-line:" + this.hexA(accent, 0.20) +
+      ";--gold-faint:" + this.hexA(accent, 0.09) +
+      ";--gold-glow:" + this.hexA(accent, 0.28) + ";";
+
+    const labelStyle = "display:block;font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px";
+    const inputStyleBase = this.inputStyle(false);
+    const inputStylePad = this.inputStyle(false, true);
+    const selectStyle = this.inputStyle(false) + ";appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:38px";
+    const chevStyle = "position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--gold);font-size:11px";
+    const errTextStyle = "margin-top:6px;font-size:12px;color:#e08a7c";
+
+    // language buttons
+    const langBtn = (on) => "padding:6px 13px;border-radius:7px;font-size:11.5px;font-weight:600;letter-spacing:.05em;cursor:pointer;background:" +
+      (on ? "var(--gold)" : "transparent") + ";color:" + (on ? "#1a1408" : "rgba(243,239,230,.6)") +
+      ";border:1px solid " + (on ? "var(--gold)" : "var(--gold-line)");
+
+    // services
+    const services = t.services.map((sv) => {
+      const sel = s.serviceType === sv.id;
+      return {
+        t: sv.t, d: sv.d, sel,
+        onSelect: () => this.pickService(sv.id),
+        style: "display:flex;flex-direction:column;gap:5px;text-align:left;padding:16px;border-radius:11px;cursor:pointer;transition:all .16s;background:" +
+          (sel ? "var(--gold-faint)" : "rgba(255,255,255,.02)") + ";border:1px solid " + (sel ? "var(--gold)" : "var(--gold-line)")
+      };
+    });
+
+    const paxOpts = t.paxOpts.map((o) => ({ v: o[0], l: o[1] }));
+    const vehicles = t.vehicles.map((o) => ({ v: o[0], l: o[1] }));
+
+    const stopItems = s.stops.map((v, i) => ({
+      label: t.stopLabel + " " + (i + 1),
+      value: v,
+      onChange: (e) => this.updateStop(i, e.target.value),
+      onRemove: () => this.removeStop(i)
+    }));
+
+    const f = {
+      date: this.field("date", t), time: this.field("time", t),
+      passengers: this.field("passengers", t), vehicle: this.field("vehicle", t),
+      flight: this.field("flight", t), pickup: this.field("pickup", t, true),
+      dropoff: this.field("dropoff", t, true), name: this.field("name", t),
+      phone: this.field("phone", t), email: this.field("email", t), notes: this.field("notes", t)
+    };
+
+    const payCard = (on) => "display:flex;flex-direction:column;gap:6px;text-align:left;padding:18px;border-radius:11px;cursor:pointer;transition:all .16s;background:" +
+      (on ? "var(--gold-faint)" : "rgba(255,255,255,.02)") + ";border:1px solid " + (on ? "var(--gold)" : "var(--gold-line)");
+
+    // review summary
+    const svcLabel = (t.services.find((x) => x.id === s.serviceType) || {}).t || t.none;
+    const vehLabel = (t.vehicles.find((x) => x[0] === s.vehicle) || [, t.anyVeh])[1];
+    const paxLabel = (t.paxOpts.find((x) => x[0] === s.passengers) || [, s.passengers])[1];
+    const tripRows = [
+      { k: t.stepNames[0], v: svcLabel },
+      { k: t.vehicleL, v: vehLabel },
+      { k: t.dateL, v: s.date || t.none },
+      { k: t.timeL, v: s.time || t.none },
+      { k: t.paxL, v: paxLabel }
+    ];
+    if (s.flight.trim()) tripRows.push({ k: t.flightL, v: s.flight });
+
+    const routeRows = [{ k: t.pickupL, v: s.pickup || t.none }];
+    s.stops.forEach((st, i) => { if (st.trim()) routeRows.push({ k: t.stopLabel + " " + (i + 1), v: st }); });
+    routeRows.push({ k: t.dropoffL, v: s.dropoff || t.none });
+
+    const contactRows = [
+      { k: t.nameL, v: s.name || t.none },
+      { k: t.phoneL, v: s.phone || t.none },
+      { k: t.emailL, v: s.email || t.none }
+    ];
+    if (s.notes.trim()) contactRows.push({ k: t.notesL, v: s.notes });
+
+    const payRows = [{ k: t.gPay, v: s.pay === "now" ? t.payNowT : t.payLaterT }];
+
+    const reviewGroups = [
+      { title: t.gTrip, rows: tripRows, onEdit: () => this.goToStep(1) },
+      { title: t.gRoute, rows: routeRows, onEdit: () => this.goToStep(2) },
+      { title: t.gContact, rows: contactRows, onEdit: () => this.goToStep(3) },
+      { title: t.gPay, rows: payRows, onEdit: () => this.goToStep(4) }
+    ];
+
+    const priceRows = t.prices.map((p) => ({ k: p[0], v: p[1] }));
+    const trustItems = t.trust.map((v) => ({ v }));
+
+    const showNav = s.step > 0 || !auto;
+    const isStep5 = s.step === 5;
+
+    return {
+      t, rootStyle, stepAnim,
+      notSubmitted: !s.submitted, submitted: s.submitted,
+      stepNum: s.step + 1, stepName: t.stepNames[s.step],
+      progressPct: ((s.step + 1) / 6 * 100) + "%",
+      isStep0: s.step === 0, isStep1: s.step === 1, isStep2: s.step === 2,
+      isStep3: s.step === 3, isStep4: s.step === 4, isStep5,
+      labelStyle, inputStyleBase, inputStylePad, selectStyle, chevStyle, errTextStyle,
+      enStyle: langBtn(s.lang === "en"), esStyle: langBtn(s.lang === "es"),
+      setEn: () => this.setLang("en"), setEs: () => this.setLang("es"),
+      services, paxOpts, vehicles, stopItems, f,
+      addStop: () => this.addStop(),
+      payLater: () => this.selectPay("later"), payNow: () => this.selectPay("now"),
+      isPayLater: s.pay === "later", isPayNow: s.pay === "now",
+      payLaterStyle: payCard(s.pay === "later"), payNowStyle: payCard(s.pay === "now"),
+      reviewGroups, priceRows, trustItems,
+      showNav, showBack: s.step > 0,
+      primaryLabel: isStep5 ? t.send : t.next,
+      primaryAction: isStep5 ? () => this.submit() : () => this.next(),
+      back: () => this.back(),
+      resetAll: () => this.resetAll()
+    };
+  }
+}
+</script>
+</body>
+</html>
