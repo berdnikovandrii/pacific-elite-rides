@@ -93,7 +93,33 @@
             </div>
             <div class="wiz-field">
               <label class="wiz-label" id="lTime">Pickup Time *</label>
-              <input type="time" id="rideTime" class="wiz-input" onchange="WIZ.state.time=this.value;WIZ.clearErr('time',this)">
+              <div style="display:flex;gap:8px">
+                <div class="wiz-select-wrap" style="flex:1">
+                  <select id="rideHour" class="wiz-input" onchange="WIZ.syncTime()">
+                    <option value="">HH</option>
+                    <option>1</option><option>2</option><option>3</option><option>4</option>
+                    <option>5</option><option>6</option><option>7</option><option>8</option>
+                    <option>9</option><option>10</option><option>11</option><option>12</option>
+                  </select>
+                  <span class="wiz-chev">&#9662;</span>
+                </div>
+                <div class="wiz-select-wrap" style="flex:1">
+                  <select id="rideMin" class="wiz-input" onchange="WIZ.syncTime()">
+                    <option value="">MM</option>
+                    <option value="00">00</option><option value="15">15</option>
+                    <option value="30">30</option><option value="45">45</option>
+                  </select>
+                  <span class="wiz-chev">&#9662;</span>
+                </div>
+                <div class="wiz-select-wrap" style="flex:1">
+                  <select id="rideAmPm" class="wiz-input" onchange="WIZ.syncTime()">
+                    <option value="">AM/PM</option>
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                  </select>
+                  <span class="wiz-chev">&#9662;</span>
+                </div>
+              </div>
               <div class="wiz-err-msg" id="err-time"></div>
             </div>
           </div>
@@ -569,7 +595,16 @@ window.WIZ = {
 
     var s = this.state;
     if (el('rideDate'))   { el('rideDate').value = s.date; el('rideDate').min = new Date().toISOString().split('T')[0]; }
-    if (el('rideTime'))   el('rideTime').value   = s.time;
+    // Restore time selects
+    if (s.time) {
+      var parts = s.time.split(' '); // "10:30 AM"
+      if (parts.length === 2) {
+        var hm = parts[0].split(':');
+        if (el('rideHour'))  el('rideHour').value  = hm[0] || '';
+        if (el('rideMin'))   el('rideMin').value   = hm[1] || '';
+        if (el('rideAmPm'))  el('rideAmPm').value  = parts[1] || '';
+      }
+    }
     if (el('passengers')) el('passengers').value = s.passengers;
     if (el('vehicle'))    el('vehicle').value    = s.vehicle;
     if (el('flight'))     el('flight').value     = s.flight;
@@ -740,6 +775,21 @@ window.WIZ = {
     this.renderStops(DICT[this.state.lang]);
   },
 
+  /* sync time from 3 selects */
+  syncTime: function() {
+    var h = el('rideHour')  ? el('rideHour').value  : '';
+    var m = el('rideMin')   ? el('rideMin').value   : '';
+    var p = el('rideAmPm')  ? el('rideAmPm').value  : '';
+    if (h && m && p) {
+      this.state.time = h + ':' + m + ' ' + p;
+      this.clearErr('time', null);
+      var errEl = el('err-time');
+      if (errEl) errEl.style.display = 'none';
+    } else {
+      this.state.time = '';
+    }
+  },
+
   /* payment */
   selectPay: function(mode) {
     this.state.pay = mode;
@@ -820,6 +870,22 @@ window.WIZ = {
 
   next: function() {
     var step = this.state.step;
+    // Sync DOM → state before validating (catches values set without events firing)
+    if (step === 1) {
+      var dateEl = el('rideDate');
+      if (dateEl && dateEl.value) this.state.date = dateEl.value;
+      this.syncTime();
+    }
+    if (step === 2) {
+      var pu = el('pickup');   if (pu  && pu.value)  this.state.pickup  = pu.value;
+      var dr = el('dropoff');  if (dr  && dr.value)  this.state.dropoff = dr.value;
+    }
+    if (step === 3) {
+      var n = el('clientName');  if (n && n.value)  this.state.name  = n.value;
+      var p = el('clientPhone'); if (p && p.value)  this.state.phone = p.value;
+      var e = el('clientEmail'); if (e && e.value)  this.state.email = e.value;
+      var nt = el('notes');      if (nt && nt.value) this.state.notes = nt.value;
+    }
     var errors = this.validateStep(step);
     if (Object.keys(errors).length) {
       this.applyErrors(errors);
