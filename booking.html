@@ -1,458 +1,986 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Book a Ride | Pacific Elite Rides — Luxury Black Car San Diego</title>
-  <meta name="description" content="Book your luxury black car ride in San Diego. Airport transfers, corporate rides, Sprinter van. Instant confirmation within 15 minutes."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/style.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script>
-    window.EMAILJS_PUBLIC  = 'YOUR_EMAILJS_PUBLIC_KEY';
-    window.EMAILJS_SERVICE = 'YOUR_SERVICE_ID';
-    window.EMAILJS_TEMPLATE= 'YOUR_TEMPLATE_ID';
-    window.SQUARE_APP_ID   = 'YOUR_SQUARE_APP_ID';
-    window.SQUARE_LOCATION_ID = 'YOUR_SQUARE_LOCATION_ID';
-    if (typeof emailjs !== 'undefined') emailjs.init(window.EMAILJS_PUBLIC);
-  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Ride — Pacific Elite Rides</title>
+  <meta name="description" content="Book your luxury ride in San Diego. Airport transfers, corporate, Sprinter van, and VIP service.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<!-- ══════════════════════════ MOBILE MENU ══════════════════════════ -->
-<div class="mobile-menu" id="mobileMenu">
-  <nav style="display:flex;flex-direction:column;align-items:center;gap:28px">
-    <a href="index.html" onclick="closeMenu()">Home</a>
-    <a href="services.html" onclick="closeMenu()">Services</a>
-    <a href="about.html" onclick="closeMenu()">About</a>
-    <a href="booking.html" onclick="closeMenu()">Book a Ride</a>
-    <a href="tel:+16193940452" style="color:var(--gold)" onclick="closeMenu()">(619) 394-0452</a>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <button id="mbBtnEn" class="btn btn-sm btn-outline active" onclick="setLang('en')">EN</button>
-      <button id="mbBtnEs" class="btn btn-sm btn-outline" onclick="setLang('es')">ES</button>
-    </div>
-  </nav>
-</div>
-
-<!-- ══════════════════════════ NAVBAR ══════════════════════════ -->
-<header class="navbar" id="navbar">
-  <div class="container">
-    <a href="index.html" class="nav-logo">
-      <span class="nav-logo-name">Pacific Elite Rides</span>
-      <span class="nav-logo-tag">Luxury Transportation</span>
+<!-- ── NAVBAR ─────────────────────────────────────────────── -->
+<nav class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-name">Pacific Elite Rides</span>
+      <span class="brand-tag">Luxury Transportation</span>
     </a>
-    <nav class="nav-links">
-      <a href="index.html" class="nav-link">Home</a>
-      <a href="services.html" class="nav-link">Services</a>
-      <a href="about.html" class="nav-link">About</a>
-      <a href="booking.html" class="nav-link active">Book a Ride</a>
-    </nav>
-    <div class="nav-right">
-      <a href="tel:+16193940452" class="nav-phone">(619) 394-0452</a>
-      <div style="display:flex;gap:6px">
-        <button id="btnEn" class="btn btn-sm btn-outline active" onclick="setLang('en')">EN</button>
-        <button id="btnEs" class="btn btn-sm btn-outline" onclick="setLang('es')">ES</button>
+    <ul class="nav-links">
+      <li><a href="index.html" class="nav-link"><span class="lang-en">Home</span><span class="lang-es">Inicio</span></a></li>
+      <li><a href="services.html" class="nav-link"><span class="lang-en">Services</span><span class="lang-es">Servicios</span></a></li>
+      <li><a href="about.html" class="nav-link"><span class="lang-en">About</span><span class="lang-es">Nosotros</span></a></li>
+      <li><a href="booking.html" class="nav-link active"><span class="lang-en">Book Now</span><span class="lang-es">Reservar</span></a></li>
+    </ul>
+    <div class="nav-actions">
+      <div class="lang-switch">
+        <button id="btnEn" class="lang-btn active" onclick="WIZ.setLang('en')">EN</button>
+        <button id="btnEs" class="lang-btn" onclick="WIZ.setLang('es')">ES</button>
       </div>
-      <button class="hamburger" id="hamburger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
+      <a href="tel:+16195550123" class="btn btn-outline nav-cta"><span class="lang-en">Call Now</span><span class="lang-es">Llamar</span></a>
+    </div>
+    <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <ul class="mobile-nav-links">
+      <li><a href="index.html"><span class="lang-en">Home</span><span class="lang-es">Inicio</span></a></li>
+      <li><a href="services.html"><span class="lang-en">Services</span><span class="lang-es">Servicios</span></a></li>
+      <li><a href="about.html"><span class="lang-en">About</span><span class="lang-es">Nosotros</span></a></li>
+      <li><a href="booking.html"><span class="lang-en">Book Now</span><span class="lang-es">Reservar</span></a></li>
+    </ul>
+    <div class="mobile-lang">
+      <button id="mbBtnEn" class="lang-btn active" onclick="WIZ.setLang('en')">EN</button>
+      <button id="mbBtnEs" class="lang-btn" onclick="WIZ.setLang('es')">ES</button>
     </div>
   </div>
-</header>
+</nav>
 
-<!-- ══════════════════════════ BOOKING LAYOUT ══════════════════════════ -->
-<section class="booking-page">
-  <div class="container">
-    <div class="booking-layout">
+<!-- ── WIZARD PAGE ─────────────────────────────────────────── -->
+<div class="wiz-page">
+  <div class="wiz-outer">
 
-      <!-- LEFT: FORM -->
-      <div class="booking-form-col">
-        <div class="booking-form-header">
-          <div class="label">
-            <span class="lang-en">Reservation</span>
-            <span class="lang-es">Reservación</span>
-          </div>
-          <h1 class="heading-lg" style="margin-top:12px">
-            <span class="lang-en">Book Your <em class="gold">Ride</em></span>
-            <span class="lang-es">Reserva Tu <em class="gold">Viaje</em></span>
-          </h1>
-          <p class="body-sm" style="margin-top:8px;opacity:.7">
-            <span class="lang-en">Fill in the details below. We confirm within 15 minutes — day or night.</span>
-            <span class="lang-es">Completa los detalles a continuación. Confirmamos en 15 minutos — día o noche.</span>
-          </p>
+    <!-- Brand bar -->
+    <div class="wiz-brand-bar">
+      <a href="index.html" class="wiz-logo">
+        <span class="wiz-logo-name">Pacific Elite Rides</span>
+        <span class="wiz-logo-tag">Luxury Transportation · San Diego</span>
+      </a>
+      <div class="wiz-lang-btns">
+        <button id="wizBtnEn" class="wiz-lang-btn active" onclick="WIZ.setLang('en')">EN</button>
+        <button id="wizBtnEs" class="wiz-lang-btn" onclick="WIZ.setLang('es')">ES</button>
+      </div>
+    </div>
+
+    <!-- Wizard card -->
+    <div class="wiz-card" id="wizCard">
+
+      <!-- Header (progress) -->
+      <div class="wiz-header" id="wizHeader">
+        <div class="wiz-eyebrow">
+          <span class="wiz-eyebrow-label" id="wizEyebrow">Book a Ride</span>
+          <span class="wiz-step-caption" id="wizCaption">Step 1 of 6 · Service</span>
         </div>
+        <div class="wiz-progress-track">
+          <div class="wiz-progress-fill" id="wizBar" style="width:16.67%"></div>
+        </div>
+      </div>
 
-        <div id="formToast" class="toast" style="display:none"></div>
+      <!-- Step panels -->
+      <div class="wiz-content" id="wizBody">
 
-        <form id="rideForm" novalidate>
-
-          <!-- TRIP DETAILS -->
-          <div class="form-section-title">
-            <span class="lang-en">Trip Details</span>
-            <span class="lang-es">Detalles del Viaje</span>
+        <!-- STEP 0: Service -->
+        <section class="wiz-step" id="step0">
+          <p class="wiz-title" id="s0title">What can we help with?</p>
+          <p class="wiz-sub" id="s0sub">Select a service to get started</p>
+          <div class="svc-grid" id="svcGrid"></div>
+          <div class="wiz-nav" id="s0nav" style="display:none">
+            <button class="wiz-primary" onclick="WIZ.next()" id="s0Cont">Continue</button>
           </div>
+        </section>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="serviceType">
-                <span class="lang-en">Service Type *</span>
-                <span class="lang-es">Tipo de Servicio *</span>
-              </label>
-              <select class="form-ctrl" id="serviceType" required>
-                <option value="" data-en="Select service…" data-es="Seleccionar servicio…">Select service…</option>
-                <option value="Airport Transfer" data-en="Airport Transfer (SAN/LAX/ONT)" data-es="Traslado Aeropuerto (SAN/LAX/ONT)">Airport Transfer (SAN/LAX/ONT)</option>
-                <option value="Corporate Ride" data-en="Corporate Ride" data-es="Viaje Corporativo">Corporate Ride</option>
-                <option value="Hourly Charter" data-en="Hourly Charter" data-es="Alquiler por Horas">Hourly Charter</option>
-                <option value="Sprinter Van" data-en="Sprinter Van (Groups)" data-es="Sprinter Van (Grupos)">Sprinter Van (Groups)</option>
-                <option value="Special Event" data-en="Special Event / VIP" data-es="Evento Especial / VIP">Special Event / VIP</option>
-                <option value="Other" data-en="Other (describe in notes)" data-es="Otro (describir en notas)">Other (describe in notes)</option>
-              </select>
+        <!-- STEP 1: Trip details -->
+        <section class="wiz-step" id="step1" style="display:none">
+          <p class="wiz-title" id="s1title">Trip Details</p>
+          <p class="wiz-sub" id="s1sub">When are you travelling?</p>
+          <div class="wiz-grid-2">
+            <div class="wiz-field">
+              <label class="wiz-label" id="lDate">Date *</label>
+              <input type="date" id="rideDate" class="wiz-input" onchange="WIZ.state.date=this.value;WIZ.clearErr('date',this)">
+              <div class="wiz-err-msg" id="err-date"></div>
             </div>
-            <div class="form-group">
-              <label class="form-label" for="vehicle">
-                <span class="lang-en">Vehicle Preference</span>
-                <span class="lang-es">Preferencia de Vehículo</span>
-              </label>
-              <select class="form-ctrl" id="vehicle">
-                <option value="Any" data-en="Any available" data-es="Cualquier disponible">Any available</option>
-                <option value="Suburban" data-en="Chevrolet Suburban" data-es="Chevrolet Suburban">Chevrolet Suburban</option>
-                <option value="Escalade" data-en="Cadillac Escalade" data-es="Cadillac Escalade">Cadillac Escalade</option>
-                <option value="Sprinter" data-en="Mercedes Sprinter" data-es="Mercedes Sprinter">Mercedes Sprinter</option>
-                <option value="Limo" data-en="Stretch Limousine" data-es="Limusina">Stretch Limousine</option>
-              </select>
+            <div class="wiz-field">
+              <label class="wiz-label" id="lTime">Pickup Time *</label>
+              <input type="time" id="rideTime" class="wiz-input" onchange="WIZ.state.time=this.value;WIZ.clearErr('time',this)">
+              <div class="wiz-err-msg" id="err-time"></div>
             </div>
           </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="rideDate">
-                <span class="lang-en">Date *</span>
-                <span class="lang-es">Fecha *</span>
-              </label>
-              <input type="date" class="form-ctrl" id="rideDate" required/>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="rideTime">
-                <span class="lang-en">Pickup Time *</span>
-                <span class="lang-es">Hora de Recogida *</span>
-              </label>
-              <input type="time" class="form-ctrl" id="rideTime" required/>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="passengers">
-                <span class="lang-en">Passengers</span>
-                <span class="lang-es">Pasajeros</span>
-              </label>
-              <select class="form-ctrl" id="passengers">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7-10" data-en="7–10 (Sprinter)" data-es="7–10 (Sprinter)">7–10 (Sprinter)</option>
-                <option value="11-14" data-en="11–14 (Sprinter)" data-es="11–14 (Sprinter)">11–14 (Sprinter)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="flight">
-                <span class="lang-en">Flight Number <span style="opacity:.6">(if airport)</span></span>
-                <span class="lang-es">Número de Vuelo <span style="opacity:.6">(si aeropuerto)</span></span>
-              </label>
-              <input type="text" class="form-ctrl" id="flight" placeholder="e.g. WN 1234"/>
-            </div>
-          </div>
-
-          <!-- ROUTE -->
-          <div class="form-section-title">
-            <span class="lang-en">Route</span>
-            <span class="lang-es">Ruta</span>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="pickup">
-              <span class="lang-en">Pickup Address *</span>
-              <span class="lang-es">Dirección de Recogida *</span>
-            </label>
-            <div class="addr-wrap">
-              <svg class="addr-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 00-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 00-8-8z"/></svg>
-              <input type="text" class="form-ctrl" id="pickup" required
-                placeholder="Enter pickup address…" autocomplete="off"/>
-            </div>
-          </div>
-
-          <div class="stops-section">
-            <div id="stopsList"></div>
-            <button type="button" class="add-stop-btn" id="addStop">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              <span class="lang-en">Add stop</span>
-              <span class="lang-es">Agregar parada</span>
-            </button>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="dropoff">
-              <span class="lang-en">Drop-off Address *</span>
-              <span class="lang-es">Dirección de Destino *</span>
-            </label>
-            <div class="addr-wrap">
-              <svg class="addr-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <input type="text" class="form-ctrl" id="dropoff" required
-                placeholder="Enter drop-off address…" autocomplete="off"/>
-            </div>
-          </div>
-
-          <!-- CONTACT -->
-          <div class="form-section-title">
-            <span class="lang-en">Your Information</span>
-            <span class="lang-es">Tu Información</span>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="clientName">
-                <span class="lang-en">Full Name *</span>
-                <span class="lang-es">Nombre Completo *</span>
-              </label>
-              <input type="text" class="form-ctrl" id="clientName" required
-                placeholder="John Smith"/>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="clientPhone">
-                <span class="lang-en">Phone *</span>
-                <span class="lang-es">Teléfono *</span>
-              </label>
-              <input type="tel" class="form-ctrl" id="clientPhone" required
-                placeholder="(619) 000-0000"/>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="clientEmail">
-              <span class="lang-en">Email *</span>
-              <span class="lang-es">Correo Electrónico *</span>
-            </label>
-            <input type="email" class="form-ctrl" id="clientEmail" required
-              placeholder="you@example.com"/>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="notes">
-              <span class="lang-en">Special Requests</span>
-              <span class="lang-es">Solicitudes Especiales</span>
-            </label>
-            <textarea class="form-ctrl" id="notes" rows="3"
-              placeholder="Baby seat, luggage details, specific route, event type…"></textarea>
-          </div>
-
-          <!-- PAYMENT -->
-          <div class="form-section-title">
-            <span class="lang-en">Payment</span>
-            <span class="lang-es">Pago</span>
-          </div>
-
-          <div class="pay-toggle">
-            <button type="button" class="pay-btn active" id="payLater" onclick="selectPay('later')">
-              <div class="pay-btn-icon">💬</div>
-              <div>
-                <div class="pay-btn-title"><span class="lang-en">Pay Later</span><span class="lang-es">Pagar Después</span></div>
-                <div class="pay-btn-sub"><span class="lang-en">Cash, Zelle, or card on the day</span><span class="lang-es">Efectivo, Zelle o tarjeta el día</span></div>
+          <div class="wiz-grid-2">
+            <div class="wiz-field">
+              <label class="wiz-label" id="lPax">Passengers</label>
+              <div class="wiz-select-wrap">
+                <select id="passengers" class="wiz-input" onchange="WIZ.state.passengers=this.value">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8+">8+</option>
+                </select>
+                <span class="wiz-chev">&#9662;</span>
               </div>
-            </button>
-            <button type="button" class="pay-btn" id="payNow" onclick="selectPay('now')">
-              <div class="pay-btn-icon">💳</div>
-              <div>
-                <div class="pay-btn-title"><span class="lang-en">Pay Now</span><span class="lang-es">Pagar Ahora</span></div>
-                <div class="pay-btn-sub"><span class="lang-en">Secure card payment online</span><span class="lang-es">Pago seguro con tarjeta</span></div>
-              </div>
-            </button>
-          </div>
-
-          <div id="sqWrap" style="display:none;margin-top:16px">
-            <div class="sq-card-label">
-              <span class="lang-en">Card Details</span>
-              <span class="lang-es">Datos de la Tarjeta</span>
             </div>
-            <div id="sq-card" class="sq-card-field"></div>
+            <div class="wiz-field">
+              <label class="wiz-label" id="lVehicle">Vehicle Preference</label>
+              <div class="wiz-select-wrap">
+                <select id="vehicle" class="wiz-input" onchange="WIZ.state.vehicle=this.value">
+                  <option value="Any" data-en="Any Available" data-es="Cualquier vehículo">Any Available</option>
+                  <option value="Escalade" data-en="Cadillac Escalade" data-es="Cadillac Escalade">Cadillac Escalade</option>
+                  <option value="Suburban" data-en="Chevrolet Suburban" data-es="Chevrolet Suburban">Chevrolet Suburban</option>
+                  <option value="Sprinter" data-en="Mercedes Sprinter" data-es="Mercedes Sprinter">Mercedes Sprinter</option>
+                  <option value="Limo" data-en="Stretch Limousine" data-es="Limusina">Stretch Limousine</option>
+                </select>
+                <span class="wiz-chev">&#9662;</span>
+              </div>
+            </div>
+          </div>
+          <div class="wiz-field" id="flightWrap">
+            <label class="wiz-label" id="lFlight">Flight Number <span style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+            <input type="text" id="flight" class="wiz-input" placeholder="e.g. UA 1234" oninput="WIZ.state.flight=this.value">
+          </div>
+          <div class="wiz-nav">
+            <button class="wiz-back" onclick="WIZ.back()" id="s1back">&#8592; Back</button>
+            <button class="wiz-primary" onclick="WIZ.next()" id="s1Cont">Continue</button>
+          </div>
+        </section>
+
+        <!-- STEP 2: Route -->
+        <section class="wiz-step" id="step2" style="display:none">
+          <p class="wiz-title" id="s2title">Your Route</p>
+          <p class="wiz-sub" id="s2sub">Enter pickup and drop-off locations</p>
+
+          <div class="wiz-field">
+            <label class="wiz-label" id="lPickup">Pickup Address *</label>
+            <div class="wiz-addr-wrap">
+              <span class="wiz-dot pickup"></span>
+              <input type="text" id="pickup" class="wiz-input addr-pad" placeholder="Airport, hotel, or address"
+                oninput="WIZ.state.pickup=this.value" onchange="WIZ.clearErr('pickup',this)">
+            </div>
+            <div class="wiz-err-msg" id="err-pickup"></div>
           </div>
 
-          <button type="submit" class="btn btn-primary btn-full btn-xl" id="submitBtn" style="margin-top:24px">
-            <span class="lang-en">Send Booking Request →</span>
-            <span class="lang-es">Enviar Solicitud de Reserva →</span>
+          <div id="stopsContainer"></div>
+
+          <button class="wiz-add-stop-btn" id="addStopBtn" onclick="WIZ.addStop()">
+            <span style="font-size:19px;line-height:1">+</span>
+            <span id="addStopLabel">Add a stop</span>
           </button>
 
-          <p class="form-note">
-            <span class="lang-en">We confirm within 15 minutes. No charge until confirmed.</span>
-            <span class="lang-es">Confirmamos en 15 minutos. Sin cobro hasta confirmar.</span>
-          </p>
-        </form>
-      </div>
-
-      <!-- RIGHT: SIDEBAR INFO -->
-      <aside class="booking-sidebar">
-
-        <!-- Quick contact -->
-        <div class="sidebar-card">
-          <div class="sidebar-card-title">
-            <span class="lang-en">Prefer to Call?</span>
-            <span class="lang-es">¿Prefieres Llamar?</span>
+          <div class="wiz-field">
+            <label class="wiz-label" id="lDropoff">Drop-off Address *</label>
+            <div class="wiz-addr-wrap">
+              <span class="wiz-dot dropoff"></span>
+              <input type="text" id="dropoff" class="wiz-input addr-pad" placeholder="Final destination"
+                oninput="WIZ.state.dropoff=this.value" onchange="WIZ.clearErr('dropoff',this)">
+            </div>
+            <div class="wiz-err-msg" id="err-dropoff"></div>
           </div>
-          <a href="tel:+16193940452" class="sidebar-phone-link">(619) 394-0452</a>
-          <p class="sidebar-note">
-            <span class="lang-en">Available 24/7. We pick up — no voicemail.</span>
-            <span class="lang-es">Disponibles 24/7. Contestamos — sin buzón de voz.</span>
-          </p>
-          <a href="https://wa.me/16193940452" target="_blank" rel="noopener" class="btn btn-outline btn-full" style="margin-top:12px">
-            <span class="lang-en">WhatsApp Us</span>
-            <span class="lang-es">Escríbenos por WhatsApp</span>
-          </a>
-        </div>
 
-        <!-- Pricing summary -->
-        <div class="sidebar-card">
-          <div class="sidebar-card-title">
-            <span class="lang-en">Pricing at a Glance</span>
-            <span class="lang-es">Precios Rápidos</span>
+          <div class="wiz-nav">
+            <button class="wiz-back" onclick="WIZ.back()" id="s2back">&#8592; Back</button>
+            <button class="wiz-primary" onclick="WIZ.next()" id="s2Cont">Continue</button>
           </div>
-          <div class="sidebar-price-list">
-            <div class="sidebar-price-row">
-              <span><span class="lang-en">Airport Transfer</span><span class="lang-es">Traslado Aeropuerto</span></span>
-              <span class="sidebar-price-amt">$80</span>
+        </section>
+
+        <!-- STEP 3: Contact -->
+        <section class="wiz-step" id="step3" style="display:none">
+          <p class="wiz-title" id="s3title">Contact Info</p>
+          <p class="wiz-sub" id="s3sub">How should we reach you?</p>
+
+          <div class="wiz-field">
+            <label class="wiz-label" id="lName">Full Name *</label>
+            <input type="text" id="clientName" class="wiz-input" placeholder="Jane Smith"
+              oninput="WIZ.state.name=this.value" onchange="WIZ.clearErr('name',this)">
+            <div class="wiz-err-msg" id="err-name"></div>
+          </div>
+          <div class="wiz-grid-2">
+            <div class="wiz-field">
+              <label class="wiz-label" id="lPhone">Phone *</label>
+              <input type="tel" id="clientPhone" class="wiz-input" placeholder="+1 (619) 555-0000"
+                oninput="WIZ.state.phone=this.value" onchange="WIZ.clearErr('phone',this)">
+              <div class="wiz-err-msg" id="err-phone"></div>
             </div>
-            <div class="sidebar-price-row">
-              <span><span class="lang-en">Hourly Charter</span><span class="lang-es">Alquiler por Hora</span></span>
-              <span class="sidebar-price-amt">$90/hr</span>
-            </div>
-            <div class="sidebar-price-row">
-              <span><span class="lang-en">Sprinter Van</span><span class="lang-es">Sprinter Van</span></span>
-              <span class="sidebar-price-amt">$90/hr</span>
-            </div>
-            <div class="sidebar-price-row">
-              <span><span class="lang-en">Special Events</span><span class="lang-es">Eventos Especiales</span></span>
-              <span class="sidebar-price-amt"><span class="lang-en">Quote</span><span class="lang-es">Cotización</span></span>
+            <div class="wiz-field">
+              <label class="wiz-label" id="lEmail">Email *</label>
+              <input type="email" id="clientEmail" class="wiz-input" placeholder="jane@example.com"
+                oninput="WIZ.state.email=this.value" onchange="WIZ.clearErr('email',this)">
+              <div class="wiz-err-msg" id="err-email"></div>
             </div>
           </div>
-          <p class="sidebar-note" style="margin-top:12px">
-            <span class="lang-en">All prices include fuel, tolls & gratuity. No hidden fees.</span>
-            <span class="lang-es">Todos los precios incluyen combustible, peajes y propina. Sin cargos ocultos.</span>
-          </p>
-        </div>
+          <div class="wiz-field">
+            <label class="wiz-label" id="lNotes">Special Requests <span style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+            <textarea id="notes" class="wiz-input" rows="3" style="resize:vertical"
+              placeholder="Child seat, meet &amp; greet, extra luggage&#8230;"
+              oninput="WIZ.state.notes=this.value"></textarea>
+          </div>
 
-        <!-- Trust signals -->
-        <div class="sidebar-card">
-          <div class="sidebar-trust-items">
-            <div class="sidebar-trust-item">
-              <span class="sidebar-trust-icon">✓</span>
-              <span><span class="lang-en">Confirm within 15 min</span><span class="lang-es">Confirmamos en 15 min</span></span>
-            </div>
-            <div class="sidebar-trust-item">
-              <span class="sidebar-trust-icon">✓</span>
-              <span><span class="lang-en">Flight tracking included</span><span class="lang-es">Seguimiento de vuelo incluido</span></span>
-            </div>
-            <div class="sidebar-trust-item">
-              <span class="sidebar-trust-icon">✓</span>
-              <span><span class="lang-en">Licensed & insured</span><span class="lang-es">Licenciado y asegurado</span></span>
-            </div>
-            <div class="sidebar-trust-item">
-              <span class="sidebar-trust-icon">✓</span>
-              <span><span class="lang-en">4.9★ rated drivers</span><span class="lang-es">Conductores 4.9★</span></span>
-            </div>
-            <div class="sidebar-trust-item">
-              <span class="sidebar-trust-icon">✓</span>
-              <span><span class="lang-en">Available 24/7</span><span class="lang-es">Disponible 24/7</span></span>
+          <div class="wiz-nav">
+            <button class="wiz-back" onclick="WIZ.back()" id="s3back">&#8592; Back</button>
+            <button class="wiz-primary" onclick="WIZ.next()" id="s3Cont">Continue</button>
+          </div>
+        </section>
+
+        <!-- STEP 4: Payment -->
+        <section class="wiz-step" id="step4" style="display:none">
+          <p class="wiz-title" id="s4title">Payment</p>
+          <p class="wiz-sub" id="s4sub">Choose how you'd like to pay</p>
+
+          <div class="wiz-pay-grid">
+            <button class="wiz-pay-card selected" id="payLater" onclick="WIZ.selectPay('later')">
+              <div class="wiz-pay-header">
+                <span class="wiz-pay-title" id="payLaterTitle">Pay Later</span>
+                <span class="wiz-pay-check" id="payLaterCheck">&#10003;</span>
+              </div>
+              <p class="wiz-pay-sub" id="payLaterSub">We'll invoice you after confirmation. No card needed now.</p>
+            </button>
+            <button class="wiz-pay-card" id="payNow" onclick="WIZ.selectPay('now')">
+              <div class="wiz-pay-header">
+                <span class="wiz-pay-title" id="payNowTitle">Pay Now</span>
+                <span class="wiz-pay-check" id="payNowCheck" style="display:none">&#10003;</span>
+              </div>
+              <p class="wiz-pay-sub" id="payNowSub">Secure card payment via Square. Ride confirmed instantly.</p>
+            </button>
+          </div>
+
+          <div class="wiz-sq-slot" id="sqSlot" style="display:none">
+            <div id="card-container" class="wiz-sq-field">
+              <span style="opacity:.45;font-size:13px">Card field loading&#8230;</span>
             </div>
           </div>
-        </div>
 
-        <!-- Fleet mini preview -->
-        <div class="sidebar-fleet">
-          <div class="sidebar-card-title" style="padding:0 0 12px">
-            <span class="lang-en">Our Fleet</span>
-            <span class="lang-es">Nuestra Flota</span>
+          <div class="wiz-nav">
+            <button class="wiz-back" onclick="WIZ.back()" id="s4back">&#8592; Back</button>
+            <button class="wiz-primary" onclick="WIZ.next()" id="s4Cont">Continue</button>
           </div>
-          <img src="img-escalade.png" alt="Cadillac Escalade" loading="lazy" style="width:100%;border-radius:4px;object-fit:cover;max-height:180px"/>
-          <img src="img-sprinter.png" alt="Mercedes Sprinter" loading="lazy" style="width:100%;border-radius:4px;object-fit:cover;max-height:180px;margin-top:8px"/>
-        </div>
+        </section>
 
-      </aside>
-    </div>
-  </div>
-</section>
+        <!-- STEP 5: Review -->
+        <section class="wiz-step" id="step5" style="display:none">
+          <p class="wiz-title" id="s5title">Review &amp; Confirm</p>
+          <p class="wiz-sub" id="s5sub">Everything look good?</p>
 
-<!-- ══════════════════════════ FOOTER ══════════════════════════ -->
-<footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div>
-        <a href="index.html" class="nav-logo">
-          <span class="nav-logo-name">Pacific Elite Rides</span>
-          <span class="nav-logo-tag" style="margin-top:4px">New Beginning Transport LLC</span>
-        </a>
-        <p class="footer-brand-desc">
-          <span class="lang-en">San Diego's premier luxury black car service.</span>
-          <span class="lang-es">El servicio premium de auto negro en San Diego.</span>
+          <div class="wiz-review-groups" id="reviewGroups"></div>
+
+          <div class="wiz-review-sidebar">
+            <div class="wiz-info-card" id="pricingCard">
+              <p class="wiz-info-title" id="pricingTitle">Starting Rates</p>
+              <div id="pricingRows"></div>
+            </div>
+            <div class="wiz-info-card">
+              <p class="wiz-info-title" id="trustTitle">What to expect</p>
+              <ul id="trustList" style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px"></ul>
+            </div>
+          </div>
+
+          <div class="wiz-nav">
+            <button class="wiz-back" onclick="WIZ.back()" id="s5back">&#8592; Back</button>
+            <button class="wiz-primary" onclick="WIZ.submit()" id="s5Send">Send Booking Request &#8594;</button>
+          </div>
+          <p class="wiz-form-note" id="wizNote">We'll confirm within 15 minutes. No charge until confirmed.</p>
+        </section>
+
+      </div><!-- /wiz-content -->
+
+      <!-- Success screen -->
+      <div class="wiz-success" id="wizSuccess" style="display:none">
+        <div class="wiz-success-icon">&#10003;</div>
+        <h2 class="wiz-title" id="succTitle">Request Received</h2>
+        <p class="wiz-sub" style="max-width:390px;margin:0 auto 28px" id="succMsg">
+          Thank you &#8212; we'll confirm your ride within 15 minutes. Check your email for details.
         </p>
-        <div class="footer-socials">
-          <a href="https://www.instagram.com/pacificeliterides" target="_blank" rel="noopener" class="social-btn" aria-label="Instagram">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-          </a>
-          <a href="tel:+16193940452" class="social-btn" aria-label="Phone">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.92a16 16 0 006.17 6.17l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-          </a>
-        </div>
+        <button class="wiz-primary" style="max-width:260px;margin:0 auto;display:block" onclick="WIZ.resetAll()" id="succBtn">
+          Book Another Ride
+        </button>
       </div>
-      <div>
-        <div class="footer-col-title"><span class="lang-en">Services</span><span class="lang-es">Servicios</span></div>
-        <div class="footer-links">
-          <a href="services.html#airport"><span class="lang-en">Airport Transfers</span><span class="lang-es">Traslados Aeropuerto</span></a>
-          <a href="services.html#corporate"><span class="lang-en">Corporate Rides</span><span class="lang-es">Viajes Corporativos</span></a>
-          <a href="services.html#sprinter"><span class="lang-en">Sprinter Van</span><span class="lang-es">Sprinter</span></a>
-          <a href="services.html#events"><span class="lang-en">Special Events</span><span class="lang-es">Eventos Especiales</span></a>
-        </div>
-      </div>
-      <div>
-        <div class="footer-col-title"><span class="lang-en">Company</span><span class="lang-es">Empresa</span></div>
-        <div class="footer-links">
-          <a href="about.html"><span class="lang-en">About Us</span><span class="lang-es">Sobre Nosotros</span></a>
-          <a href="index.html#faq">FAQ</a>
-          <a href="index.html#reviews"><span class="lang-en">Reviews</span><span class="lang-es">Reseñas</span></a>
-        </div>
-      </div>
-      <div>
-        <div class="footer-col-title"><span class="lang-en">Contact</span><span class="lang-es">Contacto</span></div>
-        <div class="footer-contact-list">
-          <div class="footer-contact-row">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.92a16 16 0 006.17 6.17l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-            <a href="tel:+16193940452">(619) 394-0452</a>
-          </div>
-          <div class="footer-contact-row">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            <a href="mailto:berdnikov@pacificeliterides.com">berdnikov@pacificeliterides.com</a>
-          </div>
-          <div class="footer-contact-row">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span>24 / 7 Available</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span class="footer-copy">© 2025 Pacific Elite Rides · New Beginning Transport LLC.</span>
-      <div class="footer-legal">
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
-      </div>
-    </div>
-  </div>
-</footer>
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_PLACES_API_KEY&libraries=places&callback=initPlaces"></script>
-<script src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
+    </div><!-- /wiz-card -->
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- External SDKs (replace YOUR_* placeholders with real keys) -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<script src="https://web.squarecdn.com/v1/square.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="js/main.js"></script>
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- WIZ STATE MACHINE                                          -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<script>
+(function () {
+'use strict';
+
+/* ── DICT (EN + ES) ─────────────────────────────────────────── */
+var DICT = {
+  en: {
+    eyebrow: 'Book a Ride',
+    stepNames: ['Service','Trip','Route','Contact','Payment','Review'],
+    stepOf: function(n, total) { return 'Step ' + n + ' of ' + total; },
+    back: '← Back',
+    cont: 'Continue',
+    send: 'Send Booking Request →',
+    s0title: 'What can we help with?',
+    s0sub:   'Select a service to get started',
+    s1title: 'Trip Details',
+    s1sub:   'When are you travelling?',
+    s2title: 'Your Route',
+    s2sub:   'Enter pickup and drop-off locations',
+    s3title: 'Contact Info',
+    s3sub:   'How should we reach you?',
+    s4title: 'Payment',
+    s4sub:   "Choose how you'd like to pay",
+    s5title: 'Review & Confirm',
+    s5sub:   'Everything look good?',
+    lDate:    'Date *',
+    lTime:    'Pickup Time *',
+    lPax:     'Passengers',
+    lVehicle: 'Vehicle Preference',
+    lFlight:  'Flight Number',
+    lPickup:  'Pickup Address *',
+    lDropoff: 'Drop-off Address *',
+    addStop:  'Add a stop',
+    lName:    'Full Name *',
+    lPhone:   'Phone *',
+    lEmail:   'Email *',
+    lNotes:   'Special Requests',
+    payLaterTitle: 'Pay Later',
+    payLaterSub:   "We'll invoice you after confirmation. No card needed now.",
+    payNowTitle:   'Pay Now',
+    payNowSub:     'Secure card payment via Square. Ride confirmed instantly.',
+    reviewGroups: ['Service','Trip Details','Route','Contact','Payment'],
+    reviewKeys: {
+      service:'Service', date:'Date', time:'Time', passengers:'Passengers',
+      vehicle:'Vehicle', flight:'Flight', pickup:'Pickup', stops:'Stop',
+      dropoff:'Drop-off', name:'Name', phone:'Phone', email:'Email',
+      notes:'Requests', pay:'Payment'
+    },
+    payLaterLabel: 'Invoice after confirmation',
+    payNowLabel:   'Credit card (Square)',
+    pricingTitle: 'Starting Rates',
+    trustTitle:   'What to expect',
+    prices: [
+      ['Airport Transfer','From $80'],
+      ['Hourly Charter',  '$90 / hr'],
+      ['Sprinter Van',    '$90 / hr'],
+      ['Special Events',  'Quote']
+    ],
+    trust: [
+      'Confirmed within 15 min',
+      'Flight tracking included',
+      'Licensed & insured',
+      '4.9 ★ rated drivers',
+      'Available 24 / 7'
+    ],
+    wizNote: "We'll confirm within 15 minutes. No charge until confirmed.",
+    succTitle: 'Request Received',
+    succMsg:   "Thank you — we'll confirm your ride within 15 minutes. Check your email for details.",
+    succBtn:   'Book Another Ride',
+    errReq:   'Required',
+    errEmail: 'Enter a valid email',
+    flightOptional: '(optional)',
+    notesOptional:  '(optional)',
+    services: [
+      { id:'Airport Transfer', t:'Airport Transfer',   d:'SAN · LAX · ONT — flat rate from $80' },
+      { id:'Corporate Ride',   t:'Corporate Ride',      d:'Meetings, roadshows, client pickups' },
+      { id:'Hourly Charter',   t:'Hourly Charter',      d:'$90/hr — as-directed, you set the pace' },
+      { id:'Sprinter Van',     t:'Sprinter Van',        d:'Groups of 7–14, luggage friendly' },
+      { id:'Special Event',    t:'Special Event / VIP', d:'Weddings, nights out, premieres' },
+      { id:'Other',            t:'Something Else',      d:'Tell us in the notes' }
+    ]
+  },
+  es: {
+    eyebrow: 'Reservar un viaje',
+    stepNames: ['Servicio','Viaje','Ruta','Contacto','Pago','Revisión'],
+    stepOf: function(n, total) { return 'Paso ' + n + ' de ' + total; },
+    back: '← Atrás',
+    cont: 'Continuar',
+    send: 'Enviar solicitud →',
+    s0title: '¿Cómo podemos ayudarte?',
+    s0sub:   'Selecciona un servicio para comenzar',
+    s1title: 'Detalles del viaje',
+    s1sub:   '¿Cuándo viajas?',
+    s2title: 'Tu ruta',
+    s2sub:   'Ingresa las direcciones de recogida y destino',
+    s3title: 'Datos de contacto',
+    s3sub:   '¿Cómo podemos contactarte?',
+    s4title: 'Pago',
+    s4sub:   '¿Cómo deseas pagar?',
+    s5title: 'Revisión y confirmación',
+    s5sub:   '¿Todo se ve bien?',
+    lDate:    'Fecha *',
+    lTime:    'Hora de recogida *',
+    lPax:     'Pasajeros',
+    lVehicle: 'Preferencia de vehículo',
+    lFlight:  'Número de vuelo',
+    lPickup:  'Dirección de recogida *',
+    lDropoff: 'Dirección de destino *',
+    addStop:  'Agregar parada',
+    lName:    'Nombre completo *',
+    lPhone:   'Teléfono *',
+    lEmail:   'Correo electrónico *',
+    lNotes:   'Solicitudes especiales',
+    payLaterTitle: 'Pagar después',
+    payLaterSub:   'Te facturaremos tras la confirmación. No se necesita tarjeta ahora.',
+    payNowTitle:   'Pagar ahora',
+    payNowSub:     'Pago seguro con tarjeta vía Square. Viaje confirmado de inmediato.',
+    reviewGroups: ['Servicio','Detalles del viaje','Ruta','Contacto','Pago'],
+    reviewKeys: {
+      service:'Servicio', date:'Fecha', time:'Hora', passengers:'Pasajeros',
+      vehicle:'Vehículo', flight:'Vuelo', pickup:'Recogida', stops:'Parada',
+      dropoff:'Destino', name:'Nombre', phone:'Teléfono', email:'Correo',
+      notes:'Solicitudes', pay:'Pago'
+    },
+    payLaterLabel: 'Factura tras confirmación',
+    payNowLabel:   'Tarjeta de crédito (Square)',
+    pricingTitle: 'Tarifas desde',
+    trustTitle:   'Qué esperar',
+    prices: [
+      ['Traslado al aeropuerto','Desde $80'],
+      ['Alquiler por hora',     '$90 / hr'],
+      ['Van Sprinter',          '$90 / hr'],
+      ['Eventos especiales',    'Cotización']
+    ],
+    trust: [
+      'Confirmado en 15 min',
+      'Seguimiento de vuelo incluido',
+      'Con licencia y seguro',
+      'Conductores con 4.9 ★',
+      'Disponible 24 / 7'
+    ],
+    wizNote: 'Confirmamos en 15 minutos. Sin cargo hasta confirmar.',
+    succTitle: 'Solicitud recibida',
+    succMsg:   'Gracias — confirmaremos tu viaje en 15 minutos. Revisa tu correo.',
+    succBtn:   'Reservar otro viaje',
+    errReq:   'Requerido',
+    errEmail: 'Correo inválido',
+    flightOptional: '(opcional)',
+    notesOptional:  '(opcional)',
+    services: [
+      { id:'Airport Transfer', t:'Traslado al aeropuerto', d:'SAN · LAX · ONT — tarifa fija desde $80' },
+      { id:'Corporate Ride',   t:'Viaje corporativo',      d:'Reuniones, presentaciones, clientes' },
+      { id:'Hourly Charter',   t:'Alquiler por hora',      d:'$90/hr — tú marcas el ritmo' },
+      { id:'Sprinter Van',     t:'Van Sprinter',           d:'Grupos de 7–14, amigable con equipaje' },
+      { id:'Special Event',    t:'Evento especial / VIP',  d:'Bodas, salidas, estrenos' },
+      { id:'Other',            t:'Algo más',          d:'Cuéntanos en las notas' }
+    ]
+  }
+};
+
+/* ── helpers ─────────────────────────────────────────────── */
+function todayISO() {
+  var d = new Date();
+  return d.toISOString().split('T')[0];
+}
+function el(id) { return document.getElementById(id); }
+function txt(id, v) { var e = el(id); if (e) e.textContent = v; }
+
+/* ── WIZ ─────────────────────────────────────────────────── */
+window.WIZ = {
+  state: {
+    lang:        localStorage.getItem('per_lang') || 'en',
+    step:        0,
+    submitted:   false,
+    serviceType: '',
+    vehicle:     'Any',
+    date:        todayISO(),
+    time:        '',
+    passengers:  '1',
+    flight:      '',
+    pickup:      '',
+    stops:       [],
+    dropoff:     '',
+    name:        '',
+    phone:       '',
+    email:       '',
+    notes:       '',
+    pay:         'later',
+    errors:      {}
+  },
+
+  /* language */
+  setLang: function(lang) {
+    this.state.lang = lang;
+    localStorage.setItem('per_lang', lang);
+    var isEs = lang === 'es';
+    ['btnEn','mbBtnEn','wizBtnEn'].forEach(function(id) {
+      var b = el(id); if (b) b.classList.toggle('active', !isEs);
+    });
+    ['btnEs','mbBtnEs','wizBtnEs'].forEach(function(id) {
+      var b = el(id); if (b) b.classList.toggle('active', isEs);
+    });
+    document.querySelectorAll('.lang-en').forEach(function(e) { e.style.display = isEs ? 'none' : 'inline'; });
+    document.querySelectorAll('.lang-es').forEach(function(e) { e.style.display = isEs ? 'inline' : 'none'; });
+    this.render(this.state.step);
+  },
+
+  /* render */
+  render: function(step) {
+    var d = DICT[this.state.lang];
+    for (var i = 0; i < 6; i++) {
+      var se = el('step' + i);
+      if (se) se.style.display = 'none';
+    }
+    el('wizSuccess').style.display = 'none';
+    el('wizHeader').style.display  = 'block';
+    el('wizBody').style.display    = 'block';
+
+    var target = el('step' + step);
+    if (target) {
+      target.style.display = 'block';
+      target.style.animation = 'none';
+      target.offsetHeight;
+      target.style.animation = '';
+    }
+
+    var pct = ((step + 1) / 6 * 100).toFixed(2);
+    el('wizBar').style.width = pct + '%';
+    txt('wizEyebrow', d.eyebrow);
+    txt('wizCaption', d.stepOf(step + 1, 6) + ' · ' + d.stepNames[step]);
+
+    var fn = 'renderStep' + step;
+    if (typeof this[fn] === 'function') this[fn](d);
+  },
+
+  renderStep0: function(d) {
+    txt('s0title', d.s0title);
+    txt('s0sub',   d.s0sub);
+    var grid = el('svcGrid');
+    grid.innerHTML = '';
+    var self = this;
+    d.services.forEach(function(svc) {
+      var btn = document.createElement('button');
+      btn.className = 'svc-card' + (self.state.serviceType === svc.id ? ' selected' : '');
+      btn.innerHTML =
+        '<div class="svc-card-header">' +
+          '<span class="svc-card-name">' + svc.t + '</span>' +
+          '<span class="svc-card-check">' + (self.state.serviceType === svc.id ? '✓' : '') + '</span>' +
+        '</div>' +
+        '<span class="svc-card-desc">' + svc.d + '</span>';
+      btn.onclick = function() { self.pickService(svc.id); };
+      grid.appendChild(btn);
+    });
+    var nav = el('s0nav');
+    if (nav) nav.style.display = this.state.serviceType ? 'flex' : 'none';
+    if (el('s0Cont')) txt('s0Cont', d.cont);
+  },
+
+  renderStep1: function(d) {
+    txt('s1title', d.s1title); txt('s1sub', d.s1sub);
+    txt('lDate', d.lDate); txt('lTime', d.lTime);
+    txt('lPax', d.lPax); txt('lVehicle', d.lVehicle);
+    var lf = el('lFlight');
+    if (lf) lf.innerHTML = d.lFlight + ' <span style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0">' + d.flightOptional + '</span>';
+    txt('s1back', d.back); txt('s1Cont', d.cont);
+
+    var s = this.state;
+    if (el('rideDate'))   el('rideDate').value   = s.date;
+    if (el('rideTime'))   el('rideTime').value   = s.time;
+    if (el('passengers')) el('passengers').value = s.passengers;
+    if (el('vehicle'))    el('vehicle').value    = s.vehicle;
+    if (el('flight'))     el('flight').value     = s.flight;
+
+    document.querySelectorAll('option[data-en]').forEach(function(opt) {
+      opt.textContent = s.lang === 'es' ? opt.dataset.es : opt.dataset.en;
+    });
+
+    var fw = el('flightWrap');
+    if (fw) fw.style.display = s.serviceType === 'Airport Transfer' ? 'block' : 'none';
+    this.showErrors(['date','time']);
+  },
+
+  renderStep2: function(d) {
+    txt('s2title', d.s2title); txt('s2sub', d.s2sub);
+    txt('lPickup', d.lPickup); txt('lDropoff', d.lDropoff);
+    txt('addStopLabel', d.addStop);
+    txt('s2back', d.back); txt('s2Cont', d.cont);
+    if (el('pickup'))  el('pickup').value  = this.state.pickup;
+    if (el('dropoff')) el('dropoff').value = this.state.dropoff;
+    this.renderStops(d);
+    this.showErrors(['pickup','dropoff']);
+  },
+
+  renderStep3: function(d) {
+    txt('s3title', d.s3title); txt('s3sub', d.s3sub);
+    txt('lName', d.lName); txt('lPhone', d.lPhone); txt('lEmail', d.lEmail);
+    var ln = el('lNotes');
+    if (ln) ln.innerHTML = d.lNotes + ' <span style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0">' + d.notesOptional + '</span>';
+    txt('s3back', d.back); txt('s3Cont', d.cont);
+    var s = this.state;
+    if (el('clientName'))  el('clientName').value  = s.name;
+    if (el('clientPhone')) el('clientPhone').value = s.phone;
+    if (el('clientEmail')) el('clientEmail').value = s.email;
+    if (el('notes'))       el('notes').value       = s.notes;
+    this.showErrors(['name','phone','email']);
+  },
+
+  renderStep4: function(d) {
+    txt('s4title', d.s4title); txt('s4sub', d.s4sub);
+    txt('payLaterTitle', d.payLaterTitle); txt('payLaterSub', d.payLaterSub);
+    txt('payNowTitle',   d.payNowTitle);   txt('payNowSub',   d.payNowSub);
+    txt('s4back', d.back); txt('s4Cont', d.cont);
+    var isNow = this.state.pay === 'now';
+    el('payLater').classList.toggle('selected', !isNow);
+    el('payNow').classList.toggle('selected', isNow);
+    el('payLaterCheck').style.display = isNow ? 'none'   : 'inline';
+    el('payNowCheck').style.display   = isNow ? 'inline' : 'none';
+    el('sqSlot').style.display        = isNow ? 'block'  : 'none';
+  },
+
+  renderStep5: function(d) {
+    txt('s5title', d.s5title); txt('s5sub', d.s5sub);
+    txt('s5back', d.back); txt('s5Send', d.send);
+    txt('wizNote', d.wizNote);
+    txt('pricingTitle', d.pricingTitle);
+    txt('trustTitle',   d.trustTitle);
+
+    var s = this.state;
+    var k = d.reviewKeys;
+    var groups = [
+      { title: d.reviewGroups[0], step: 0,
+        rows: [{ key: k.service, val: s.serviceType }] },
+      { title: d.reviewGroups[1], step: 1,
+        rows: [
+          { key: k.date,       val: s.date },
+          { key: k.time,       val: s.time },
+          { key: k.passengers, val: s.passengers },
+          { key: k.vehicle,    val: s.vehicle }
+        ].concat(s.flight ? [{ key: k.flight, val: s.flight }] : [])
+      },
+      { title: d.reviewGroups[2], step: 2,
+        rows: [{ key: k.pickup, val: s.pickup }]
+          .concat(s.stops.map(function(st, i) {
+            return { key: k.stops + (s.stops.length > 1 ? ' ' + (i+1) : ''), val: st };
+          }))
+          .concat([{ key: k.dropoff, val: s.dropoff }])
+      },
+      { title: d.reviewGroups[3], step: 3,
+        rows: [
+          { key: k.name,  val: s.name  },
+          { key: k.phone, val: s.phone },
+          { key: k.email, val: s.email }
+        ].concat(s.notes ? [{ key: k.notes, val: s.notes }] : [])
+      },
+      { title: d.reviewGroups[4], step: 4,
+        rows: [{ key: k.pay, val: s.pay === 'now' ? d.payNowLabel : d.payLaterLabel }]
+      }
+    ];
+
+    var container = el('reviewGroups');
+    container.innerHTML = '';
+    groups.forEach(function(g) {
+      var div = document.createElement('div');
+      div.className = 'wiz-review-group';
+      var rowsHtml = g.rows.map(function(r) {
+        return '<div class="wiz-review-row">' +
+          '<span class="wiz-review-key">' + r.key + '</span>' +
+          '<span class="wiz-review-val">' + (r.val || '—') + '</span>' +
+          '</div>';
+      }).join('');
+      div.innerHTML =
+        '<div class="wiz-review-group-header">' +
+          '<span class="wiz-review-group-title">' + g.title + '</span>' +
+          '<button class="wiz-edit-btn" onclick="WIZ.goToStep(' + g.step + ')">Edit</button>' +
+        '</div>' +
+        '<div class="wiz-review-rows">' + rowsHtml + '</div>';
+      container.appendChild(div);
+    });
+
+    el('pricingRows').innerHTML = d.prices.map(function(p) {
+      return '<div class="wiz-review-row" style="margin-bottom:7px">' +
+        '<span class="wiz-review-key">' + p[0] + '</span>' +
+        '<span class="wiz-review-val">' + p[1] + '</span></div>';
+    }).join('');
+
+    el('trustList').innerHTML = d.trust.map(function(item) {
+      return '<li style="display:flex;align-items:baseline;gap:8px;font-size:13px;color:rgba(243,239,230,.7)">' +
+        '<span style="color:var(--gold);flex:none">✓</span>' + item + '</li>';
+    }).join('');
+  },
+
+  /* stops */
+  renderStops: function(d) {
+    var container = el('stopsContainer');
+    container.innerHTML = '';
+    var self = this;
+    this.state.stops.forEach(function(val, i) {
+      var row = document.createElement('div');
+      row.className = 'wiz-stop-row';
+      var safe = val.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+      row.innerHTML =
+        '<div class="wiz-addr-wrap" style="flex:1">' +
+          '<span class="wiz-dot stop"></span>' +
+          '<input type="text" class="wiz-input addr-pad" placeholder="Stop address"' +
+            ' value="' + safe + '"' +
+            ' oninput="WIZ.updateStop(' + i + ',this.value)"' +
+            ' id="stop' + i + '">' +
+        '</div>' +
+        '<button class="wiz-stop-remove" onclick="WIZ.removeStop(' + i + ')" aria-label="Remove stop">&times;</button>';
+      container.appendChild(row);
+      if (window.google && google.maps && google.maps.places) {
+        var inp = el('stop' + i);
+        if (inp) {
+          var ac = new google.maps.places.Autocomplete(inp, { componentRestrictions: { country: 'us' } });
+          (function(idx, autocomplete) {
+            autocomplete.addListener('place_changed', function() {
+              var p = autocomplete.getPlace();
+              WIZ.updateStop(idx, p.formatted_address || el('stop' + idx).value);
+            });
+          })(i, ac);
+        }
+      }
+    });
+  },
+
+  addStop: function() {
+    this.state.stops.push('');
+    this.renderStops(DICT[this.state.lang]);
+  },
+
+  updateStop: function(i, val) {
+    this.state.stops[i] = val;
+  },
+
+  removeStop: function(i) {
+    this.state.stops.splice(i, 1);
+    this.renderStops(DICT[this.state.lang]);
+  },
+
+  /* payment */
+  selectPay: function(mode) {
+    this.state.pay = mode;
+    this.renderStep4(DICT[this.state.lang]);
+  },
+
+  /* navigation */
+  pickService: function(id) {
+    this.state.serviceType = id;
+    this.renderStep0(DICT[this.state.lang]);
+    var self = this;
+    setTimeout(function() { self.next(); }, 170);
+  },
+
+  validateStep: function(step) {
+    var e = {};
+    var s = this.state;
+    if (step === 1) {
+      if (!s.date) e.date = 'req';
+      if (!s.time) e.time = 'req';
+    }
+    if (step === 2) {
+      if (!s.pickup.trim())  e.pickup  = 'req';
+      if (!s.dropoff.trim()) e.dropoff = 'req';
+    }
+    if (step === 3) {
+      if (!s.name.trim())  e.name  = 'req';
+      if (!s.phone.trim()) e.phone = 'req';
+      if (!s.email.trim()) e.email = 'req';
+      else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s.email)) e.email = 'email';
+    }
+    return e;
+  },
+
+  applyErrors: function(errors) {
+    this.state.errors = errors;
+    var d = DICT[this.state.lang];
+    var fieldMap = { name:'clientName', phone:'clientPhone', email:'clientEmail' };
+    Object.keys(errors).forEach(function(field) {
+      var inputId = fieldMap[field] || field;
+      var input = el(inputId);
+      if (input) input.classList.add('err');
+      var errEl = el('err-' + field);
+      if (errEl) {
+        errEl.textContent = errors[field] === 'email' ? d.errEmail : d.errReq;
+        errEl.style.display = 'block';
+      }
+    });
+  },
+
+  showErrors: function(fields) {
+    var self = this;
+    var d = DICT[this.state.lang];
+    var fieldMap = { name:'clientName', phone:'clientPhone', email:'clientEmail' };
+    fields.forEach(function(field) {
+      var errType = self.state.errors[field];
+      var inputId = fieldMap[field] || field;
+      var input = el(inputId);
+      var errEl = el('err-' + field);
+      if (input) input.classList.toggle('err', !!errType);
+      if (errEl) {
+        if (errType) {
+          errEl.textContent = errType === 'email' ? d.errEmail : d.errReq;
+          errEl.style.display = 'block';
+        } else {
+          errEl.style.display = 'none';
+        }
+      }
+    });
+  },
+
+  clearErr: function(field, input) {
+    delete this.state.errors[field];
+    if (input) input.classList.remove('err');
+    var errEl = el('err-' + field);
+    if (errEl) errEl.style.display = 'none';
+  },
+
+  next: function() {
+    var step = this.state.step;
+    var errors = this.validateStep(step);
+    if (Object.keys(errors).length) {
+      this.applyErrors(errors);
+      return;
+    }
+    this.state.errors = {};
+    if (step < 5) {
+      this.state.step = step + 1;
+      this.render(this.state.step);
+    }
+  },
+
+  back: function() {
+    if (this.state.step > 0) {
+      this.state.step--;
+      this.render(this.state.step);
+    }
+  },
+
+  goToStep: function(n) {
+    this.state.step = n;
+    this.render(n);
+  },
+
+  submit: function() {
+    var self = this;
+    for (var i = 1; i <= 3; i++) {
+      var errors = this.validateStep(i);
+      if (Object.keys(errors).length) {
+        this.applyErrors(errors);
+        this.goToStep(i);
+        return;
+      }
+    }
+
+    var btn = el('s5Send');
+    if (btn) btn.classList.add('loading');
+
+    var s = this.state;
+    var route = [s.pickup].concat(s.stops).concat([s.dropoff]).join(' → ');
+
+    emailjs.send('YOUR_EMAILJS_SERVICE', 'YOUR_EMAILJS_TEMPLATE', {
+      serviceType:  s.serviceType,
+      vehicle:      s.vehicle,
+      rideDate:     s.date,
+      rideTime:     s.time,
+      passengers:   s.passengers,
+      flight:       s.flight,
+      route:        route,
+      clientName:   s.name,
+      clientPhone:  s.phone,
+      clientEmail:  s.email,
+      notes:        s.notes,
+      payment:      s.pay
+    }).then(function() {
+      self.showSuccess();
+    }).catch(function(err) {
+      console.error('EmailJS error:', err);
+      if (btn) btn.classList.remove('loading');
+      alert('There was an error sending your request. Please call us directly.');
+    });
+  },
+
+  showSuccess: function() {
+    var d = DICT[this.state.lang];
+    el('wizHeader').style.display  = 'none';
+    el('wizBody').style.display    = 'none';
+    el('wizSuccess').style.display = 'block';
+    txt('succTitle', d.succTitle);
+    txt('succMsg',   d.succMsg);
+    txt('succBtn',   d.succBtn);
+    this.state.submitted = true;
+  },
+
+  resetAll: function() {
+    this.state = {
+      lang:        this.state.lang,
+      step:        0,
+      submitted:   false,
+      serviceType: '',
+      vehicle:     'Any',
+      date:        todayISO(),
+      time:        '',
+      passengers:  '1',
+      flight:      '',
+      pickup:      '',
+      stops:       [],
+      dropoff:     '',
+      name:        '',
+      phone:       '',
+      email:       '',
+      notes:       '',
+      pay:         'later',
+      errors:      {}
+    };
+    this.render(0);
+  }
+};
+
+/* ── Init ────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof emailjs !== 'undefined') {
+    emailjs.init('YOUR_EMAILJS_PUBLIC_KEY');
+  }
+  var lang = localStorage.getItem('per_lang') || 'en';
+  WIZ.state.lang = lang;
+  WIZ.render(0);
+
+  var isEs = lang === 'es';
+  ['btnEn','mbBtnEn','wizBtnEn'].forEach(function(id) {
+    var b = el(id); if (b) b.classList.toggle('active', !isEs);
+  });
+  ['btnEs','mbBtnEs','wizBtnEs'].forEach(function(id) {
+    var b = el(id); if (b) b.classList.toggle('active', isEs);
+  });
+  document.querySelectorAll('.lang-en').forEach(function(e) { e.style.display = isEs ? 'none' : 'inline'; });
+  document.querySelectorAll('.lang-es').forEach(function(e) { e.style.display = isEs ? 'inline' : 'none'; });
+
+  /* Mobile menu toggle (main.js handles it but may skip if no #rideForm) */
+  var menuBtn = el('mobileMenuBtn');
+  var mobileMenu = el('mobileMenu');
+  if (menuBtn && mobileMenu) {
+    menuBtn.addEventListener('click', function() {
+      mobileMenu.classList.toggle('open');
+      menuBtn.classList.toggle('open');
+    });
+  }
+});
+
+/* ── Google Places callback ──────────────────────────────── */
+window.initPlaces = function() {
+  ['pickup','dropoff'].forEach(function(id) {
+    var input = el(id);
+    if (!input) return;
+    var ac = new google.maps.places.Autocomplete(input, { componentRestrictions: { country: 'us' } });
+    ac.addListener('place_changed', function() {
+      var p = ac.getPlace();
+      var val = p.formatted_address || input.value;
+      if (id === 'pickup')  { WIZ.state.pickup  = val; WIZ.clearErr('pickup', input); }
+      if (id === 'dropoff') { WIZ.state.dropoff = val; WIZ.clearErr('dropoff', input); }
+    });
+  });
+};
+
+})();
+</script>
+
+<!-- Google Places (add your API key) -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_API_KEY&libraries=places&callback=initPlaces" async defer></script>
+
 </body>
 </html>
