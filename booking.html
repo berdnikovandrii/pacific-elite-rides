@@ -148,9 +148,9 @@
               <label class="wiz-label" id="lVehicle">Vehicle Preference</label>
               <div class="wiz-select-wrap">
                 <select id="vehicle" class="wiz-input" onchange="WIZ.state.vehicle=this.value">
+                  <option value="Suburban" data-en="Chevrolet Suburban (recommended)" data-es="Chevrolet Suburban (recomendado)">Chevrolet Suburban (recommended)</option>
                   <option value="Any" data-en="Any Available" data-es="Cualquier vehículo">Any Available</option>
-                  <option value="Escalade" data-en="Cadillac Escalade" data-es="Cadillac Escalade">Cadillac Escalade</option>
-                  <option value="Suburban" data-en="Chevrolet Suburban" data-es="Chevrolet Suburban">Chevrolet Suburban</option>
+                  <option value="Escalade" data-en="Cadillac Escalade (limited)" data-es="Cadillac Escalade (limitado)">Cadillac Escalade (limited)</option>
                   <option value="Sprinter" data-en="Mercedes Sprinter" data-es="Mercedes Sprinter">Mercedes Sprinter</option>
                   <option value="Limo" data-en="Stretch Limousine" data-es="Limusina">Stretch Limousine</option>
                 </select>
@@ -384,9 +384,9 @@ var DICT = {
     pricingTitle: 'Starting Rates',
     trustTitle:   'What to expect',
     prices: [
-      ['Airport Transfer','From $80'],
+      ['Airport Transfer','From $60'],
       ['Hourly Charter',  '$90 / hr'],
-      ['Sprinter Van',    '$90 / hr'],
+      ['Sprinter Van',    '$160 / hr · 4h min'],
       ['Special Events',  'Quote']
     ],
     trust: [
@@ -405,7 +405,7 @@ var DICT = {
     flightOptional: '(optional)',
     notesOptional:  '(optional)',
     services: [
-      { id:'Airport Transfer', t:'Airport Transfer',   d:'SAN · LAX · ONT — flat rate from $80' },
+      { id:'Airport Transfer', t:'Airport Transfer',   d:'SAN · LAX — flat rate from $60' },
       { id:'Corporate Ride',   t:'Corporate Ride',      d:'Meetings, roadshows, client pickups' },
       { id:'Hourly Charter',   t:'Hourly Charter',      d:'$90/hr — as-directed, you set the pace' },
       { id:'Sprinter Van',     t:'Sprinter Van',        d:'Groups of 7–14, luggage friendly' },
@@ -460,9 +460,9 @@ var DICT = {
     pricingTitle: 'Tarifas desde',
     trustTitle:   'Qué esperar',
     prices: [
-      ['Traslado al aeropuerto','Desde $80'],
+      ['Traslado al aeropuerto','Desde $60'],
       ['Alquiler por hora',     '$90 / hr'],
-      ['Van Sprinter',          '$90 / hr'],
+      ['Van Sprinter',          '$160 / hr · mín. 4h'],
       ['Eventos especiales',    'Cotización']
     ],
     trust: [
@@ -481,7 +481,7 @@ var DICT = {
     flightOptional: '(opcional)',
     notesOptional:  '(opcional)',
     services: [
-      { id:'Airport Transfer', t:'Traslado al aeropuerto', d:'SAN · LAX · ONT — tarifa fija desde $80' },
+      { id:'Airport Transfer', t:'Traslado al aeropuerto', d:'SAN · LAX — tarifa fija desde $60' },
       { id:'Corporate Ride',   t:'Viaje corporativo',      d:'Reuniones, presentaciones, clientes' },
       { id:'Hourly Charter',   t:'Alquiler por hora',      d:'$90/hr — tú marcas el ritmo' },
       { id:'Sprinter Van',     t:'Van Sprinter',           d:'Grupos de 7–14, amigable con equipaje' },
@@ -506,7 +506,7 @@ window.WIZ = {
     step:        0,
     submitted:   false,
     serviceType: '',
-    vehicle:     'Any',
+    vehicle:     'Suburban',
     date:        todayISO(),
     time:        '',
     passengers:  '1',
@@ -970,7 +970,7 @@ window.WIZ = {
       step:        0,
       submitted:   false,
       serviceType: '',
-      vehicle:     'Any',
+      vehicle:     'Suburban',
       date:        todayISO(),
       time:        '',
       passengers:  '1',
