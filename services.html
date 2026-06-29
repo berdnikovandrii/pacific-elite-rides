@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Services | Pacific Elite Rides — Luxury Black Car San Diego</title>
+  <meta name="description" content="Airport transfers, corporate rides, Sprinter van, and VIP event transportation in San Diego. Professional black car service from $80."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- ══════════════════════════ MOBILE MENU ══════════════════════════ -->
+<div class="mobile-menu" id="mobileMenu">
+  <nav style="display:flex;flex-direction:column;align-items:center;gap:28px">
+    <a href="index.html" onclick="closeMenu()">Home</a>
+    <a href="services.html" onclick="closeMenu()">Services</a>
+    <a href="about.html" onclick="closeMenu()">About</a>
+    <a href="booking.html" onclick="closeMenu()">Book a Ride</a>
+    <a href="tel:+16193940452" style="color:var(--gold)" onclick="closeMenu()">(619) 394-0452</a>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button id="mbBtnEn" class="btn btn-sm btn-outline active" onclick="setLang('en')">EN</button>
+      <button id="mbBtnEs" class="btn btn-sm btn-outline" onclick="setLang('es')">ES</button>
+    </div>
+  </nav>
+</div>
+
+<!-- ══════════════════════════ NAVBAR ══════════════════════════ -->
+<header class="navbar" id="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-name">Pacific Elite Rides</span>
+      <span class="nav-logo-tag">Luxury Transportation</span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="services.html" class="nav-link active">Services</a>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="booking.html" class="nav-link">Book a Ride</a>
+    </nav>
+    <div class="nav-right">
+      <a href="tel:+16193940452" class="nav-phone">(619) 394-0452</a>
+      <div style="display:flex;gap:6px">
+        <button id="btnEn" class="btn btn-sm btn-outline active" onclick="setLang('en')">EN</button>
+        <button id="btnEs" class="btn btn-sm btn-outline" onclick="setLang('es')">ES</button>
+      </div>
+      <a href="booking.html" class="btn btn-primary btn-sm">
+        <span class="lang-en">Book Now</span>
+        <span class="lang-es">Reservar</span>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════ PAGE HERO ══════════════════════════ -->
+<section class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="container">
+    <div class="page-hero-inner reveal">
+      <div class="label" style="justify-content:center">
+        <span class="lang-en">What We Offer</span>
+        <span class="lang-es">Lo Que Ofrecemos</span>
+      </div>
+      <h1 class="heading-xl" style="margin-top:16px">
+        <span class="lang-en">Our <em class="gold">Services</em></span>
+        <span class="lang-es">Nuestros <em class="gold">Servicios</em></span>
+      </h1>
+      <p class="body-lg" style="max-width:520px;margin:16px auto 0">
+        <span class="lang-en">Premium transportation solutions for every need — airport, corporate, group, and VIP.</span>
+        <span class="lang-es">Soluciones de transporte premium para cada necesidad — aeropuerto, corporativo, grupos y VIP.</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ SERVICE DETAIL: AIRPORT ══════════════════════════ -->
+<section class="section" id="airport">
+  <div class="container">
+    <div class="service-detail-grid reveal">
+      <div class="service-detail-content">
+        <div class="label">
+          <span class="lang-en">Most Popular</span>
+          <span class="lang-es">Más Popular</span>
+        </div>
+        <h2 class="heading-lg" style="margin-top:16px">
+          <span class="lang-en">Airport <em class="gold">Transfers</em></span>
+          <span class="lang-es"><em class="gold">Traslados</em> al Aeropuerto</span>
+        </h2>
+        <div class="divider" style="margin:24px 0"></div>
+        <p class="body-md">
+          <span class="lang-en">We cover SAN (San Diego), LAX (Los Angeles), and ONT (Ontario). Your driver monitors your flight in real time — if it's delayed, your pickup adjusts automatically. No stress, no scrambling.</span>
+          <span class="lang-es">Cubrimos SAN (San Diego), LAX (Los Ángeles) y ONT (Ontario). Tu conductor monitorea tu vuelo en tiempo real — si se retrasa, tu recogida se ajusta automáticamente. Sin estrés.</span>
+        </p>
+        <div class="service-detail-features">
+          <div class="sdf-row"><span class="sdf-check">✓</span><div><strong><span class="lang-en">Flight Tracking</span><span class="lang-es">Seguimiento de Vuelo</span></strong> — <span class="lang-en">we watch your flight 24/7, no call needed</span><span class="lang-es">vigilamos tu vuelo 24/7, sin necesidad de llamar</span></div></div>
+          <div class="sdf-row"><span class="sdf-check">✓</span><div><strong><span class="lang-en">Meet & Greet</span><span class="lang-es">Bienvenida en Terminal</span></strong> — <span class="lang-en">driver waits inside with a name sign at baggage claim</span><span class="lang-es">conductor espera dentro con letrero en reclamo de equipaje</span></div></div>
+          <div class="sdf-row"><span class="sdf-check">✓</span><div><strong><span class="lang-en">60-Minute Free Wait</span><span class="lang-es">60 Minutos de Espera Gratis</span></strong> — <span class="lang-en">we don't start charging the moment you land</span><span class="lang-es">no cobramos desde el momento en que aterrizas</span></div></div>
+          <div class="sdf-row"><span class="sdf-check">✓</span><div><strong><span class="lang-en">Luggage Handling</span><span class="lang-es">Manejo de Equipaje</span></strong> — <span class="lang-en">driver loads and unloads your bags</span><span class="lang-es">el conductor carga y descarga tu equipaje</span></div></div>
+          <div class="sdf-row"><span class="sdf-check">✓</span><div><strong><span class="lang-en">Black SUV or Escalade</span><span class="lang-es">SUV Negro o Escalade</span></strong> — <span class="lang-en">spotless interior, bottled water, chargers</span><span class="lang-es">interior impecable, agua embotellada, cargadores</span></div></div>
+        </div>
+        <div class="service-detail-price">
+          <span class="sdp-from"><span class="lang-en">From</span><span class="lang-es">Desde</span></span>
+          <span class="sdp-amount">$80</span>
+          <span class="sdp-unit"><span class="lang-en">one-way</span><span class="lang-es">ida</span></span>
+        </div>
+        <a href="booking.html" class="btn btn-primary btn-lg" style="margin-top:28px">
+          <span class="lang-en">Book Airport Transfer</span>
+          <span class="lang-es">Reservar Traslado</span>
+        </a>
+      </div>
+      <div class="service-detail-img">
+        <img src="img-escalade.png" alt="Cadillac Escalade airport transfer San Diego" loading="lazy"/>
+        <div class="service-detail-badge">
+          <div class="sdb-icon">✈</div>
+          <div>
+            <div class="sdb-label"><span class="lang-en">SAN · LAX · ONT</span><span class="lang-es">SAN · LAX · ONT</span></div>
+            <div class="sdb-sub"><span class="lang-en">All Major Airports</span><span class="lang-es">Todos los Aeropuertos</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ SERVICE DETAIL: CORPORATE ══════════════════════════ -->
+<section class="section section-dark" id="corporate">
+  <div class="container">
+    <div class="service-detail-grid service-detail-reverse reveal">
+      <div class="service-detail-img">
+        <img src="img-suburban.png" alt="Black SUV corporate rides San Diego" loading="lazy"/>
+        <div class="service-detail-badge" style="bottom:auto;top:24px;right:-20px">
+          <div class="sdb-icon">💼</div>
+          <div>
+            <div class="sdb-label"><span class="lang-en">Corporate</span><span class="lang-es">Corporativo</span></div>
+            <div class="sdb-sub"><span class="lang-en">Accounts Available</span><span class="lang-es">Cuentas Disponibles</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="service-detail-content">
+        <div class="label">
+          <span class="lang-en">For Executives</span>
+          <span class="lang-es">Para Ejecutivos</span>
+        </div>
+        <h2 class="heading-lg" style="margin-top:16px">
+          <span class="lang-en">Corporate <em class="gold">Rides</em></span>
+          <span class="lang-es">Viajes <em class="gold">Corporativos</em></span>
+        </h2>
+        <div class="divider" style="margin:24px 0"></div>
+        <p class="body-md">
+          <span class="lang-en">Make the right impression from the moment your clients or executives step off the plane. Our fleet is maintained to the highest standard — no off days, no surprises.</span>
+          <span class="lang-es">Da la impresión correcta desde que tus clientes o ejecutivos bajan del avión. Nuestra flota se mantiene al más alto estándar — sin días malos, sin sorpresas.</span>
+        </p>
+        <div class="service-detail-features">
+          <div class="sdf-row"><span class="sdf-check">✓</span><div><strong><span class="lang-en">Roadshows & Client Pickups</span><span class="lang-es">Roadshows y Recogidas</span></strong> — <span class="lang-en">multi-stop days handled with precision</span><span class="lang-es">días de múltiples paradas manejados con precisión</span></div></div>
+          <div class="sdf-row"><span class="sdf-check">✓</span><div><strong><span class="lang-en">Executive SUVs</span><span class="lang-es">SUVs Ejecutivos</span></strong> — <span class="lang-en">Suburban & Escalade, black, immaculate</span><span class="lang-es">Suburban y Escalade, negros, impecables</span></div></div>
+          <div class="sdf-row"><span class="sdf-check">✓</span><div><strong><span class="lang-en">WiFi & Charging</span><span class="lang-es">WiFi y Cargadores</span></strong> — <span class="lang-en">stay productive on the road</span><span class="lang-es">mantente productivo en el camino</span></div></div>
+          <div class="sdf-row"><span class="sdf-check">✓</span><div><strong><span class="lang-en">Monthly Corporate Accounts</span><span class="lang-es">Cuentas Corporativas</span></strong> — <span class="lang-en">consolidated invoicing available</span><span class="lang-es">facturación consolidada disponible</span></div></div>
+        </div>
+        <div class="service-detail-price">
+          <span class="sdp-amount">$90</span>
+          <span class="sdp-unit">/ <span class="lang-en">hour</span><span class="lang-es">hora</span></span>
+        </div>
+        <a href="booking.html" class="btn btn-primary btn-lg" style="margin-top:28px">
+          <span class="lang-en">Book Corporate Ride</span>
+          <span class="lang-es">Reservar Viaje Corporativo</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ SERVICE DETAIL: SPRINTER ══════════════════════════ -->
+<section class="section" id="sprinter">
+  <div class="container">
+    <div class="service-detail-grid reveal">
+      <div class="service-detail-content">
+        <div class="label">
+          <span class="lang-en">Groups up to 14</span>
+          <span class="lang-es">Grupos hasta 14</span>
+        </div>
+        <h2 class="heading-lg" style="margin-top:16px">
+          <span class="lang-en">Sprinter <em class="gold">Van Service</em></span>
+          <span class="lang-es">Servicio de <em class="gold">Sprinter</em></span>
+        </h2>
+        <div class="divider" style="margin:24px 0"></div>
+        <p class="body-md">
+          <span class="lang-en">Our Mercedes Sprinter van handles groups without compromise. Temecula wine tours, corporate retreats, stadium events, airport group transfers — luxury for everyone on board.</span>
+          <span class="lang-es">Nuestro Sprinter maneja grupos sin compromisos. Tours de vinos en Temecula, retiros corporativos, eventos deportivos, traslados grupales al aeropuerto — lujo para todos a bordo.</span>
+        </p>
+        <div class="service-detail-features">
+          <div class="sdf-row"><span class="sdf-check">✓</span><div><strong><span class="lang-en">Up to 14 Passengers</span><span class="lang-es">Hasta 14 Pasajeros</span></strong> — <span class="lang-en">spacious, comfortable seating</span><span class="lang-es">asientos espaciosos y cómodos</span></div></div>
+          <div class="sdf-row"><span class="sdf-check">✓</span><div><strong><span class="lang-en">WiFi, USB & TV Screen</span><span class="lang-es">WiFi, USB y Pantalla</span></strong> — <span class="lang-en">keep the group connected and entertained</span><span class="lang-es">mantén al grupo conectado y entretenido</span></div></div>
+          <div class="sdf-row"><span class="sdf-check">✓</span><div><strong><span class="lang-en">Large Luggage Space</span><span class="lang-es">Gran Espacio de Equipaje</span></strong> — <span class="lang-en">everyone's bags fit, guaranteed</span><span class="lang-es">todas las maletas caben, garantizado</span></div></div>
+          <div class="sdf-row"><span class="sdf-check">✓</span><div><strong><span class="lang-en">Custom Routing</span><span class="lang-es">Ruta Personalizada</span></strong> — <span class="lang-en">multi-stop itineraries, no problem</span><span class="lang-es">itinerarios de múltiples paradas, sin problema</span></div></div>
+          <div class="sdf-row"><span class="sdf-check">✓</span><div><strong><span class="lang-en">Wine & Event Tours</span><span class="lang-es">Tours de Vinos y Eventos</span></strong> — <span class="lang-en">Temecula, Julian, and beyond</span><span class="lang-es">Temecula, Julian y más allá</span></div></div>
+        </div>
+        <div class="service-detail-price">
+          <span class="sdp-amount">$90</span>
+          <span class="sdp-unit">/ <span class="lang-en">hour</span><span class="lang-es">hora</span></span>
+        </div>
+        <a href="booking.html" class="btn btn-primary btn-lg" style="margin-top:28px">
+          <span class="lang-en">Book Sprinter Van</span>
+          <span class="lang-es">Reservar Sprinter</span>
+        </a>
+      </div>
+      <div class="service-detail-img">
+        <img src="img-sprinter.png" alt="Mercedes Sprinter luxury van San Diego" loading="lazy"/>
+        <div class="service-detail-badge">
+          <div class="sdb-icon">👥</div>
+          <div>
+            <div class="sdb-label"><span class="lang-en">Up to 14 people</span><span class="lang-es">Hasta 14 personas</span></div>
+            <div class="sdb-sub"><span class="lang-en">Group transfers</span><span class="lang-es">Traslados grupales</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ SERVICE DETAIL: VIP EVENTS ══════════════════════════ -->
+<section class="section section-dark" id="events">
+  <div class="container">
+    <div class="service-detail-grid service-detail-reverse reveal">
+      <div class="service-detail-img">
+        <img src="img-limo.png" alt="Stretch limousine VIP events San Diego" loading="lazy"/>
+        <div class="service-detail-badge" style="bottom:auto;top:24px;right:-20px">
+          <div class="sdb-icon">⭐</div>
+          <div>
+            <div class="sdb-label">VIP Events</div>
+            <div class="sdb-sub"><span class="lang-en">Custom quotes</span><span class="lang-es">Cotizaciones</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="service-detail-content">
+        <div class="label">VIP</div>
+        <h2 class="heading-lg" style="margin-top:16px">
+          <span class="lang-en">Special Events <em class="gold">& VIP</em></span>
+          <span class="lang-es">Eventos Especiales <em class="gold">& VIP</em></span>
+        </h2>
+        <div class="divider" style="margin:24px 0"></div>
+        <p class="body-md">
+          <span class="lang-en">Weddings. Galas. Private dinners. Championship games. Your entrance defines the evening — we make sure it's unforgettable. Stretch limousines and blacked-out SUVs available.</span>
+          <span class="lang-es">Bodas. Galas. Cenas privadas. Partidos de campeonato. Tu entrada define la noche — nos aseguramos de que sea inolvidable. Limusinas y SUVs disponibles.</span>
+        </p>
+        <div class="service-detail-features">
+          <div class="sdf-row"><span class="sdf-check">✓</span><div><strong><span class="lang-en">Weddings & Galas</span><span class="lang-es">Bodas y Galas</span></strong> — <span class="lang-en">bridal party, guests, and VIP arrivals</span><span class="lang-es">comitiva nupcial, invitados y llegadas VIP</span></div></div>
+          <div class="sdf-row"><span class="sdf-check">✓</span><div><strong><span class="lang-en">Stretch Limousines</span><span class="lang-es">Limusinas</span></strong> — <span class="lang-en">up to 10 passengers, bar, LED lighting</span><span class="lang-es">hasta 10 pasajeros, bar, iluminación LED</span></div></div>
+          <div class="sdf-row"><span class="sdf-check">✓</span><div><strong><span class="lang-en">Stadium & Sports Events</span><span class="lang-es">Eventos Deportivos</span></strong> — <span class="lang-en">Petco Park, Snapdragon Stadium, SoFi</span><span class="lang-es">Petco Park, Snapdragon Stadium, SoFi</span></div></div>
+          <div class="sdf-row"><span class="sdf-check">✓</span><div><strong><span class="lang-en">Custom Packages</span><span class="lang-es">Paquetes Personalizados</span></strong> — <span class="lang-en">hourly, half-day, or full-day rates</span><span class="lang-es">tarifas por hora, medio día o día completo</span></div></div>
+        </div>
+        <div class="service-detail-price">
+          <span class="sdp-from"><span class="lang-en">Custom</span><span class="lang-es">Personalizado</span></span>
+          <span class="sdp-amount" style="font-size:clamp(28px,4vw,42px)"><span class="lang-en">Quote</span><span class="lang-es">Cotización</span></span>
+        </div>
+        <a href="booking.html" class="btn btn-primary btn-lg" style="margin-top:28px">
+          <span class="lang-en">Request VIP Quote</span>
+          <span class="lang-es">Solicitar Cotización VIP</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ COVERAGE MAP TEXT ══════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="section-header section-header-center reveal">
+      <div class="label" style="justify-content:center">
+        <span class="lang-en">Service Area</span>
+        <span class="lang-es">Área de Servicio</span>
+      </div>
+      <h2 class="heading-lg" style="margin-top:16px">
+        <span class="lang-en">We Go <em class="gold">Wherever You Need</em></span>
+        <span class="lang-es">Vamos <em class="gold">Donde Nos Necesites</em></span>
+      </h2>
+      <div class="divider divider-center"></div>
+    </div>
+    <div class="coverage-grid reveal">
+      <div class="coverage-item">
+        <div class="coverage-icon">🏙</div>
+        <div class="coverage-city">San Diego</div>
+        <div class="coverage-note">Downtown, La Jolla, Coronado, Mission Valley</div>
+      </div>
+      <div class="coverage-item">
+        <div class="coverage-icon">✈</div>
+        <div class="coverage-city">SAN Airport</div>
+        <div class="coverage-note"><span class="lang-en">Primary hub — all terminals</span><span class="lang-es">Hub principal — todas las terminales</span></div>
+      </div>
+      <div class="coverage-item">
+        <div class="coverage-icon">🌊</div>
+        <div class="coverage-city">North County</div>
+        <div class="coverage-note">Del Mar, Encinitas, Carlsbad, Oceanside</div>
+      </div>
+      <div class="coverage-item">
+        <div class="coverage-icon">🏡</div>
+        <div class="coverage-city">East County</div>
+        <div class="coverage-note">El Cajon, Santee, La Mesa, Poway</div>
+      </div>
+      <div class="coverage-item">
+        <div class="coverage-icon">🛫</div>
+        <div class="coverage-city">LAX / ONT</div>
+        <div class="coverage-note">Los Angeles & Ontario airport transfers</div>
+      </div>
+      <div class="coverage-item">
+        <div class="coverage-icon">🍷</div>
+        <div class="coverage-city">Temecula</div>
+        <div class="coverage-note"><span class="lang-en">Wine tours & day trips</span><span class="lang-es">Tours de vinos y excursiones</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ CTA BANNER ══════════════════════════ -->
+<section class="cta-banner">
+  <div class="container">
+    <div class="reveal">
+      <h2 class="heading-lg">
+        <span class="lang-en">Ready to <em class="gold">Book?</em></span>
+        <span class="lang-es">¿Listo para <em class="gold">Reservar?</em></span>
+      </h2>
+      <p class="body-lg" style="margin-top:12px;margin-bottom:36px;max-width:440px;margin-left:auto;margin-right:auto">
+        <span class="lang-en">Tell us your details and we confirm within 15 minutes — day or night.</span>
+        <span class="lang-es">Dinos tus detalles y confirmamos en 15 minutos — día o noche.</span>
+      </p>
+      <div class="cta-actions">
+        <a href="booking.html" class="btn btn-primary btn-lg">
+          <span class="lang-en">Book Now →</span>
+          <span class="lang-es">Reservar Ahora →</span>
+        </a>
+        <a href="tel:+16193940452" class="btn btn-outline btn-lg">(619) 394-0452</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ FOOTER ══════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="nav-logo">
+          <span class="nav-logo-name">Pacific Elite Rides</span>
+          <span class="nav-logo-tag" style="margin-top:4px">New Beginning Transport LLC</span>
+        </a>
+        <p class="footer-brand-desc">
+          <span class="lang-en">San Diego's premier luxury black car service.</span>
+          <span class="lang-es">El servicio premium de auto negro en San Diego.</span>
+        </p>
+        <div class="footer-socials">
+          <a href="https://www.instagram.com/pacificeliterides" target="_blank" rel="noopener" class="social-btn" aria-label="Instagram">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="tel:+16193940452" class="social-btn" aria-label="Phone">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.92a16 16 0 006.17 6.17l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title"><span class="lang-en">Services</span><span class="lang-es">Servicios</span></div>
+        <div class="footer-links">
+          <a href="#airport"><span class="lang-en">Airport Transfers</span><span class="lang-es">Traslados Aeropuerto</span></a>
+          <a href="#corporate"><span class="lang-en">Corporate Rides</span><span class="lang-es">Viajes Corporativos</span></a>
+          <a href="#sprinter"><span class="lang-en">Sprinter Van</span><span class="lang-es">Sprinter</span></a>
+          <a href="#events"><span class="lang-en">Special Events</span><span class="lang-es">Eventos Especiales</span></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title"><span class="lang-en">Company</span><span class="lang-es">Empresa</span></div>
+        <div class="footer-links">
+          <a href="about.html"><span class="lang-en">About Us</span><span class="lang-es">Sobre Nosotros</span></a>
+          <a href="booking.html"><span class="lang-en">Book a Ride</span><span class="lang-es">Reservar</span></a>
+          <a href="index.html#faq">FAQ</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title"><span class="lang-en">Contact</span><span class="lang-es">Contacto</span></div>
+        <div class="footer-contact-list">
+          <div class="footer-contact-row">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.92a16 16 0 006.17 6.17l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            <a href="tel:+16193940452">(619) 394-0452</a>
+          </div>
+          <div class="footer-contact-row">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <a href="mailto:berdnikov@pacificeliterides.com">berdnikov@pacificeliterides.com</a>
+          </div>
+          <div class="footer-contact-row">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>24 / 7 Available</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2025 Pacific Elite Rides · New Beginning Transport LLC.</span>
+      <div class="footer-legal">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="float-book">
+  <a href="booking.html">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 00-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 00-8-8z"/></svg>
+    <span class="lang-en">Book a Ride</span>
+    <span class="lang-es">Reservar</span>
+  </a>
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>
