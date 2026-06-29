@@ -12,43 +12,47 @@
 </head>
 <body>
 
+<!-- ── MOBILE MENU ─────────────────────────────────────────── -->
+<div class="mobile-menu" id="mobileMenu">
+  <nav style="display:flex;flex-direction:column;align-items:center;gap:28px">
+    <a href="index.html" onclick="closeMenu()">Home</a>
+    <a href="services.html" onclick="closeMenu()">Services</a>
+    <a href="about.html" onclick="closeMenu()">About</a>
+    <a href="booking.html" onclick="closeMenu()">Book a Ride</a>
+    <a href="tel:+16193940452" style="color:var(--gold)" onclick="closeMenu()">(619) 394-0452</a>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button id="mbBtnEn" class="btn btn-sm btn-outline active" onclick="WIZ.setLang('en')">EN</button>
+      <button id="mbBtnEs" class="btn btn-sm btn-outline" onclick="WIZ.setLang('es')">ES</button>
+    </div>
+  </nav>
+</div>
+
 <!-- ── NAVBAR ─────────────────────────────────────────────── -->
-<nav class="navbar" id="navbar">
-  <div class="container nav-inner">
-    <a href="index.html" class="brand">
-      <span class="brand-name">Pacific Elite Rides</span>
-      <span class="brand-tag">Luxury Transportation</span>
+<header class="navbar" id="navbar">
+  <div class="container">
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-name">Pacific Elite Rides</span>
+      <span class="nav-logo-tag">Luxury Transportation</span>
     </a>
-    <ul class="nav-links">
-      <li><a href="index.html" class="nav-link"><span class="lang-en">Home</span><span class="lang-es">Inicio</span></a></li>
-      <li><a href="services.html" class="nav-link"><span class="lang-en">Services</span><span class="lang-es">Servicios</span></a></li>
-      <li><a href="about.html" class="nav-link"><span class="lang-en">About</span><span class="lang-es">Nosotros</span></a></li>
-      <li><a href="booking.html" class="nav-link active"><span class="lang-en">Book Now</span><span class="lang-es">Reservar</span></a></li>
-    </ul>
-    <div class="nav-actions">
-      <div class="lang-switch">
-        <button id="btnEn" class="lang-btn active" onclick="WIZ.setLang('en')">EN</button>
-        <button id="btnEs" class="lang-btn" onclick="WIZ.setLang('es')">ES</button>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="services.html" class="nav-link">Services</a>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="booking.html" class="nav-link active">Book a Ride</a>
+    </nav>
+    <div class="nav-right">
+      <a href="tel:+16193940452" class="nav-phone">(619) 394-0452</a>
+      <div style="display:flex;gap:6px">
+        <button id="btnEn" class="btn btn-sm btn-outline active" onclick="WIZ.setLang('en')">EN</button>
+        <button id="btnEs" class="btn btn-sm btn-outline" onclick="WIZ.setLang('es')">ES</button>
       </div>
-      <a href="tel:+16193940452" class="btn btn-outline nav-cta"><span class="lang-en">(619) 394-0452</span><span class="lang-es">(619) 394-0452</span></a>
-    </div>
-    <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-  <div class="mobile-menu" id="mobileMenu">
-    <ul class="mobile-nav-links">
-      <li><a href="index.html"><span class="lang-en">Home</span><span class="lang-es">Inicio</span></a></li>
-      <li><a href="services.html"><span class="lang-en">Services</span><span class="lang-es">Servicios</span></a></li>
-      <li><a href="about.html"><span class="lang-en">About</span><span class="lang-es">Nosotros</span></a></li>
-      <li><a href="booking.html"><span class="lang-en">Book Now</span><span class="lang-es">Reservar</span></a></li>
-    </ul>
-    <div class="mobile-lang">
-      <button id="mbBtnEn" class="lang-btn active" onclick="WIZ.setLang('en')">EN</button>
-      <button id="mbBtnEs" class="lang-btn" onclick="WIZ.setLang('es')">ES</button>
+      <a href="booking.html" class="btn btn-primary btn-sm">Book Now</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
-</nav>
+</header>
 
 <!-- ── WIZARD PAGE ─────────────────────────────────────────── -->
 <div class="wiz-page">
@@ -985,8 +989,25 @@ window.WIZ = {
   }
 };
 
+/* ── Hamburger / mobile menu ─────────────────────────────── */
+window.closeMenu = function() {
+  var m = document.getElementById('mobileMenu');
+  var h = document.getElementById('hamburger');
+  if (m) m.classList.remove('open');
+  if (h) h.classList.remove('open');
+};
+
 /* ── Init ────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', function() {
+  // Hamburger toggle
+  var hamburger = document.getElementById('hamburger');
+  var mobileMenu = document.getElementById('mobileMenu');
+  if (hamburger && mobileMenu) {
+    hamburger.addEventListener('click', function() {
+      mobileMenu.classList.toggle('open');
+      hamburger.classList.toggle('open');
+    });
+  }
   if (typeof emailjs !== 'undefined') {
     emailjs.init('iOE_629EUQLFOEy-S');
   }
@@ -1037,8 +1058,9 @@ window.initPlaces = function() {
 })();
 </script>
 
-<!-- Google Places (add your API key) -->
+<!-- Google Places — uncomment and add real key when ready:
 <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_API_KEY&libraries=places&callback=initPlaces" async defer></script>
+-->
 
 </body>
 </html>
