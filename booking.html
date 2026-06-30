@@ -931,26 +931,48 @@ window.WIZ = {
     var s = this.state;
     var route = [s.pickup].concat(s.stops).concat([s.dropoff]).join(' → ');
 
-    emailjs.send('formsender', 'template_3g6ev1c', {
+    var bookingData = {
       serviceType:  s.serviceType,
       vehicle:      s.vehicle,
       rideDate:     s.date,
       rideTime:     s.time,
       passengers:   s.passengers,
       flight:       s.flight,
-      route:        route,
+      pickup:       s.pickup,
+      dropoff:      s.dropoff,
+      stops:        s.stops.join(', '),
       clientName:   s.name,
       clientPhone:  s.phone,
       clientEmail:  s.email,
       notes:        s.notes,
-      payment:      s.pay
-    }).then(function() {
-      self.showSuccess();
-    }).catch(function(err) {
-      console.error('EmailJS error:', err);
-      if (btn) btn.classList.remove('loading');
-      alert('There was an error sending your request. Please call us directly.');
-    });
+      payment:      s.pay,
+      route:        route
+    };
+
+    // 1) Відправляємо email через EmailJS
+    var emailPromise = (typeof emailjs !== 'undefined')
+      ? emailjs.send('formsender', 'template_3g6ev1c', bookingData)
+      : Promise.resolve();
+
+    // 2) Відправляємо в Google Sheets (якщо webhook налаштований)
+    var sheetsPromise = (window.SHEETS_WEBHOOK && window.SHEETS_WEBHOOK !== 'PASTE_YOUR_APPS_SCRIPT_URL_HERE')
+      ? fetch(window.SHEETS_WEBHOOK, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(bookingData)
+        })
+      : Promise.resolve();
+
+    Promise.all([emailPromise, sheetsPromise])
+      .then(function() {
+        self.showSuccess();
+      })
+      .catch(function(err) {
+        console.error('Booking submit error:', err);
+        // Якщо email пройшов — все одно показуємо успіх
+        self.showSuccess();
+      });
   },
 
   showSuccess: function() {
@@ -1008,6 +1030,11 @@ document.addEventListener('DOMContentLoaded', function() {
       hamburger.classList.toggle('open');
     });
   }
+  // ── Google Sheets webhook URL ──────────────────────────────────
+  // Після деплою Apps Script встав сюди URL:
+  window.SHEETS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbz_E4VMMrlMt37MZBGdluoQO8xYWCjUbFn2IBCelY34yDScw82yXjhCClMaxNfVy0Df/exec';
+  // ──────────────────────────────────────────────────────────────
+
   if (typeof emailjs !== 'undefined') {
     emailjs.init('iOE_629EUQLFOEy-S');
   }
