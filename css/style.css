@@ -165,7 +165,7 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
   font-family: var(--font-head); font-size: 1.25rem; font-weight: 700;
   background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 60%, var(--gold-dark) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.3px; white-space: nowrap;
 }
 .nav-logo-tag {
   font-size: 8.5px; letter-spacing: 3.5px; text-transform: uppercase;
@@ -1092,30 +1092,54 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
 }
 @media (max-width: 768px) {
   :root { --section-py: 56px; }
-  .nav-links { display: none; }
-  .nav-phone { display: none; }
-  .hamburger { display: flex; }
-  .form-row { grid-template-columns: 1fr; }
-  .form-wrap { padding: 28px 24px; }
-  .footer-grid { grid-template-columns: 1fr; gap: 28px; }
-  .footer-bottom { flex-direction: column; text-align: center; }
-  .pricing-grid { grid-template-columns: 1fr; }
-  .steps { grid-template-columns: 1fr; }
-  .hero-trust { gap: 24px; flex-wrap: wrap; }
+
+  /* ── Navbar ── */
+  .nav-links  { display: none; }
+  .nav-phone  { display: none; }
+  .hamburger  { display: flex; }
+  /* Hide lang buttons + Book Now from navbar on mobile (they live in mobile-menu) */
+  .nav-right > div   { display: none; }
+  .nav-right > a.btn { display: none; }
+  .navbar { padding: 16px 0; }
+
+  /* ── Hero ── */
+  .hero-inner  { padding: 110px 0 72px; }
+  .hero-badge  { font-size: 10px; letter-spacing: 1.8px; padding: 8px 14px; }
+  .hero-sub    { font-size: 1rem; }
+  .hero-trust  { gap: 20px; flex-wrap: wrap; }
+  .hero-trust-num { font-size: 1.6rem; }
   .hero-actions { flex-direction: column; align-items: stretch; }
-  .float-book { display: block; }
+  .hero-actions .btn { text-align: center; justify-content: center; }
+
+  /* ── Float book ── */
+  .float-book  { display: block; }
   body { padding-bottom: 72px; }
-  .pay-toggle { grid-template-columns: 1fr; }
+
+  /* ── Forms ── */
+  .form-row    { grid-template-columns: 1fr; }
+  .form-wrap   { padding: 28px 24px; }
+  .pay-toggle  { grid-template-columns: 1fr; }
   .pay-opt:first-child { border-right: none; border-bottom: 1px solid rgba(201,168,76,0.18); }
-  .cta-actions { flex-direction: column; }
-  /* inner pages mobile */
-  .values-grid { grid-template-columns: 1fr; }
+
+  /* ── Sections ── */
+  .footer-grid  { grid-template-columns: 1fr; gap: 28px; }
+  .footer-bottom{ flex-direction: column; text-align: center; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .steps        { grid-template-columns: 1fr; }
+  .cta-actions  { flex-direction: column; }
+
+  /* ── Fleet cards ── */
+  .fleet-card-img { height: 200px; }
+
+  /* ── Inner pages ── */
+  .values-grid  { grid-template-columns: 1fr; }
   .trust-badges { grid-template-columns: 1fr 1fr; }
-  .coverage-grid { grid-template-columns: 1fr; }
+  .coverage-grid{ grid-template-columns: 1fr; }
   .service-detail-badge { position: static; margin-top: 12px; }
   .about-stats-col { flex-direction: column; }
-  .about-stat { border-right: none; border-bottom: 1px solid var(--black-border); text-align: left; }
-  .page-hero { padding: 120px 0 56px; }
+  .about-stat   { border-right: none; border-bottom: 1px solid var(--black-border); text-align: left; }
+  .page-hero    { padding: 110px 0 48px; }
+  .page-hero h1 { font-size: 2.4rem; }
 }
 /* ============================================================
    BOOKING WIZARD
