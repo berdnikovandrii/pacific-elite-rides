@@ -209,7 +209,7 @@ if (rideForm) {
 
     } catch(err) {
       console.error(err);
-      showToast('error', 'Something went wrong. Please call (619) 394-0452.');
+      showToast('error', 'Something went wrong. Please call (619) 394-5340.');
     } finally {
       btn.classList.remove('loading'); btn.disabled = false;
     }
