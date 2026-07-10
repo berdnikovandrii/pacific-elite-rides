@@ -318,7 +318,17 @@
         <p class="wiz-sub" style="max-width:390px;margin:0 auto 28px" id="succMsg">
           Thank you &#8212; we'll confirm your ride within 15 minutes. Check your email for details.
         </p>
-        <button class="wiz-primary" style="max-width:260px;margin:0 auto;display:block" onclick="WIZ.resetAll()" id="succBtn">
+        <!-- Square Payment Link button (shown when link is configured) -->
+        <a id="succPayBtn"
+           href="#"
+           target="_blank"
+           rel="noopener"
+           class="wiz-primary"
+           style="max-width:280px;margin:0 auto 12px;display:none;text-align:center;text-decoration:none;align-items:center;justify-content:center;gap:8px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          <span id="succPayLabel">Complete Payment</span>
+        </a>
+        <button class="wiz-primary" style="max-width:280px;margin:0 auto;display:block;background:transparent;border:1px solid rgba(201,168,76,.35);color:var(--gold)" onclick="WIZ.resetAll()" id="succBtn">
           Book Another Ride
         </button>
       </div>
@@ -340,6 +350,19 @@
 <script>
 (function () {
 'use strict';
+
+/* ── SQUARE PAYMENT LINKS ────────────────────────────────────
+   After creating Payment Links in your Square Dashboard,
+   paste each URL below. Leave as-is to skip payment redirect.
+   ─────────────────────────────────────────────────────────── */
+var SQUARE_LINKS = {
+  'Airport Transfer': 'PASTE_SQUARE_LINK_HERE',
+  'Corporate Ride':   'PASTE_SQUARE_LINK_HERE',
+  'Hourly Charter':   'PASTE_SQUARE_LINK_HERE',
+  'Sprinter Van':     'PASTE_SQUARE_LINK_HERE',
+  'Special Event':    'PASTE_SQUARE_LINK_HERE',
+  'Other':            ''   /* no payment needed for custom quotes */
+};
 
 /* ── DICT (EN + ES) ─────────────────────────────────────────── */
 var DICT = {
@@ -989,6 +1012,19 @@ window.WIZ = {
     txt('succTitle', d.succTitle);
     txt('succMsg',   d.succMsg);
     txt('succBtn',   d.succBtn);
+
+    /* Square Payment Link — show button only when URL is configured */
+    var link = SQUARE_LINKS[this.state.serviceType] || '';
+    var payBtn = el('succPayBtn');
+    if (link && link.indexOf('PASTE') === -1) {
+      payBtn.href = link;
+      payBtn.style.display = 'flex';
+      var label = this.state.lang === 'es' ? 'Completar pago' : 'Complete Payment';
+      txt('succPayLabel', label);
+    } else {
+      payBtn.style.display = 'none';
+    }
+
     this.state.submitted = true;
   },
 
