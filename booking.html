@@ -253,28 +253,15 @@
         <!-- STEP 4: Payment -->
         <section class="wiz-step" id="step4" style="display:none">
           <p class="wiz-title" id="s4title">Payment</p>
-          <p class="wiz-sub" id="s4sub">Choose how you'd like to pay</p>
+          <p class="wiz-sub" id="s4sub">No payment needed right now</p>
 
-          <div class="wiz-pay-grid">
-            <button class="wiz-pay-card selected" id="payLater" onclick="WIZ.selectPay('later')">
-              <div class="wiz-pay-header">
-                <span class="wiz-pay-title" id="payLaterTitle">Pay Later</span>
-                <span class="wiz-pay-check" id="payLaterCheck">&#10003;</span>
+          <div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:12px;padding:24px 28px;margin:8px 0 4px">
+            <div style="display:flex;align-items:flex-start;gap:14px">
+              <svg style="flex-shrink:0;margin-top:2px" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              <div>
+                <p id="payLaterTitle" style="font-weight:600;color:var(--gold);margin:0 0 6px;font-size:15px">Invoice by Email</p>
+                <p id="payLaterSub" style="color:rgba(255,255,255,.65);margin:0;font-size:14px;line-height:1.5">We'll review your request and send a secure payment invoice to your email within 15 minutes. Your ride is confirmed once payment is received.</p>
               </div>
-              <p class="wiz-pay-sub" id="payLaterSub">We'll invoice you after confirmation. No card needed now.</p>
-            </button>
-            <button class="wiz-pay-card" id="payNow" onclick="WIZ.selectPay('now')">
-              <div class="wiz-pay-header">
-                <span class="wiz-pay-title" id="payNowTitle">Pay Now</span>
-                <span class="wiz-pay-check" id="payNowCheck" style="display:none">&#10003;</span>
-              </div>
-              <p class="wiz-pay-sub" id="payNowSub">Secure card payment via Square. Ride confirmed instantly.</p>
-            </button>
-          </div>
-
-          <div class="wiz-sq-slot" id="sqSlot" style="display:none">
-            <div id="card-container" class="wiz-sq-field">
-              <span style="opacity:.45;font-size:13px">Card field loading&#8230;</span>
             </div>
           </div>
 
@@ -396,10 +383,8 @@ var DICT = {
     lPhone:   'Phone *',
     lEmail:   'Email *',
     lNotes:   'Special Requests',
-    payLaterTitle: 'Pay Later',
-    payLaterSub:   "We'll invoice you after confirmation. No card needed now.",
-    payNowTitle:   'Pay Now',
-    payNowSub:     'Secure card payment via Square. Ride confirmed instantly.',
+    payLaterTitle: 'Invoice by Email',
+    payLaterSub:   "We'll send a secure payment invoice to your email within 15 minutes. No card needed now.",
     reviewGroups: ['Service','Trip Details','Route','Contact','Payment'],
     reviewKeys: {
       service:'Service', date:'Date', time:'Time', passengers:'Passengers',
@@ -472,10 +457,8 @@ var DICT = {
     lPhone:   'Teléfono *',
     lEmail:   'Correo electrónico *',
     lNotes:   'Solicitudes especiales',
-    payLaterTitle: 'Pagar después',
-    payLaterSub:   'Te facturaremos tras la confirmación. No se necesita tarjeta ahora.',
-    payNowTitle:   'Pagar ahora',
-    payNowSub:     'Pago seguro con tarjeta vía Square. Viaje confirmado de inmediato.',
+    payLaterTitle: 'Factura por correo',
+    payLaterSub:   'Enviaremos una factura de pago segura a tu correo en 15 minutos. No se necesita tarjeta ahora.',
     reviewGroups: ['Servicio','Detalles del viaje','Ruta','Contacto','Pago'],
     reviewKeys: {
       service:'Servicio', date:'Fecha', time:'Hora', passengers:'Pasajeros',
@@ -678,14 +661,8 @@ window.WIZ = {
   renderStep4: function(d) {
     txt('s4title', d.s4title); txt('s4sub', d.s4sub);
     txt('payLaterTitle', d.payLaterTitle); txt('payLaterSub', d.payLaterSub);
-    txt('payNowTitle',   d.payNowTitle);   txt('payNowSub',   d.payNowSub);
     txt('s4back', d.back); txt('s4Cont', d.cont);
-    var isNow = this.state.pay === 'now';
-    el('payLater').classList.toggle('selected', !isNow);
-    el('payNow').classList.toggle('selected', isNow);
-    el('payLaterCheck').style.display = isNow ? 'none'   : 'inline';
-    el('payNowCheck').style.display   = isNow ? 'inline' : 'none';
-    el('sqSlot').style.display        = isNow ? 'block'  : 'none';
+    this.state.pay = 'later';
   },
 
   renderStep5: function(d) {
