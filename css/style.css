@@ -430,7 +430,9 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
 .pricing-card {
   background: var(--black-card); padding: 40px 32px;
   position: relative; transition: background var(--trans);
+  display: flex; flex-direction: column;
 }
+.pricing-card .btn { margin-top: auto; }
 .pricing-card.featured {
   background: #161410;
 }
