@@ -235,7 +235,7 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
   position: absolute; inset: 0;
   background:
     linear-gradient(160deg, rgba(8,8,8,0.82) 0%, rgba(8,8,8,0.55) 45%, rgba(8,8,8,0.75) 100%),
-    url('../hero-bg.png') center center / cover no-repeat;
+    url('../hero-bg.jpg') center center / cover no-repeat;
 }
 .hero-bg::after {
   content: ''; position: absolute; inset: 0;
