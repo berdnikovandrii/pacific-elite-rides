@@ -22,15 +22,17 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/style.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <!-- Note: booking submissions and email delivery are handled on booking.html, which has its own
+       EmailJS + Google Sheets configuration. No online payment processing — pay driver or by invoice. -->
+  <!-- Google tag (gtag.js) — replace G-MRH0C5ZBF1 with your real GA4 Measurement ID (analytics.google.com).
+       Once you have a Google Ads account, uncomment the AW- line below with your real Ads ID. -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MRH0C5ZBF1"></script>
   <script>
-    /* ── CONFIG (replace before going live) ── */
-    window.EMAILJS_PUBLIC  = 'YOUR_EMAILJS_PUBLIC_KEY';
-    window.EMAILJS_SERVICE = 'YOUR_SERVICE_ID';
-    window.EMAILJS_TEMPLATE= 'YOUR_TEMPLATE_ID';
-    window.SQUARE_APP_ID   = 'YOUR_SQUARE_APP_ID';
-    window.SQUARE_LOCATION_ID = 'YOUR_SQUARE_LOCATION_ID';
-    if (typeof emailjs !== 'undefined') emailjs.init(window.EMAILJS_PUBLIC);
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-MRH0C5ZBF1');
+    // gtag('config', 'AW-XXXXXXXXX');
   </script>
 </head>
 <body>
@@ -425,6 +427,10 @@
           <span class="lang-en">Luxury Sprinter van for groups up to 14. 4-hour minimum. Wine tours, corporate retreats, and group transfers.</span>
           <span class="lang-es">Sprinter de lujo para grupos hasta 14. Mínimo 4 horas. Tours de vinos, retiros y traslados grupales.</span>
         </p>
+        <a href="sprinter-van-san-diego.html" style="display:inline-block;margin-top:8px;font-size:13px;color:var(--gold);text-decoration:underline">
+          <span class="lang-en">See group travel guide →</span>
+          <span class="lang-es">Ver guía de grupos →</span>
+        </a>
         <div class="price-features">
           <div class="price-feature"><span class="price-check">✓</span><span class="lang-en">Up to 14 passengers</span><span class="lang-es">Hasta 14 pasajeros</span></div>
           <div class="price-feature"><span class="price-check">✓</span><span class="lang-en">WiFi, USB, TV screen</span><span class="lang-es">WiFi, USB, pantalla TV</span></div>
@@ -547,8 +553,8 @@
           <div class="faq-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
         </button>
         <div class="faq-a">
-          <span class="lang-en">We accept all major credit cards, Zelle, and cash. You can pay online when booking or pay your driver after the ride.</span>
-          <span class="lang-es">Aceptamos todas las tarjetas de crédito principales, Zelle y efectivo. Puedes pagar en línea al reservar o pagar al conductor después del viaje.</span>
+          <span class="lang-en">We accept all major credit cards, Zelle, and cash. You can pay your driver directly after the ride, or by invoice sent to your email — no online prepayment required.</span>
+          <span class="lang-es">Aceptamos todas las tarjetas de crédito principales, Zelle y efectivo. Puedes pagar al conductor directamente después del viaje, o por factura enviada a tu correo — no se requiere pago en línea por adelantado.</span>
         </div>
       </div>
       <div class="faq-item">
@@ -623,7 +629,7 @@
         <div class="footer-links">
           <a href="services.html"><span class="lang-en">Airport Transfers</span><span class="lang-es">Traslados Aeropuerto</span></a>
           <a href="services.html"><span class="lang-en">Corporate Rides</span><span class="lang-es">Viajes Corporativos</span></a>
-          <a href="services.html"><span class="lang-en">Sprinter Van</span><span class="lang-es">Sprinter</span></a>
+          <a href="sprinter-van-san-diego.html"><span class="lang-en">Sprinter Van &amp; Groups</span><span class="lang-es">Sprinter y Grupos</span></a>
           <a href="services.html"><span class="lang-en">Special Events</span><span class="lang-es">Eventos Especiales</span></a>
         </div>
       </div>
@@ -661,8 +667,8 @@
     <div class="footer-bottom">
       <span class="footer-copy">© 2025 Pacific Elite Rides LLC · Registered in California. <span class="lang-en">All rights reserved.</span><span class="lang-es">Todos los derechos reservados.</span></span>
       <div class="footer-legal">
-        <a href="#"><span class="lang-en">Privacy</span><span class="lang-es">Privacidad</span></a>
-        <a href="#"><span class="lang-en">Terms</span><span class="lang-es">Términos</span></a>
+        <a href="privacy.html"><span class="lang-en">Privacy</span><span class="lang-es">Privacidad</span></a>
+        <a href="terms.html"><span class="lang-en">Terms</span><span class="lang-es">Términos</span></a>
       </div>
     </div>
   </div>

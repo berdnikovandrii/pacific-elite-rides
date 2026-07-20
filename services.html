@@ -18,6 +18,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/style.css"/>
+  <!-- Google tag (gtag.js) — replace G-MRH0C5ZBF1 with your real GA4 Measurement ID (analytics.google.com).
+       Once you have a Google Ads account, uncomment the AW- line below with your real Ads ID. -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MRH0C5ZBF1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-MRH0C5ZBF1');
+    // gtag('config', 'AW-XXXXXXXXX');
+  </script>
 </head>
 <body>
 
@@ -212,10 +222,16 @@
           <span class="sdp-amount">$160</span>
           <span class="sdp-unit">/ <span class="lang-en">hour · 4 hr min</span><span class="lang-es">hora · mín. 4 hrs</span></span>
         </div>
-        <a href="booking.html" class="btn btn-primary btn-lg" style="margin-top:28px">
-          <span class="lang-en">Book Sprinter Van</span>
-          <span class="lang-es">Reservar Sprinter</span>
-        </a>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px">
+          <a href="booking.html?service=Sprinter%20Van" class="btn btn-primary btn-lg">
+            <span class="lang-en">Book Sprinter Van</span>
+            <span class="lang-es">Reservar Sprinter</span>
+          </a>
+          <a href="sprinter-van-san-diego.html" class="btn btn-outline btn-lg">
+            <span class="lang-en">Full Group Travel Guide →</span>
+            <span class="lang-es">Guía Completa de Grupos →</span>
+          </a>
+        </div>
       </div>
       <div class="service-detail-img">
         <img src="img-sprinter.jpg" alt="Mercedes Sprinter luxury van San Diego" loading="lazy"/>
@@ -374,7 +390,7 @@
         <div class="footer-links">
           <a href="#airport"><span class="lang-en">Airport Transfers</span><span class="lang-es">Traslados Aeropuerto</span></a>
           <a href="#corporate"><span class="lang-en">Corporate Rides</span><span class="lang-es">Viajes Corporativos</span></a>
-          <a href="#sprinter"><span class="lang-en">Sprinter Van</span><span class="lang-es">Sprinter</span></a>
+          <a href="sprinter-van-san-diego.html"><span class="lang-en">Sprinter Van &amp; Groups</span><span class="lang-es">Sprinter y Grupos</span></a>
           <a href="#events"><span class="lang-en">Special Events</span><span class="lang-es">Eventos Especiales</span></a>
         </div>
       </div>
@@ -407,8 +423,8 @@
     <div class="footer-bottom">
       <span class="footer-copy">© 2025 Pacific Elite Rides LLC · Registered in California.</span>
       <div class="footer-legal">
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
       </div>
     </div>
   </div>

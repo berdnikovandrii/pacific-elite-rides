@@ -95,132 +95,18 @@ document.querySelectorAll('.faq-q').forEach(btn => {
   });
 })();
 
-/* ===== BOOKING FORM ===== */
-const rideForm = document.getElementById('rideForm');
-if (rideForm) {
-
-  /* Date min */
-  const dateInput = document.getElementById('rideDate');
-  if (dateInput) dateInput.min = new Date().toISOString().split('T')[0];
-
-  /* Payment toggle */
-  let payMode = 'later';
-  let squareCard = null;
-  window.selectPay = async function(mode) {
-    payMode = mode;
-    document.getElementById('payLater').classList.toggle('active', mode === 'later');
-    document.getElementById('payNow').classList.toggle('active', mode === 'now');
-    const sqEl = document.getElementById('sqWrap');
-    if (sqEl) sqEl.style.display = mode === 'now' ? 'block' : 'none';
-
-    if (mode === 'now' && !squareCard && typeof Square !== 'undefined') {
-      try {
-        const payments = Square.payments(window.SQUARE_APP_ID, window.SQUARE_LOCATION_ID);
-        squareCard = await payments.card();
-        await squareCard.attach('#sq-card');
-      } catch(e) { console.warn('Square init:', e); }
-    }
-  };
-  document.getElementById('payLater')?.classList.add('active');
-
-  /* Multi-stop */
-  let stopCount = 0;
-  document.getElementById('addStop')?.addEventListener('click', () => {
-    if (stopCount >= 4) return;
-    stopCount++;
-    const list = document.getElementById('stopsList');
-    const row = document.createElement('div');
-    row.className = 'stop-row'; row.id = `stop-row-${stopCount}`;
-    row.innerHTML = `
-      <div class="addr-wrap" style="flex:1">
-        <svg class="addr-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg>
-        <input type="text" class="form-ctrl stop-input" id="stop-${stopCount}" placeholder="Stop address…" autocomplete="off"/>
-      </div>
-      <button type="button" class="stop-del" onclick="removeStop(${stopCount})" aria-label="Remove">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>`;
-    list.appendChild(row);
-    if (window.google) new google.maps.places.Autocomplete(document.getElementById(`stop-${stopCount}`), { componentRestrictions: { country: 'us' }, fields: ['formatted_address','name'] });
-    if (stopCount >= 4) document.getElementById('addStop').style.opacity = '0.4';
-  });
-  window.removeStop = function(id) {
-    document.getElementById(`stop-row-${id}`)?.remove();
-    stopCount = Math.max(0, stopCount - 1);
-    document.getElementById('addStop').style.opacity = '1';
-  };
-
-  /* Submit */
-  rideForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const btn = document.getElementById('submitBtn');
-    const toast = document.getElementById('formToast');
-
-    const required = ['serviceType','rideDate','rideTime','pickup','dropoff','clientName','clientPhone','clientEmail'];
-    let valid = true;
-    required.forEach(id => {
-      const el = document.getElementById(id);
-      if (!el || !el.value.trim()) { if(el) el.style.borderColor='var(--error)'; valid = false; }
-      else el.style.borderColor = '';
-    });
-    if (!valid) { showToast('error', 'Please fill in all required fields.'); return; }
-
-    const stops = [...document.querySelectorAll('.stop-input')].map(i => i.value.trim()).filter(Boolean);
-    const data = {
-      service:    document.getElementById('serviceType').value,
-      vehicle:    document.getElementById('vehicle').value,
-      date:       document.getElementById('rideDate').value,
-      time:       document.getElementById('rideTime').value,
-      pickup:     document.getElementById('pickup').value,
-      stops:      stops.join(' → ') || 'None',
-      dropoff:    document.getElementById('dropoff').value,
-      passengers: document.getElementById('passengers').value,
-      flight:     document.getElementById('flight')?.value || 'N/A',
-      name:       document.getElementById('clientName').value,
-      phone:      document.getElementById('clientPhone').value,
-      email:      document.getElementById('clientEmail').value,
-      notes:      document.getElementById('notes')?.value || '',
-      payment:    payMode === 'now' ? 'Card (Square)' : 'Pay Later',
-      to_email:   'berdnikov@pacificeliterides.com',
-    };
-
-    btn.classList.add('loading'); btn.disabled = true;
-
-    try {
-      if (payMode === 'now' && squareCard) {
-        const res = await squareCard.tokenize();
-        if (res.status !== 'OK') throw new Error(res.errors?.[0]?.message || 'Card error');
-        data.payment = `Card – token: ${res.token}`;
-      }
-
-      if (typeof emailjs !== 'undefined' && window.EMAILJS_SERVICE && window.EMAILJS_SERVICE !== 'YOUR_SERVICE_ID') {
-        await emailjs.send(window.EMAILJS_SERVICE, window.EMAILJS_TEMPLATE, data);
-      } else {
-        const body = Object.entries(data).map(([k,v]) => `${k}: ${v}`).join('\n');
-        window.location.href = `mailto:berdnikov@pacificeliterides.com?subject=New Ride Request – ${data.name}&body=${encodeURIComponent(body)}`;
-      }
-
-      showToast('success', '✓ Request sent! We\'ll confirm within 15 minutes.');
-      rideForm.reset();
-      document.getElementById('stopsList').innerHTML = '';
-      stopCount = 0;
-      document.getElementById('payLater')?.classList.add('active');
-      document.getElementById('payNow')?.classList.remove('active');
-      document.getElementById('sqWrap') && (document.getElementById('sqWrap').style.display = 'none');
-
-    } catch(err) {
-      console.error(err);
-      showToast('error', 'Something went wrong. Please call (619) 394-5340.');
-    } finally {
-      btn.classList.remove('loading'); btn.disabled = false;
+/* ===== CONVERSION TRACKING ===== */
+/* Tracks a click on any phone number link as a GA4 event. GA4 + Google Ads are linked,
+   so mark "phone_click" as a conversion in GA4 (Admin > Events) and import it into
+   Google Ads (Goals > Conversions > Import > Google Analytics 4) rather than hardcoding
+   a separate AW- conversion label here. */
+document.querySelectorAll('a[href^="tel:"]').forEach(a => {
+  a.addEventListener('click', () => {
+    if (typeof gtag === 'function') {
+      gtag('event', 'phone_click', { link_url: a.getAttribute('href') });
     }
   });
-
-  function showToast(type, msg) {
-    const t = document.getElementById('formToast');
-    t.className = 'toast ' + type; t.textContent = msg; t.style.display = 'block';
-    setTimeout(() => t.style.display = 'none', 7000);
-  }
-}
+});
 
 /* ===== GOOGLE PLACES INIT ===== */
 window.initPlaces = function() {

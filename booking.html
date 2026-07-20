@@ -15,6 +15,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <!-- Google tag (gtag.js) — replace G-MRH0C5ZBF1 with your real GA4 Measurement ID (analytics.google.com).
+       Once you have a Google Ads account, uncomment the AW- line below with your real Ads ID. -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MRH0C5ZBF1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-MRH0C5ZBF1');
+    // gtag('config', 'AW-XXXXXXXXX');
+  </script>
 </head>
 <body>
 
@@ -305,16 +315,7 @@
         <p class="wiz-sub" style="max-width:390px;margin:0 auto 28px" id="succMsg">
           Thank you &#8212; we'll confirm your ride within 15 minutes. Check your email for details.
         </p>
-        <!-- Square Payment Link button (shown when link is configured) -->
-        <a id="succPayBtn"
-           href="#"
-           target="_blank"
-           rel="noopener"
-           class="wiz-primary"
-           style="max-width:280px;margin:0 auto 12px;display:none;text-align:center;text-decoration:none;align-items:center;justify-content:center;gap:8px">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-          <span id="succPayLabel">Complete Payment</span>
-        </a>
+        <!-- No online payment for now — driver collects payment or an invoice is emailed. -->
         <button class="wiz-primary" style="max-width:280px;margin:0 auto;display:block;background:transparent;border:1px solid rgba(201,168,76,.35);color:var(--gold)" onclick="WIZ.resetAll()" id="succBtn">
           Book Another Ride
         </button>
@@ -337,18 +338,9 @@
 (function () {
 'use strict';
 
-/* ── SQUARE PAYMENT LINKS ────────────────────────────────────
-   After creating Payment Links in your Square Dashboard,
-   paste each URL below. Leave as-is to skip payment redirect.
-   ─────────────────────────────────────────────────────────── */
-var SQUARE_LINKS = {
-  'Airport Transfer': 'PASTE_SQUARE_LINK_HERE',
-  'Corporate Ride':   'PASTE_SQUARE_LINK_HERE',
-  'Hourly Charter':   'PASTE_SQUARE_LINK_HERE',
-  'Sprinter Van':     'PASTE_SQUARE_LINK_HERE',
-  'Special Event':    'PASTE_SQUARE_LINK_HERE',
-  'Other':            ''   /* no payment needed for custom quotes */
-};
+/* No online payment for now. Payment is collected by the driver (cash, card, Zelle)
+   or by an emailed invoice — see Step 4 (Payment) below. Revisit if online prepayment
+   is added later. */
 
 /* ── DICT (EN + ES) ─────────────────────────────────────────── */
 var DICT = {
@@ -989,16 +981,11 @@ window.WIZ = {
     txt('succMsg',   d.succMsg);
     txt('succBtn',   d.succBtn);
 
-    /* Square Payment Link — show button only when URL is configured */
-    var link = SQUARE_LINKS[this.state.serviceType] || '';
-    var payBtn = el('succPayBtn');
-    if (link && link.indexOf('PASTE') === -1) {
-      payBtn.href = link;
-      payBtn.style.display = 'flex';
-      var label = this.state.lang === 'es' ? 'Completar pago' : 'Complete Payment';
-      txt('succPayLabel', label);
-    } else {
-      payBtn.style.display = 'none';
+    if (typeof gtag === 'function') {
+      /* GA4 + Ads are linked — mark "generate_lead" as a conversion in GA4 (Admin > Events)
+         and import it into Google Ads (Goals > Conversions > Import > Google Analytics 4)
+         instead of hardcoding a separate AW- conversion label here. */
+      gtag('event', 'generate_lead', { service: this.state.serviceType });
     }
 
     this.state.submitted = true;
@@ -1058,6 +1045,16 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   var lang = localStorage.getItem('per_lang') || 'en';
   WIZ.state.lang = lang;
+
+  // Preselect a service when arriving from a landing page CTA, e.g. booking.html?service=Sprinter%20Van
+  var urlParams = new URLSearchParams(window.location.search);
+  var svcParam = urlParams.get('service');
+  if (svcParam) {
+    var knownIds = DICT.en.services.map(function(s) { return s.id; });
+    var matchedId = knownIds.filter(function(id) { return id.toLowerCase() === svcParam.toLowerCase(); })[0];
+    if (matchedId) WIZ.state.serviceType = matchedId;
+  }
+
   WIZ.render(0);
 
   // Set min date to today
