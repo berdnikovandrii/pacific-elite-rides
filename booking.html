@@ -133,7 +133,7 @@
                 </div>
                 <div class="wiz-select-wrap" style="flex:1">
                   <select id="rideAmPm" class="wiz-input" onchange="WIZ.syncTime()">
-                    <option value="">AM/PM</option>
+                    <option value="">—</option>
                     <option value="AM">AM</option>
                     <option value="PM">PM</option>
                   </select>
@@ -781,6 +781,9 @@ window.WIZ = {
     var h = el('rideHour')  ? el('rideHour').value  : '';
     var m = el('rideMin')   ? el('rideMin').value   : '';
     var p = el('rideAmPm')  ? el('rideAmPm').value  : '';
+    // Live feedback: if an error is already showing, clear the red border on
+    // whichever of the 3 selects just got a value, without waiting for all 3.
+    if (this.state.errors.time) this.highlightTimeFields(true);
     if (h && m && p) {
       this.state.time = h + ':' + m + ' ' + p;
       this.clearErr('time', null);
@@ -825,11 +828,27 @@ window.WIZ = {
     return e;
   },
 
+  /* Time is 3 separate selects (rideHour/rideMin/rideAmPm) sharing one 'time' error
+     key. Highlight only whichever of the 3 is still empty, so the user can see exactly
+     which part is missing instead of a generic message under all three. */
+  highlightTimeFields: function(active) {
+    ['rideHour', 'rideMin', 'rideAmPm'].forEach(function(id) {
+      var sel = el(id);
+      if (sel) sel.classList.toggle('err', !!active && !sel.value);
+    });
+  },
+
   applyErrors: function(errors) {
     this.state.errors = errors;
     var d = DICT[this.state.lang];
     var fieldMap = { name:'clientName', phone:'clientPhone', email:'clientEmail' };
     Object.keys(errors).forEach(function(field) {
+      if (field === 'time') {
+        this.highlightTimeFields(true);
+        var timeErrEl = el('err-time');
+        if (timeErrEl) { timeErrEl.textContent = d.errReq; timeErrEl.style.display = 'block'; }
+        return;
+      }
       var inputId = fieldMap[field] || field;
       var input = el(inputId);
       if (input) input.classList.add('err');
@@ -838,7 +857,7 @@ window.WIZ = {
         errEl.textContent = errors[field] === 'email' ? d.errEmail : d.errReq;
         errEl.style.display = 'block';
       }
-    });
+    }, this);
   },
 
   showErrors: function(fields) {
@@ -847,6 +866,15 @@ window.WIZ = {
     var fieldMap = { name:'clientName', phone:'clientPhone', email:'clientEmail' };
     fields.forEach(function(field) {
       var errType = self.state.errors[field];
+      if (field === 'time') {
+        self.highlightTimeFields(!!errType);
+        var timeErrEl = el('err-time');
+        if (timeErrEl) {
+          if (errType) { timeErrEl.textContent = d.errReq; timeErrEl.style.display = 'block'; }
+          else timeErrEl.style.display = 'none';
+        }
+        return;
+      }
       var inputId = fieldMap[field] || field;
       var input = el(inputId);
       var errEl = el('err-' + field);
@@ -864,6 +892,7 @@ window.WIZ = {
 
   clearErr: function(field, input) {
     delete this.state.errors[field];
+    if (field === 'time') this.highlightTimeFields(false);
     if (input) input.classList.remove('err');
     var errEl = el('err-' + field);
     if (errEl) errEl.style.display = 'none';
