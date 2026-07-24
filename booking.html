@@ -308,19 +308,6 @@
 
       </div><!-- /wiz-content -->
 
-      <!-- Success screen -->
-      <div class="wiz-success" id="wizSuccess" style="display:none">
-        <div class="wiz-success-icon">&#10003;</div>
-        <h2 class="wiz-title" id="succTitle">Request Received</h2>
-        <p class="wiz-sub" style="max-width:390px;margin:0 auto 28px" id="succMsg">
-          Thank you &#8212; we'll confirm your ride within 15 minutes. Check your email for details.
-        </p>
-        <!-- No online payment for now — driver collects payment or an invoice is emailed. -->
-        <button class="wiz-primary" style="max-width:280px;margin:0 auto;display:block;background:transparent;border:1px solid rgba(201,168,76,.35);color:var(--gold)" onclick="WIZ.resetAll()" id="succBtn">
-          Book Another Ride
-        </button>
-      </div>
-
     </div><!-- /wiz-card -->
   </div>
 </div>
@@ -1002,22 +989,12 @@ window.WIZ = {
   },
 
   showSuccess: function() {
-    var d = DICT[this.state.lang];
-    el('wizHeader').style.display  = 'none';
-    el('wizBody').style.display    = 'none';
-    el('wizSuccess').style.display = 'block';
-    txt('succTitle', d.succTitle);
-    txt('succMsg',   d.succMsg);
-    txt('succBtn',   d.succBtn);
-
-    if (typeof gtag === 'function') {
-      /* GA4 + Ads are linked — mark "generate_lead" as a conversion in GA4 (Admin > Events)
-         and import it into Google Ads (Goals > Conversions > Import > Google Analytics 4)
-         instead of hardcoding a separate AW- conversion label here. */
-      gtag('event', 'generate_lead', { service: this.state.serviceType });
-    }
-
+    /* Redirect to a real, dedicated thank-you page instead of an in-page success
+       state. This gives Google Ads (and anything else) a unique URL to key
+       conversion tracking off of, on top of the generate_lead GA4 event (which
+       now fires on the thank-you page itself — see thank-you.html). */
     this.state.submitted = true;
+    window.location.href = 'thank-you.html?service=' + encodeURIComponent(this.state.serviceType || '');
   },
 
   resetAll: function() {
