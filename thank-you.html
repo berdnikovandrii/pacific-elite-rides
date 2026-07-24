@@ -126,16 +126,17 @@
 
 <script src="js/main.js"></script>
 
-<!-- ── Fire the generate_lead conversion event here, on the dedicated
-     thank-you URL, instead of on booking.html. This is the actual moment
-     a booking is confirmed complete, and gives Google Ads a real page to
-     key URL-based tracking off of as well. ─────────────────────────── -->
+<!-- ── Google Ads conversion event for "Submit lead form" (SUBMIT_LEAD_FORM).
+     Fires directly to the Google tag on page load — this page only loads
+     after a real booking is submitted (see booking.html's showSuccess
+     redirect), so page load = conversion. Replaces the earlier generate_lead
+     GA4 event to avoid double-counting the same conversion twice. ────── -->
 <script>
   (function() {
     var params = new URLSearchParams(window.location.search);
     var service = params.get('service') || '';
     if (typeof gtag === 'function') {
-      gtag('event', 'generate_lead', { service: service });
+      gtag('event', 'conversion_event_submit_lead_form', { service: service });
     }
   })();
 </script>
