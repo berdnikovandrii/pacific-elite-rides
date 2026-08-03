@@ -16,6 +16,31 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://pacificeliterides.com/san-airport-to-downtown.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pacificeliterides.com/san-airport-to-coronado.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pacificeliterides.com/san-airport-to-la-jolla.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pacificeliterides.com/san-airport-to-del-mar.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pacificeliterides.com/san-diego-to-lax.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://pacificeliterides.com/about.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
