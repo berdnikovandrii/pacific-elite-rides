@@ -776,52 +776,51 @@ document.querySelectorAll('[data-gallery]').forEach(function(el) {
    Once the profile is stable, hardcode PLACE_ID below (see
    console log) to skip the findPlace lookup.
    ─────────────────────────────────────────────────────────── */
-var PLACE_ID = ''; /* paste ChIJ... id here once known */
+var PLACE_ID = ''; /* paste ChIJ... id here once the GBP listing is live in Maps */
 
 window.initGReviewsBoot = function() {
   if (typeof window.initPlaces === 'function') window.initPlaces();
-  try { initGReviews(); } catch (e) { /* keep static fallback */ }
+  initGReviews().catch(function(){ /* keep static fallback */ });
 };
 
-function initGReviews() {
-  if (!window.google || !google.maps || !google.maps.places) return;
-  var svc = new google.maps.places.PlacesService(document.createElement('div'));
-  if (PLACE_ID) { fetchGDetails(svc, PLACE_ID); return; }
-  svc.findPlaceFromQuery(
-    { query: 'Pacific Elite Rides San Diego', fields: ['place_id'] },
-    function(res, status) {
-      if (status === 'OK' && res && res[0]) {
-        console.log('[PER] Place ID:', res[0].place_id);
-        fetchGDetails(svc, res[0].place_id);
-      }
-    }
-  );
-}
+async function initGReviews() {
+  if (!window.google || !google.maps) return;
+  var lib = await google.maps.importLibrary('places');
+  var Place = lib.Place;
+  var place;
 
-function fetchGDetails(svc, pid) {
-  svc.getDetails(
-    { placeId: pid, fields: ['reviews','rating','user_ratings_total'] },
-    function(place, status) {
-      if (status !== 'OK' || !place) return;
-      /* Badge */
-      if (place.rating) {
-        var badge = document.getElementById('gBadge');
-        document.getElementById('gBadgeText').textContent =
-          place.rating.toFixed(1) + ' ★ · ' + (place.user_ratings_total || 0) + ' Google reviews';
-        document.getElementById('gBadgeLink').href =
-          'https://search.google.com/local/writereview?placeid=' + pid;
-        badge.style.display = 'inline-flex';
-      }
-      /* Cards */
-      var reviews = (place.reviews || []).filter(function(r){ return r.rating >= 4 && r.text; });
-      if (reviews.length < 1) return;
-      var grid = document.getElementById('reviewsGrid');
-      grid.innerHTML = '';
-      reviews.slice(0, 6).forEach(function(r) {
-        grid.appendChild(buildGCard(r));
-      });
-    }
-  );
+  if (PLACE_ID) {
+    place = new Place({ id: PLACE_ID });
+  } else {
+    var res = await Place.searchByText({
+      textQuery: 'Pacific Elite Rides San Diego',
+      fields: ['id'],
+      locationBias: { lat: 32.7157, lng: -117.1611 }
+    });
+    if (!res.places || !res.places.length) return;
+    place = res.places[0];
+    console.log('[PER] Place ID:', place.id);
+  }
+
+  await place.fetchFields({ fields: ['reviews','rating','userRatingCount'] });
+
+  /* Badge */
+  if (place.rating) {
+    document.getElementById('gBadgeText').textContent =
+      place.rating.toFixed(1) + ' ★ · ' + (place.userRatingCount || 0) + ' Google reviews';
+    document.getElementById('gBadgeLink').href =
+      'https://search.google.com/local/writereview?placeid=' + place.id;
+    document.getElementById('gBadge').style.display = 'inline-flex';
+  }
+
+  /* Cards */
+  var reviews = (place.reviews || []).filter(function(r){
+    return (r.rating || 0) >= 4 && (r.text || (r.text && r.text.text));
+  });
+  if (!reviews.length) return;
+  var grid = document.getElementById('reviewsGrid');
+  grid.innerHTML = '';
+  reviews.slice(0, 6).forEach(function(r) { grid.appendChild(buildGCard(r)); });
 }
 
 function buildGCard(r) {
@@ -830,12 +829,12 @@ function buildGCard(r) {
 
   var stars = document.createElement('div');
   stars.className = 'stars';
-  stars.textContent = '★★★★★'.slice(0, r.rating) ;
+  stars.textContent = '★★★★★'.slice(0, r.rating || 5);
   card.appendChild(stars);
 
   var quote = document.createElement('p');
   quote.className = 'testimonial-quote';
-  var txt = r.text || '';
+  var txt = (typeof r.text === 'string' ? r.text : (r.text && r.text.text)) || '';
   if (txt.length > 240) txt = txt.slice(0, 237).replace(/\s+\S*$/, '') + '…';
   quote.textContent = txt;
   card.appendChild(quote);
@@ -843,28 +842,30 @@ function buildGCard(r) {
   var author = document.createElement('div');
   author.className = 'testimonial-author';
 
-  if (r.profile_photo_url) {
+  var attr = r.authorAttribution || {};
+  var authorName = attr.displayName || 'Google user';
+  if (attr.photoURI) {
     var img = document.createElement('img');
     img.className = 'author-photo';
-    img.src = r.profile_photo_url;
-    img.alt = r.author_name || 'Reviewer';
+    img.src = attr.photoURI;
+    img.alt = authorName;
     img.loading = 'lazy';
     img.referrerPolicy = 'no-referrer';
     author.appendChild(img);
   } else {
     var init = document.createElement('div');
     init.className = 'author-initials';
-    init.textContent = (r.author_name || '?').split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2).toUpperCase();
+    init.textContent = authorName.split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2).toUpperCase();
     author.appendChild(init);
   }
 
   var meta = document.createElement('div');
   var name = document.createElement('div');
   name.className = 'author-name';
-  name.textContent = r.author_name || 'Google user';
+  name.textContent = authorName;
   var detail = document.createElement('div');
   detail.className = 'author-detail g-detail';
-  detail.textContent = (r.relative_time_description || '') + ' · Google';
+  detail.textContent = (r.relativePublishTimeDescription || '') + ' · Google';
   meta.appendChild(name); meta.appendChild(detail);
   author.appendChild(meta);
 
