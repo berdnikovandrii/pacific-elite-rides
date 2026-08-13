@@ -71,3 +71,18 @@ Blog is now LIVE at pacificeliterides.com/blog.html with two articles. GBP posts
 **2. Sprinter group article promo**
 > Taking 10+ people to a Padres game or concert? Four Ubers on surge pricing costs more than you think — and nobody arrives together. We broke down the real math of one Sprinter party bus vs. splitting into rideshares (spoiler: ~$51/person for the whole evening, LED lights and bar with ice included). Full article: https://pacificeliterides.com/blog/sprinter-van-group-petco-park-concerts.html
 
+
+---
+
+## Week of 2026-08-12 — Corporate Car Service Article
+
+Third blog article live. Queued topic from Week of 2026-08-10 ("Corporate Car Service San Diego") now published.
+
+### GBP Post Drafts
+
+**1. Corporate car service article promo**
+> A driver cancels on your VP twenty minutes before her flight to a client pitch — it happens more than rideshare apps want to admit. We wrote up how San Diego companies are setting up direct-billed corporate accounts instead: consistent Suburban/Escalade pickups, COI on file, one clean invoice instead of a stack of expense reports. Full breakdown on our blog: https://pacificeliterides.com/blog/corporate-car-service-san-diego.html
+
+**2. Maybach / VIP service (different service tie-in)**
+> Not every ride is an airport run. Our Mercedes-Maybach S-Class is built for the nights that matter — weddings, VIP arrivals, anniversary dinners — $280/hr, 3-hour minimum. This [day] we had one out for a [event type] pickup at [pickup location], and the difference shows the moment the door opens. Booking ahead for an upcoming special occasion? Reach out and we'll build the timeline around it.
+
