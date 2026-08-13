@@ -1506,3 +1506,53 @@ input[type=time].wiz-input::-webkit-calendar-picker-indicator {
 .blog-body a:hover { opacity: 0.8; }
 .blog-body strong { color: var(--white); }
 .blog-body em { color: var(--white); }
+
+/* ── BLOG v2: featured-first editorial layout ─────────── */
+.blog-grid { max-width: 1080px; gap: 32px; }
+
+/* Latest article = large horizontal feature card */
+.blog-grid > .blog-card:first-child {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: stretch;
+  min-height: 340px;
+}
+.blog-grid > .blog-card:first-child .blog-card-img {
+  width: 52%; flex-shrink: 0; aspect-ratio: auto;
+}
+.blog-grid > .blog-card:first-child .blog-card-body {
+  padding: 44px 48px; justify-content: center; gap: 16px;
+}
+.blog-grid > .blog-card:first-child .blog-card-meta::before {
+  content: 'Latest'; color: #0d0c0a;
+  background: var(--gold); border-radius: 20px;
+  padding: 4px 12px; margin-right: 12px;
+  font-weight: 600; letter-spacing: 1px;
+}
+.blog-grid > .blog-card:first-child .blog-card-title {
+  font-size: clamp(1.5rem, 2.6vw, 2rem); line-height: 1.25;
+}
+.blog-grid > .blog-card:first-child .blog-card-excerpt {
+  font-size: 1rem; flex: none;
+}
+
+/* Regular cards polish */
+.blog-card { border-radius: 14px; }
+.blog-card-img { aspect-ratio: 16/10; }
+.blog-card-img img { filter: saturate(0.92); }
+.blog-card:hover .blog-card-img img { filter: saturate(1.05); }
+.blog-card-body { padding: 28px 30px 32px; }
+.blog-card-title { font-size: 1.3rem; }
+.blog-card-excerpt {
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.blog-card-link { display: inline-flex; align-items: center; gap: 6px; transition: gap 0.25s var(--ease); }
+.blog-card:hover .blog-card-link { gap: 11px; }
+
+@media (max-width: 820px) {
+  .blog-grid > .blog-card:first-child { flex-direction: column; min-height: 0; }
+  .blog-grid > .blog-card:first-child .blog-card-img { width: 100%; aspect-ratio: 16/9; }
+  .blog-grid > .blog-card:first-child .blog-card-body { padding: 26px 28px 30px; }
+  .blog-grid { gap: 22px; }
+}
