@@ -40,3 +40,34 @@ Running log of Google Business Profile post drafts and blog topic ideas, generat
 **"Sprinter Van San Diego: The Smart Way to Get a Group to Petco Park or a Concert Without Splitting Into 4 Ubers"** — ties to the "Sprinter van San Diego groups" keyword from the Google Ads campaign. Angle: use game-day and concert traffic/parking pain as the hook, position the Sprinter van's flat hourly rate ($160/hr, 4-hr min) against the cost and hassle of multiple rideshares plus stadium parking. Timely given this week's Padres and Zack Bryan rides.
 
 ---
+
+## Week of 2026-08-10
+
+### GBP Post Drafts (fill in bracketed details before posting)
+
+**1. Corporate Ride**
+> Business travel doesn't leave room for a late pickup. Pacific Elite Rides runs corporate car service across San Diego — airport runs, client meetings, downtown office transfers — in a clean, professional Suburban or Escalade, every time. This [day] we had a rider headed from [pickup location] to a meeting near [destination], on time with zero scrambling for parking. Set up standing account rides for your team or book one-off trips as needed.
+
+**2. Airport Transfer**
+> Heading to SAN or LAX for a business trip? Pacific Elite Rides keeps it simple: flat rate from $60, flight tracking built in, no surge pricing even when your flight lands late. This [day] we picked up a traveler from [pickup location] and had them at the terminal with time to spare — no app surge, no guessing on cost. Book ahead for guaranteed pickup, any day of the week.
+
+### Blog Topic Idea (queued — no blog section live yet, save for when built)
+
+**"Corporate Car Service San Diego: Why Businesses Are Ditching Rideshare for Airport and Client Transfers"** — ties to the "corporate car service San Diego" keyword from the Google Ads campaign. Angle: cost/reliability comparison for companies booking repeat trips (airport pickups, client meetings, office transfers) — flat-rate predictability and flight tracking vs. rideshare surge and driver cancellations, plus the option of a standing account for regular business travelers. Not yet used in this queue.
+
+---
+
+---
+
+## Week of 2026-08-12 — BLOG LAUNCH
+
+Blog is now LIVE at pacificeliterides.com/blog.html with two articles. GBP posts below link to them (new flow: blog on site → GBP post links back).
+
+### GBP Post Drafts
+
+**1. Flat rate article promo**
+> Ever landed at SAN and watched the rideshare price double while you walked to baggage claim? We wrote up exactly what our $60 flat rate includes — flight tracking, meet & greet inside the terminal, 60 minutes of free wait time — and when rideshare actually beats us (yes, we're honest about it). Read the full breakdown on our blog: https://pacificeliterides.com/blog/san-airport-transfer-flat-rate-explained.html
+
+**2. Sprinter group article promo**
+> Taking 10+ people to a Padres game or concert? Four Ubers on surge pricing costs more than you think — and nobody arrives together. We broke down the real math of one Sprinter party bus vs. splitting into rideshares (spoiler: ~$51/person for the whole evening, LED lights and bar with ice included). Full article: https://pacificeliterides.com/blog/sprinter-van-group-petco-park-concerts.html
+
