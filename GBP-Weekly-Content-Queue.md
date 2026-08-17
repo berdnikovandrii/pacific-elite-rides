@@ -86,3 +86,17 @@ Third blog article live. Queued topic from Week of 2026-08-10 ("Corporate Car Se
 **2. Maybach / VIP service (different service tie-in)**
 > Not every ride is an airport run. Our Mercedes-Maybach S-Class is built for the nights that matter — weddings, VIP arrivals, anniversary dinners — $280/hr, 3-hour minimum. This [day] we had one out for a [event type] pickup at [pickup location], and the difference shows the moment the door opens. Booking ahead for an upcoming special occasion? Reach out and we'll build the timeline around it.
 
+---
+
+## Week of 2026-08-17 — Del Mar Race Season Article
+
+Fourth blog article live, timed to Del Mar's summer meet (stakes weekends and the Pacific Classic run through early September).
+
+### GBP Post Drafts (fill in bracketed details before posting)
+
+**1. Del Mar race season article promo**
+> Stakes Saturdays and the Pacific Classic mean 15,000 people trying to leave the Del Mar lot in the same 20 minutes — and rideshare surge right along with them. We broke down the real math on hiring a car that waits on your schedule instead: hourly charter, group Sprinter for the Turf Club crew, or a Maybach for date night at the track. Full breakdown on our blog: https://pacificeliterides.com/blog/del-mar-race-season-car-service.html
+
+**2. Sprinter Party Bus (different service tie-in)**
+> Got a group of [number] headed to [event type] this [day]? Our Mercedes Sprinter Party Bus seats up to 14 — LED lighting, premium sound, TV, bar with ice — for $180/hr, 4-hour minimum. Everyone rides together, one pickup, one drop-off, no circling for parking or splitting into separate cars. This week we ran a group out to [pickup location] and back without a hitch. Reach out to lock in your date.
+
