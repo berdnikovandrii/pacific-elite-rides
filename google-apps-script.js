@@ -39,6 +39,15 @@ function doPost(e) {
     var row = sheet.getLastRow();
     sheet.getRange(row, 1, 1, 17).setBackground("#FDF6E3");
 
+    // ── SMS-сповіщення про новий лід (Mint / T-Mobile gateway) ──
+    try {
+      var smsMsg = "NEW LEAD " + id + "\n" +
+        (data.clientName || "") + " " + (data.clientPhone || "") + "\n" +
+        (data.serviceType || "") + " · " + (data.rideDate || "") + " " + (data.rideTime || "") + "\n" +
+        (data.pickup || "") + " -> " + (data.dropoff || "");
+      MailApp.sendEmail("6193945340@tmomail.net", "PER Lead", smsMsg);
+    } catch (smsErr) { /* SMS-збій не блокує запис бронювання */ }
+
     return ok({ id: id });
   } catch(err) {
     return error(err.toString());
