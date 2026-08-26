@@ -100,3 +100,17 @@ Fourth blog article live, timed to Del Mar's summer meet (stakes weekends and th
 **2. Sprinter Party Bus (different service tie-in)**
 > Got a group of [number] headed to [event type] this [day]? Our Mercedes Sprinter Party Bus seats up to 14 — LED lighting, premium sound, TV, bar with ice — for $180/hr, 4-hour minimum. Everyone rides together, one pickup, one drop-off, no circling for parking or splitting into separate cars. This week we ran a group out to [pickup location] and back without a hitch. Reach out to lock in your date.
 
+---
+
+## Week of 2026-08-25 — Cruise Port Transfer Article
+
+Fifth blog article live, timed to the fall cruise season ramping back up out of the B Street Pier / Broadway Pier terminals.
+
+### GBP Post Drafts (fill in bracketed details before posting)
+
+**1. Cruise port transfer article promo**
+> Cruise season is back at the B Street Pier — and so is the parking bill if you drive and leave your car for the week. We broke down the real math: airport-to-pier is our standard $60 downtown flat rate, off-site cruise parking can run $100–280 for a 7-night trip, and why the Escalade beats the party bus when everyone's hauling luggage. Full breakdown on our blog: https://pacificeliterides.com/blog/san-diego-cruise-port-transfer.html
+
+**2. Airport Transfer (different service tie-in)**
+> Flying into SAN this [day]? Pacific Elite Rides runs flat-rate transfers starting at $60 — flight tracking included, so a delayed flight doesn't mean a missed pickup. We had a rider land at [pickup location] headed to [destination] this week, on time with zero surge pricing. Book ahead for guaranteed availability, any day of the week.
+
