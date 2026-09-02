@@ -114,3 +114,17 @@ Fifth blog article live, timed to the fall cruise season ramping back up out of 
 **2. Airport Transfer (different service tie-in)**
 > Flying into SAN this [day]? Pacific Elite Rides runs flat-rate transfers starting at $60 — flight tracking included, so a delayed flight doesn't mean a missed pickup. We had a rider land at [pickup location] headed to [destination] this week, on time with zero surge pricing. Book ahead for guaranteed availability, any day of the week.
 
+---
+
+## Week of 2026-09-02 — Wedding Transportation Timeline Article
+
+Sixth blog article live. Covers getaway car (Maybach), wedding party shuttle (Sprinter Party Bus), and guest logistics with a sample Saturday timeline and real hourly rates — first article to feature the Maybach as the lead vehicle.
+
+### GBP Post Drafts (fill in bracketed details before posting)
+
+**1. Wedding transportation article promo**
+> Booking a wedding venue and caterer months out, then leaving transportation for the week-before phone call? That's the timeline mistake that makes ceremonies start late. We broke down a real San Diego wedding day — Maybach for the couple, Sprinter party bus for the wedding party, SUVs for family — with actual hourly rates and a sample timeline. Full breakdown on our blog: https://pacificeliterides.com/blog/san-diego-wedding-transportation-timeline.html
+
+**2. Corporate Ride (different service tie-in)**
+> Business travel doesn't leave room for a late pickup or a cancelled driver. Pacific Elite Rides runs corporate car service across San Diego — airport runs, client meetings, downtown office transfers — in a clean Suburban or Escalade, every time. This [day] we had a rider headed from [pickup location] to a meeting near [destination], on time with zero scrambling for parking. Set up a standing account for your team or book one-off trips as needed.
+
