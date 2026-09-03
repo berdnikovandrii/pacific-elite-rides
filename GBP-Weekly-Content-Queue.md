@@ -128,3 +128,17 @@ Sixth blog article live. Covers getaway car (Maybach), wedding party shuttle (Sp
 **2. Corporate Ride (different service tie-in)**
 > Business travel doesn't leave room for a late pickup or a cancelled driver. Pacific Elite Rides runs corporate car service across San Diego — airport runs, client meetings, downtown office transfers — in a clean Suburban or Escalade, every time. This [day] we had a rider headed from [pickup location] to a meeting near [destination], on time with zero scrambling for parking. Set up a standing account for your team or book one-off trips as needed.
 
+---
+
+## Week of 2026-09-02 — Suburban Luggage Capacity vs. Uber Article
+
+Seventh blog article live. Breaks down real cargo numbers for the Suburban/Escalade and why an app that only guarantees a seat count keeps leaving bags — and passengers — behind.
+
+### GBP Post Drafts (fill in bracketed details before posting)
+
+**1. Suburban luggage capacity article promo**
+> Ever ordered an Uber XL for your family of five and watched a minivan with someone else's clutter in the trunk pull up? We broke down exactly how much luggage fits in our Suburban and Escalade — real cubic-foot numbers, not guesses — and why an app that only promises a seat count keeps leaving bags (and passengers) behind. Full breakdown on our blog: https://pacificeliterides.com/blog/suburban-luggage-capacity-vs-uber-san-diego.html
+
+**2. Airport Transfer (different service tie-in)**
+> Landing at SAN with the whole family and a week's worth of luggage this [day]? Pacific Elite Rides confirms your vehicle before you land — Suburban or Escalade, room for every checked bag, no surprise minivan. Flat rate from $60, flight tracking included, so a delayed flight doesn't mean a missed pickup. Book ahead for guaranteed availability.
+
