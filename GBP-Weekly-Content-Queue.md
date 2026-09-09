@@ -142,3 +142,17 @@ Seventh blog article live. Breaks down real cargo numbers for the Suburban/Escal
 **2. Airport Transfer (different service tie-in)**
 > Landing at SAN with the whole family and a week's worth of luggage this [day]? Pacific Elite Rides confirms your vehicle before you land — Suburban or Escalade, room for every checked bag, no surprise minivan. Flat rate from $60, flight tracking included, so a delayed flight doesn't mean a missed pickup. Book ahead for guaranteed availability.
 
+---
+
+## Week of 2026-09-09 — Temecula Wine Tour Article
+
+Eighth blog article live, timed to Temecula's harvest season (40+ wineries pouring new releases through October). First article to cover wine country day trips specifically.
+
+### GBP Post Drafts (fill in bracketed details before posting)
+
+**1. Temecula wine tour article promo**
+> Temecula's harvest season is in full swing — but the 60-75 minute drive each way is exactly why so many wine country days go sideways. We broke down the real math: rideshare surge on a rural return pickup, renting a car and babysitting a single glass all day, or hiring a car that waits at every winery on your schedule. Full breakdown on our blog: https://pacificeliterides.com/blog/temecula-wine-tour-car-service-san-diego.html
+
+**2. Sprinter Party Bus (different service tie-in)**
+> Got a bachelorette weekend or birthday crew of [number] headed to [event type] this [day]? Our Mercedes Sprinter Party Bus seats up to 14 — LED lighting, premium sound, TV, bar with ice — for $180/hr, 4-hour minimum. Everyone rides together, one pickup, one drop-off. This week we ran a group out to [pickup location] and back without a hitch. Reach out to lock in your date.
+
