@@ -6,7 +6,7 @@
   <title>Book a Ride — Pacific Elite Rides</title>
   <meta name="description" content="Book your luxury ride in San Diego. Airport transfers, corporate, Sprinter van, and VIP service.">
   <meta property="og:title" content="Book a Ride | Pacific Elite Rides San Diego"/>
-  <meta property="og:description" content="Book your luxury black car ride in San Diego. Airport transfers from $60."/>
+  <meta property="og:description" content="Book your luxury black car ride in San Diego. Flat-rate airport transfers, no surge pricing."/>
   <meta property="og:image" content="https://pacificeliterides.com/img-suburban.jpg"/>
   <link rel="canonical" href="https://pacificeliterides.com/booking.html"/>
   <link rel="icon" href="favicon.ico" sizes="any"/>
@@ -83,10 +83,10 @@
       <div class="wiz-header" id="wizHeader">
         <div class="wiz-eyebrow">
           <span class="wiz-eyebrow-label" id="wizEyebrow">Book a Ride</span>
-          <span class="wiz-step-caption" id="wizCaption">Step 1 of 6 · Service</span>
+          <span class="wiz-step-caption" id="wizCaption">Step 1 of 3 · Trip</span>
         </div>
         <div class="wiz-progress-track">
-          <div class="wiz-progress-fill" id="wizBar" style="width:16.67%"></div>
+          <div class="wiz-progress-fill" id="wizBar" style="width:33.33%"></div>
         </div>
       </div>
 
@@ -98,16 +98,9 @@
           <p class="wiz-title" id="s0title">What can we help with?</p>
           <p class="wiz-sub" id="s0sub">Select a service to get started</p>
           <div class="svc-grid" id="svcGrid"></div>
-          <div class="wiz-nav" id="s0nav" style="display:none">
-            <button class="wiz-primary" onclick="WIZ.next()" id="s0Cont">Continue</button>
-          </div>
-        </section>
+          <div class="wiz-err-msg" id="err-service"></div>
 
-        <!-- STEP 1: Trip details -->
-        <section class="wiz-step" id="step1" style="display:none">
-          <p class="wiz-title" id="s1title">Trip Details</p>
-          <p class="wiz-sub" id="s1sub">When are you travelling?</p>
-          <div class="wiz-grid-2">
+          <div class="wiz-grid-2" style="margin-top:26px">
             <div class="wiz-field">
               <label class="wiz-label" id="lDate">Date *</label>
               <input type="date" id="rideDate" class="wiz-input" onchange="WIZ.state.date=this.value;WIZ.clearErr('date',this)">
@@ -135,7 +128,7 @@
                 </div>
                 <div class="wiz-select-wrap" style="flex:1">
                   <select id="rideAmPm" class="wiz-input" onchange="WIZ.syncTime()">
-                    <option value="">—</option>
+                    <option value="">&mdash;</option>
                     <option value="AM">AM</option>
                     <option value="PM">PM</option>
                   </select>
@@ -145,51 +138,56 @@
               <div class="wiz-err-msg" id="err-time"></div>
             </div>
           </div>
-          <div class="wiz-grid-2">
-            <div class="wiz-field">
-              <label class="wiz-label" id="lPax">Passengers</label>
-              <div class="wiz-select-wrap">
-                <select id="passengers" class="wiz-input" onchange="WIZ.state.passengers=this.value">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8+">8+</option>
-                </select>
-                <span class="wiz-chev">&#9662;</span>
-              </div>
-            </div>
-            <div class="wiz-field">
-              <label class="wiz-label" id="lVehicle">Vehicle Preference</label>
-              <div class="wiz-select-wrap">
-                <select id="vehicle" class="wiz-input" onchange="WIZ.state.vehicle=this.value">
-                  <option value="Suburban" data-en="Chevrolet Suburban (recommended)" data-es="Chevrolet Suburban (recomendado)">Chevrolet Suburban (recommended)</option>
-                  <option value="Any" data-en="Any Available" data-es="Cualquier vehículo">Any Available</option>
-                  <option value="Escalade" data-en="Cadillac Escalade (limited)" data-es="Cadillac Escalade (limitado)">Cadillac Escalade (limited)</option>
-                  <option value="Sprinter Party Bus" data-en="Sprinter Party Bus ($180/hr)" data-es="Sprinter Party Bus ($180/hr)">Sprinter Party Bus ($180/hr)</option>
-                  <option value="Maybach" data-en="Mercedes-Maybach S-Class ($280/hr)" data-es="Mercedes-Maybach Clase S ($280/hr)">Mercedes-Maybach S-Class ($280/hr)</option>
-                </select>
-                <span class="wiz-chev">&#9662;</span>
-              </div>
+
+          <div class="wiz-field">
+            <label class="wiz-label" id="lPax">Passengers</label>
+            <div class="wiz-select-wrap">
+              <select id="passengers" class="wiz-input" onchange="WIZ.state.passengers=this.value">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8+">8+</option>
+              </select>
+              <span class="wiz-chev">&#9662;</span>
             </div>
           </div>
-          <div class="wiz-field" id="flightWrap">
-            <label class="wiz-label" id="lFlight">Flight Number <span style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
-            <input type="text" id="flight" class="wiz-input" placeholder="e.g. UA 1234" oninput="WIZ.state.flight=this.value">
-          </div>
-          <div class="wiz-nav">
-            <button class="wiz-back" onclick="WIZ.back()" id="s1back">&#8592; Back</button>
-            <button class="wiz-primary" onclick="WIZ.next()" id="s1Cont">Continue</button>
+
+          <details class="wiz-more">
+            <summary id="moreOptions">More options</summary>
+            <div class="wiz-more-body">
+              <div class="wiz-field">
+                <label class="wiz-label" id="lVehicle">Vehicle Preference</label>
+                <div class="wiz-select-wrap">
+                  <select id="vehicle" class="wiz-input" onchange="WIZ.state.vehicle=this.value">
+                    <option value="Suburban" data-en="Chevrolet Suburban (recommended)" data-es="Chevrolet Suburban (recomendado)">Chevrolet Suburban (recommended)</option>
+                    <option value="Any" data-en="Any Available" data-es="Cualquier veh&iacute;culo">Any Available</option>
+                    <option value="Escalade" data-en="Cadillac Escalade (limited)" data-es="Cadillac Escalade (limitado)">Cadillac Escalade (limited)</option>
+                    <option value="Sprinter Party Bus" data-en="Sprinter Party Bus ($180/hr)" data-es="Sprinter Party Bus ($180/hr)">Sprinter Party Bus ($180/hr)</option>
+                    <option value="Maybach" data-en="Mercedes-Maybach S-Class ($280/hr)" data-es="Mercedes-Maybach Clase S ($280/hr)">Mercedes-Maybach S-Class ($280/hr)</option>
+                  </select>
+                  <span class="wiz-chev">&#9662;</span>
+                </div>
+              </div>
+              <div class="wiz-field" id="flightWrap">
+                <label class="wiz-label" id="lFlight">Flight Number <span style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+                <input type="text" id="flight" class="wiz-input" placeholder="e.g. UA 1234" oninput="WIZ.state.flight=this.value">
+              </div>
+            </div>
+          </details>
+
+          <div class="wiz-nav" id="s0nav">
+            <button class="wiz-primary" onclick="WIZ.next()" id="s0Cont">Continue</button>
           </div>
         </section>
 
-        <!-- STEP 2: Route -->
-        <section class="wiz-step" id="step2" style="display:none">
-          <p class="wiz-title" id="s2title">Your Route</p>
-          <p class="wiz-sub" id="s2sub">Enter pickup and drop-off locations</p>
+        <!-- STEP 2 of 3: Route -->
+        <section class="wiz-step" id="step1" style="display:none">
+          <p class="wiz-title" id="s1title">Your Route</p>
+          <p class="wiz-sub" id="s1sub">Enter pickup and drop-off locations</p>
 
           <div class="wiz-field">
             <label class="wiz-label" id="lPickup">Pickup Address *</label>
@@ -219,15 +217,15 @@
           </div>
 
           <div class="wiz-nav">
-            <button class="wiz-back" onclick="WIZ.back()" id="s2back">&#8592; Back</button>
-            <button class="wiz-primary" onclick="WIZ.next()" id="s2Cont">Continue</button>
+            <button class="wiz-back" onclick="WIZ.back()" id="s1back">&#8592; Back</button>
+            <button class="wiz-primary" onclick="WIZ.next()" id="s1Cont">Continue</button>
           </div>
         </section>
 
-        <!-- STEP 3: Contact -->
-        <section class="wiz-step" id="step3" style="display:none">
-          <p class="wiz-title" id="s3title">Contact Info</p>
-          <p class="wiz-sub" id="s3sub">How should we reach you?</p>
+        <!-- STEP 3 of 3: Contact -->
+        <section class="wiz-step" id="step2" style="display:none">
+          <p class="wiz-title" id="s2title">Contact Info</p>
+          <p class="wiz-sub" id="s2sub">How should we reach you?</p>
 
           <div class="wiz-field">
             <label class="wiz-label" id="lName">Full Name *</label>
@@ -257,56 +255,12 @@
           </div>
 
           <div class="wiz-nav">
-            <button class="wiz-back" onclick="WIZ.back()" id="s3back">&#8592; Back</button>
-            <button class="wiz-primary" onclick="WIZ.next()" id="s3Cont">Continue</button>
+            <button class="wiz-back" onclick="WIZ.back()" id="s2back">&#8592; Back</button>
+            <button class="wiz-primary" onclick="WIZ.submit()" id="s2Send">Send Booking Request &#8594;</button>
           </div>
+          <p class="wiz-form-note" id="wizNote">No payment needed now &mdash; we&#8217;ll confirm and send an invoice within 15 minutes.</p>
         </section>
 
-        <!-- STEP 4: Payment -->
-        <section class="wiz-step" id="step4" style="display:none">
-          <p class="wiz-title" id="s4title">Payment</p>
-          <p class="wiz-sub" id="s4sub">No payment needed right now</p>
-
-          <div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:12px;padding:24px 28px;margin:8px 0 4px">
-            <div style="display:flex;align-items:flex-start;gap:14px">
-              <svg style="flex-shrink:0;margin-top:2px" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-              <div>
-                <p id="payLaterTitle" style="font-weight:600;color:var(--gold);margin:0 0 6px;font-size:15px">Invoice by Email</p>
-                <p id="payLaterSub" style="color:rgba(255,255,255,.65);margin:0;font-size:14px;line-height:1.5">We'll review your request and send a secure payment invoice to your email within 15 minutes. Your ride is confirmed once payment is received.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="wiz-nav">
-            <button class="wiz-back" onclick="WIZ.back()" id="s4back">&#8592; Back</button>
-            <button class="wiz-primary" onclick="WIZ.next()" id="s4Cont">Continue</button>
-          </div>
-        </section>
-
-        <!-- STEP 5: Review -->
-        <section class="wiz-step" id="step5" style="display:none">
-          <p class="wiz-title" id="s5title">Review &amp; Confirm</p>
-          <p class="wiz-sub" id="s5sub">Everything look good?</p>
-
-          <div class="wiz-review-groups" id="reviewGroups"></div>
-
-          <div class="wiz-review-sidebar">
-            <div class="wiz-info-card" id="pricingCard">
-              <p class="wiz-info-title" id="pricingTitle">Starting Rates</p>
-              <div id="pricingRows"></div>
-            </div>
-            <div class="wiz-info-card">
-              <p class="wiz-info-title" id="trustTitle">What to expect</p>
-              <ul id="trustList" style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px"></ul>
-            </div>
-          </div>
-
-          <div class="wiz-nav">
-            <button class="wiz-back" onclick="WIZ.back()" id="s5back">&#8592; Back</button>
-            <button class="wiz-primary" onclick="WIZ.submit()" id="s5Send">Send Booking Request &#8594;</button>
-          </div>
-          <p class="wiz-form-note" id="wizNote">We'll confirm within 15 minutes. No charge until confirmed.</p>
-        </section>
 
       </div><!-- /wiz-content -->
 
@@ -335,7 +289,7 @@
 var DICT = {
   en: {
     eyebrow: 'Book a Ride',
-    stepNames: ['Service','Trip','Route','Contact','Payment','Review'],
+    stepNames: ['Trip','Route','Contact'],
     stepOf: function(n, total) { return 'Step ' + n + ' of ' + total; },
     back: '← Back',
     cont: 'Continue',
@@ -366,19 +320,12 @@ var DICT = {
     lNotes:   'Special Requests',
     payLaterTitle: 'Invoice by Email',
     payLaterSub:   "We'll send a secure payment invoice to your email within 15 minutes. No card needed now.",
-    reviewGroups: ['Service','Trip Details','Route','Contact','Payment'],
-    reviewKeys: {
-      service:'Service', date:'Date', time:'Time', passengers:'Passengers',
-      vehicle:'Vehicle', flight:'Flight', pickup:'Pickup', stops:'Stop',
-      dropoff:'Drop-off', name:'Name', phone:'Phone', email:'Email',
-      notes:'Requests', pay:'Payment'
-    },
     payLaterLabel: 'Invoice after confirmation',
     payNowLabel:   'Credit card (Square)',
     pricingTitle: 'Starting Rates',
     trustTitle:   'What to expect',
     prices: [
-      ['Airport Transfer','From $60'],
+      ['SAN Airport','Flat rate by zone'],
       ['Hourly Charter',  '$90 / hr'],
       ['Sprinter Party Bus','$180 / hr · 4h min'],
       ['Maybach S-Class', '$280 / hr · 3h min'],
@@ -398,9 +345,10 @@ var DICT = {
     errReq:   'Required',
     errEmail: 'Enter a valid email',
     flightOptional: '(optional)',
+    moreOptions: 'More options — vehicle, flight number',
     notesOptional:  '(optional)',
     services: [
-      { id:'Airport Transfer', t:'SAN Airport Transfer', d:'San Diego International — flat rate from $60' },
+      { id:'Airport Transfer', t:'SAN Airport Transfer', d:'San Diego International — flat rate by zone' },
       { id:'LAX Transfer',     t:'LAX Transfer',         d:'San Diego ↔ LAX — flat $375, either direction' },
       { id:'Corporate Ride',   t:'Corporate Ride',      d:'Meetings, roadshows, client pickups' },
       { id:'Hourly Charter',   t:'Hourly Charter',      d:'$90/hr — as-directed, you set the pace' },
@@ -412,7 +360,7 @@ var DICT = {
   },
   es: {
     eyebrow: 'Reservar un viaje',
-    stepNames: ['Servicio','Viaje','Ruta','Contacto','Pago','Revisión'],
+    stepNames: ['Viaje','Ruta','Contacto'],
     stepOf: function(n, total) { return 'Paso ' + n + ' de ' + total; },
     back: '← Atrás',
     cont: 'Continuar',
@@ -443,19 +391,12 @@ var DICT = {
     lNotes:   'Solicitudes especiales',
     payLaterTitle: 'Factura por correo',
     payLaterSub:   'Enviaremos una factura de pago segura a tu correo en 15 minutos. No se necesita tarjeta ahora.',
-    reviewGroups: ['Servicio','Detalles del viaje','Ruta','Contacto','Pago'],
-    reviewKeys: {
-      service:'Servicio', date:'Fecha', time:'Hora', passengers:'Pasajeros',
-      vehicle:'Vehículo', flight:'Vuelo', pickup:'Recogida', stops:'Parada',
-      dropoff:'Destino', name:'Nombre', phone:'Teléfono', email:'Correo',
-      notes:'Solicitudes', pay:'Pago'
-    },
     payLaterLabel: 'Factura tras confirmación',
     payNowLabel:   'Tarjeta de crédito (Square)',
     pricingTitle: 'Tarifas desde',
     trustTitle:   'Qué esperar',
     prices: [
-      ['Traslado al aeropuerto','Desde $60'],
+      ['Aeropuerto SAN','Tarifa fija por zona'],
       ['Alquiler por hora',     '$90 / hr'],
       ['Sprinter Party Bus',    '$180 / hr · mín. 4h'],
       ['Maybach Clase S',       '$280 / hr · mín. 3h'],
@@ -475,9 +416,10 @@ var DICT = {
     errReq:   'Requerido',
     errEmail: 'Correo inválido',
     flightOptional: '(opcional)',
+    moreOptions: 'Más opciones — vehículo, número de vuelo',
     notesOptional:  '(opcional)',
     services: [
-      { id:'Airport Transfer', t:'Traslado aeropuerto SAN', d:'San Diego International — tarifa fija desde $60' },
+      { id:'Airport Transfer', t:'Traslado aeropuerto SAN', d:'San Diego International — tarifa fija por zona' },
       { id:'LAX Transfer',     t:'Traslado a LAX',          d:'San Diego ↔ LAX — $375 fijos, ambos sentidos' },
       { id:'Corporate Ride',   t:'Viaje corporativo',      d:'Reuniones, presentaciones, clientes' },
       { id:'Hourly Charter',   t:'Alquiler por hora',      d:'$90/hr — tú marcas el ritmo' },
@@ -539,7 +481,7 @@ window.WIZ = {
   /* render */
   render: function(step) {
     var d = DICT[this.state.lang];
-    for (var i = 0; i < 6; i++) {
+    for (var i = 0; i < 3; i++) {
       var se = el('step' + i);
       if (se) se.style.display = 'none';
     }
@@ -554,18 +496,27 @@ window.WIZ = {
       target.style.animation = '';
     }
 
-    var pct = ((step + 1) / 6 * 100).toFixed(2);
+    var pct = ((step + 1) / 3 * 100).toFixed(2);
     el('wizBar').style.width = pct + '%';
     txt('wizEyebrow', d.eyebrow);
-    txt('wizCaption', d.stepOf(step + 1, 6) + ' · ' + d.stepNames[step]);
+    txt('wizCaption', d.stepOf(step + 1, 3) + ' · ' + d.stepNames[step]);
 
     var fn = 'renderStep' + step;
     if (typeof this[fn] === 'function') this[fn](d);
   },
 
   renderStep0: function(d) {
+    /* Step 1 of 3 — service + when + who's riding. Vehicle and flight number are
+       optional and live inside the collapsed "More options" block. */
     txt('s0title', d.s0title);
     txt('s0sub',   d.s0sub);
+    txt('lDate', d.lDate); txt('lTime', d.lTime); txt('lPax', d.lPax);
+    txt('lVehicle', d.lVehicle);
+    txt('moreOptions', d.moreOptions);
+    var lf = el('lFlight');
+    if (lf) lf.innerHTML = d.lFlight + ' <span style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0">' + d.flightOptional + '</span>';
+    txt('s0Cont', d.cont);
+
     var grid = el('svcGrid');
     grid.innerHTML = '';
     var self = this;
@@ -575,35 +526,22 @@ window.WIZ = {
       btn.innerHTML =
         '<div class="svc-card-header">' +
           '<span class="svc-card-name">' + svc.t + '</span>' +
-          '<span class="svc-card-check">' + (self.state.serviceType === svc.id ? '✓' : '') + '</span>' +
+          '<span class="svc-card-check">' + (self.state.serviceType === svc.id ? '\u2713' : '') + '</span>' +
         '</div>' +
         '<span class="svc-card-desc">' + svc.d + '</span>';
       btn.onclick = function() { self.pickService(svc.id); };
       grid.appendChild(btn);
     });
-    var nav = el('s0nav');
-    if (nav) nav.style.display = this.state.serviceType ? 'flex' : 'none';
-    if (el('s0Cont')) txt('s0Cont', d.cont);
-  },
-
-  renderStep1: function(d) {
-    txt('s1title', d.s1title); txt('s1sub', d.s1sub);
-    txt('lDate', d.lDate); txt('lTime', d.lTime);
-    txt('lPax', d.lPax); txt('lVehicle', d.lVehicle);
-    var lf = el('lFlight');
-    if (lf) lf.innerHTML = d.lFlight + ' <span style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0">' + d.flightOptional + '</span>';
-    txt('s1back', d.back); txt('s1Cont', d.cont);
 
     var s = this.state;
-    if (el('rideDate'))   { el('rideDate').value = s.date; el('rideDate').min = new Date().toISOString().split('T')[0]; }
-    // Restore time selects
+    if (el('rideDate')) { el('rideDate').value = s.date; el('rideDate').min = new Date().toISOString().split('T')[0]; }
     if (s.time) {
-      var parts = s.time.split(' '); // "10:30 AM"
+      var parts = s.time.split(' ');
       if (parts.length === 2) {
         var hm = parts[0].split(':');
-        if (el('rideHour'))  el('rideHour').value  = hm[0] || '';
-        if (el('rideMin'))   el('rideMin').value   = hm[1] || '';
-        if (el('rideAmPm'))  el('rideAmPm').value  = parts[1] || '';
+        if (el('rideHour')) el('rideHour').value = hm[0] || '';
+        if (el('rideMin'))  el('rideMin').value  = hm[1] || '';
+        if (el('rideAmPm')) el('rideAmPm').value = parts[1] || '';
       }
     }
     if (el('passengers')) el('passengers').value = s.passengers;
@@ -614,115 +552,42 @@ window.WIZ = {
       opt.textContent = s.lang === 'es' ? opt.dataset.es : opt.dataset.en;
     });
 
+    /* Flight number only matters for the two airport services */
     var fw = el('flightWrap');
-    if (fw) fw.style.display = s.serviceType === 'Airport Transfer' ? 'block' : 'none';
-    this.showErrors(['date','time']);
+    if (fw) fw.style.display = (s.serviceType === 'Airport Transfer' || s.serviceType === 'LAX Transfer') ? 'block' : 'none';
+
+    this.showErrors(['service','date','time']);
   },
 
-  renderStep2: function(d) {
-    txt('s2title', d.s2title); txt('s2sub', d.s2sub);
+  renderStep1: function(d) {
+    /* Step 2 of 3 — route */
+    txt('s1title', d.s2title); txt('s1sub', d.s2sub);
     txt('lPickup', d.lPickup); txt('lDropoff', d.lDropoff);
     txt('addStopLabel', d.addStop);
-    txt('s2back', d.back); txt('s2Cont', d.cont);
+    txt('s1back', d.back); txt('s1Cont', d.cont);
     if (el('pickup'))  el('pickup').value  = this.state.pickup;
     if (el('dropoff')) el('dropoff').value = this.state.dropoff;
     this.renderStops(d);
     this.showErrors(['pickup','dropoff']);
   },
 
-  renderStep3: function(d) {
-    txt('s3title', d.s3title); txt('s3sub', d.s3sub);
+  renderStep2: function(d) {
+    /* Step 3 of 3 — contact + submit */
+    txt('s2title', d.s3title); txt('s2sub', d.s3sub);
     txt('lName', d.lName); txt('lPhone', d.lPhone); txt('lEmail', d.lEmail);
     var ln = el('lNotes');
     if (ln) ln.innerHTML = d.lNotes + ' <span style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0">' + d.notesOptional + '</span>';
-    txt('s3back', d.back); txt('s3Cont', d.cont);
+    txt('s2back', d.back); txt('s2Send', d.send);
+    txt('wizNote', d.wizNote);
     var s = this.state;
     if (el('clientName'))  el('clientName').value  = s.name;
     if (el('clientPhone')) el('clientPhone').value = s.phone;
     if (el('clientEmail')) el('clientEmail').value = s.email;
     if (el('notes'))       el('notes').value       = s.notes;
+    this.state.pay = 'later';
     this.showErrors(['name','phone','email']);
   },
 
-  renderStep4: function(d) {
-    txt('s4title', d.s4title); txt('s4sub', d.s4sub);
-    txt('payLaterTitle', d.payLaterTitle); txt('payLaterSub', d.payLaterSub);
-    txt('s4back', d.back); txt('s4Cont', d.cont);
-    this.state.pay = 'later';
-  },
-
-  renderStep5: function(d) {
-    txt('s5title', d.s5title); txt('s5sub', d.s5sub);
-    txt('s5back', d.back); txt('s5Send', d.send);
-    txt('wizNote', d.wizNote);
-    txt('pricingTitle', d.pricingTitle);
-    txt('trustTitle',   d.trustTitle);
-
-    var s = this.state;
-    var k = d.reviewKeys;
-    var groups = [
-      { title: d.reviewGroups[0], step: 0,
-        rows: [{ key: k.service, val: s.serviceType }] },
-      { title: d.reviewGroups[1], step: 1,
-        rows: [
-          { key: k.date,       val: s.date },
-          { key: k.time,       val: s.time },
-          { key: k.passengers, val: s.passengers },
-          { key: k.vehicle,    val: s.vehicle }
-        ].concat(s.flight ? [{ key: k.flight, val: s.flight }] : [])
-      },
-      { title: d.reviewGroups[2], step: 2,
-        rows: [{ key: k.pickup, val: s.pickup }]
-          .concat(s.stops.map(function(st, i) {
-            return { key: k.stops + (s.stops.length > 1 ? ' ' + (i+1) : ''), val: st };
-          }))
-          .concat([{ key: k.dropoff, val: s.dropoff }])
-      },
-      { title: d.reviewGroups[3], step: 3,
-        rows: [
-          { key: k.name,  val: s.name  },
-          { key: k.phone, val: s.phone },
-          { key: k.email, val: s.email }
-        ].concat(s.notes ? [{ key: k.notes, val: s.notes }] : [])
-      },
-      { title: d.reviewGroups[4], step: 4,
-        rows: [{ key: k.pay, val: s.pay === 'now' ? d.payNowLabel : d.payLaterLabel }]
-      }
-    ];
-
-    var container = el('reviewGroups');
-    container.innerHTML = '';
-    groups.forEach(function(g) {
-      var div = document.createElement('div');
-      div.className = 'wiz-review-group';
-      var rowsHtml = g.rows.map(function(r) {
-        return '<div class="wiz-review-row">' +
-          '<span class="wiz-review-key">' + r.key + '</span>' +
-          '<span class="wiz-review-val">' + (r.val || '—') + '</span>' +
-          '</div>';
-      }).join('');
-      div.innerHTML =
-        '<div class="wiz-review-group-header">' +
-          '<span class="wiz-review-group-title">' + g.title + '</span>' +
-          '<button class="wiz-edit-btn" onclick="WIZ.goToStep(' + g.step + ')">Edit</button>' +
-        '</div>' +
-        '<div class="wiz-review-rows">' + rowsHtml + '</div>';
-      container.appendChild(div);
-    });
-
-    el('pricingRows').innerHTML = d.prices.map(function(p) {
-      return '<div class="wiz-review-row" style="margin-bottom:7px">' +
-        '<span class="wiz-review-key">' + p[0] + '</span>' +
-        '<span class="wiz-review-val">' + p[1] + '</span></div>';
-    }).join('');
-
-    el('trustList').innerHTML = d.trust.map(function(item) {
-      return '<li style="display:flex;align-items:baseline;gap:8px;font-size:13px;color:rgba(243,239,230,.7)">' +
-        '<span style="color:var(--gold);flex:none">✓</span>' + item + '</li>';
-    }).join('');
-  },
-
-  /* stops */
   renderStops: function(d) {
     var container = el('stopsContainer');
     container.innerHTML = '';
@@ -788,32 +653,26 @@ window.WIZ = {
     }
   },
 
-  /* payment */
-  selectPay: function(mode) {
-    this.state.pay = mode;
-    this.renderStep4(DICT[this.state.lang]);
-  },
-
   /* navigation */
   pickService: function(id) {
     this.state.serviceType = id;
+    this.clearErr('service', null);
     this.renderStep0(DICT[this.state.lang]);
-    var self = this;
-    setTimeout(function() { self.next(); }, 170);
   },
 
   validateStep: function(step) {
     var e = {};
     var s = this.state;
-    if (step === 1) {
+    if (step === 0) {
+      if (!s.serviceType) e.service = 'req';
       if (!s.date) e.date = 'req';
       if (!s.time) e.time = 'req';
     }
-    if (step === 2) {
+    if (step === 1) {
       if (!s.pickup.trim())  e.pickup  = 'req';
       if (!s.dropoff.trim()) e.dropoff = 'req';
     }
-    if (step === 3) {
+    if (step === 2) {
       if (!s.name.trim())  e.name  = 'req';
       if (!s.phone.trim()) e.phone = 'req';
       if (!s.email.trim()) e.email = 'req';
@@ -835,7 +694,7 @@ window.WIZ = {
   applyErrors: function(errors) {
     this.state.errors = errors;
     var d = DICT[this.state.lang];
-    var fieldMap = { name:'clientName', phone:'clientPhone', email:'clientEmail' };
+    var fieldMap = { name:'clientName', phone:'clientPhone', email:'clientEmail', service:'svcGrid' };
     Object.keys(errors).forEach(function(field) {
       if (field === 'time') {
         this.highlightTimeFields(true);
@@ -857,7 +716,7 @@ window.WIZ = {
   showErrors: function(fields) {
     var self = this;
     var d = DICT[this.state.lang];
-    var fieldMap = { name:'clientName', phone:'clientPhone', email:'clientEmail' };
+    var fieldMap = { name:'clientName', phone:'clientPhone', email:'clientEmail', service:'svcGrid' };
     fields.forEach(function(field) {
       var errType = self.state.errors[field];
       if (field === 'time') {
@@ -892,31 +751,39 @@ window.WIZ = {
     if (errEl) errEl.style.display = 'none';
   },
 
-  next: function() {
-    var step = this.state.step;
-    // Sync DOM → state before validating (catches values set without events firing)
-    if (step === 1) {
+  /* Pull whatever is in the DOM into state before validating — covers values set
+     by autofill or programmatically, where no input/change event fired. */
+  syncStep: function(step) {
+    if (step === 0) {
       var dateEl = el('rideDate');
       if (dateEl && dateEl.value) this.state.date = dateEl.value;
       this.syncTime();
+      var v = el('vehicle'); if (v && v.value) this.state.vehicle = v.value;
+      var f = el('flight');  if (f) this.state.flight = f.value;
+      var px = el('passengers'); if (px && px.value) this.state.passengers = px.value;
     }
-    if (step === 2) {
+    if (step === 1) {
       var pu = el('pickup');   if (pu  && pu.value)  this.state.pickup  = pu.value;
       var dr = el('dropoff');  if (dr  && dr.value)  this.state.dropoff = dr.value;
     }
-    if (step === 3) {
+    if (step === 2) {
       var n = el('clientName');  if (n && n.value)  this.state.name  = n.value;
       var p = el('clientPhone'); if (p && p.value)  this.state.phone = p.value;
       var e = el('clientEmail'); if (e && e.value)  this.state.email = e.value;
       var nt = el('notes');      if (nt && nt.value) this.state.notes = nt.value;
     }
+  },
+
+  next: function() {
+    var step = this.state.step;
+    this.syncStep(step);
     var errors = this.validateStep(step);
     if (Object.keys(errors).length) {
       this.applyErrors(errors);
       return;
     }
     this.state.errors = {};
-    if (step < 5) {
+    if (step < 2) {
       this.state.step = step + 1;
       this.render(this.state.step);
     }
@@ -936,16 +803,17 @@ window.WIZ = {
 
   submit: function() {
     var self = this;
-    for (var i = 1; i <= 3; i++) {
+    this.syncStep(2);
+    for (var i = 0; i <= 2; i++) {
       var errors = this.validateStep(i);
       if (Object.keys(errors).length) {
-        this.applyErrors(errors);
         this.goToStep(i);
+        this.applyErrors(errors);
         return;
       }
     }
 
-    var btn = el('s5Send');
+    var btn = el('s2Send');
     if (btn) btn.classList.add('loading');
 
     var s = this.state;
