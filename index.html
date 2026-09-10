@@ -68,12 +68,12 @@
       <a href="booking.html" class="nav-link">Book a Ride</a>
     </nav>
     <div class="nav-right">
-      <a href="tel:+16193945340" class="nav-phone">(619) 394-5340</a>
+      <a href="tel:+16193945340" class="nav-phone" id="cta-call" data-cta="call-header">(619) 394-5340</a>
       <div style="display:flex;gap:6px">
         <button id="btnEn" class="btn btn-sm btn-outline active" onclick="setLang('en')">EN</button>
         <button id="btnEs" class="btn btn-sm btn-outline" onclick="setLang('es')">ES</button>
       </div>
-      <a href="booking.html" class="btn btn-primary btn-sm">
+      <a href="booking.html" class="btn btn-primary btn-sm" id="cta-book" data-cta="book-header">
         <span class="lang-en">Book Now</span>
         <span class="lang-es">Reservar</span>
       </a>
@@ -183,9 +183,20 @@
           <span class="lang-en">SAN & LAX — we track your flight live. If it's delayed, we wait. Door-to-door service with meet & greet inside the terminal.</span>
           <span class="lang-es">SAN y LAX — seguimos tu vuelo en tiempo real. Si se retrasa, esperamos. Servicio puerta a puerta con bienvenida en la terminal.</span>
         </p>
-        <span class="service-price">
-          <span class="lang-en">From $60</span><span class="lang-es">Desde $60</span>
-        </span>
+        <div class="rate-table">
+          <div class="rate-table-head">
+            <span class="lang-en">Flat Rates · SUV (up to 6 passengers)</span>
+            <span class="lang-es">Tarifas Fijas · SUV (hasta 6 pasajeros)</span>
+          </div>
+          <div class="rate-row"><span class="rate-route"><span class="lang-en">Downtown / Coronado &harr; SAN</span><span class="lang-es">Downtown / Coronado &harr; SAN</span></span><span class="rate-price">$60</span></div>
+          <div class="rate-row"><span class="rate-route"><span class="lang-en">La Jolla / UTC &harr; SAN</span><span class="lang-es">La Jolla / UTC &harr; SAN</span></span><span class="rate-price">$75</span></div>
+          <div class="rate-row"><span class="rate-route"><span class="lang-en">North County (Carlsbad, Encinitas, Oceanside) &harr; SAN</span><span class="lang-es">North County (Carlsbad, Encinitas, Oceanside) &harr; SAN</span></span><span class="rate-price">$110</span></div>
+          <div class="rate-row"><span class="rate-route"><span class="lang-en">San Diego &harr; LAX</span><span class="lang-es">San Diego &harr; LAX</span></span><span class="rate-price">$375</span></div>
+          <p class="rate-note">
+            <span class="lang-en">All-inclusive. No surge pricing. Custom quotes for other locations.</span>
+            <span class="lang-es">Todo incluido. Sin precios dinámicos. Cotizaciones a medida para otros destinos.</span>
+          </p>
+        </div>
         <a href="booking.html" class="service-link"><span class="lang-en">Book Now</span><span class="lang-es">Reservar</span> →</a>
       </div>
       <!-- Corporate -->
@@ -199,7 +210,7 @@
           <span class="lang-en">Impress clients from the moment they land. Executive SUVs and Escalades for roadshows, client pickups, and team transfers across San Diego.</span>
           <span class="lang-es">Impresiona a los clientes desde que aterrizan. SUVs ejecutivos para eventos, recogidas y traslados corporativos en San Diego.</span>
         </p>
-        <span class="service-price">$90 / <span class="lang-en">hour</span><span class="lang-es">hora</span></span>
+        <span class="service-price">$90 / <span class="lang-en">hour · 2-hour minimum</span><span class="lang-es">hora · mínimo 2 horas</span></span>
         <a href="booking.html" class="service-link"><span class="lang-en">Book Now</span><span class="lang-es">Reservar</span> →</a>
       </div>
       <!-- Sprinter -->
@@ -714,10 +725,10 @@ document.querySelectorAll('[data-gallery]').forEach(function(el) {
         <div class="footer-col-title"><span class="lang-en">Popular Routes</span><span class="lang-es">Rutas Populares</span></div>
         <div class="footer-links">
           <a href="san-airport-to-downtown.html">SAN → Downtown · $60</a>
-          <a href="san-airport-to-coronado.html">SAN → Coronado · $70</a>
-          <a href="san-airport-to-la-jolla.html">SAN → La Jolla · $80</a>
+          <a href="san-airport-to-coronado.html">SAN → Coronado · $60</a>
+          <a href="san-airport-to-la-jolla.html">SAN → La Jolla · $75</a>
           <a href="san-airport-to-del-mar.html">SAN → Del Mar · $95</a>
-          <a href="san-diego-to-lax.html">San Diego → LAX · $399</a>
+          <a href="san-diego-to-lax.html">San Diego → LAX · $375</a>
         </div>
       </div>
       <div>
