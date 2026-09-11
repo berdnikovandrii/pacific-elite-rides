@@ -194,7 +194,7 @@
             <div class="wiz-addr-wrap">
               <span class="wiz-dot pickup"></span>
               <input type="text" id="pickup" class="wiz-input addr-pad" placeholder="Airport, hotel, or address"
-                oninput="WIZ.state.pickup=this.value" onchange="WIZ.clearErr('pickup',this)">
+                oninput="WIZ.state.pickup=this.value;WIZ.updateEstimate()" onchange="WIZ.clearErr('pickup',this)">
             </div>
             <div class="wiz-err-msg" id="err-pickup"></div>
           </div>
@@ -211,9 +211,18 @@
             <div class="wiz-addr-wrap">
               <span class="wiz-dot dropoff"></span>
               <input type="text" id="dropoff" class="wiz-input addr-pad" placeholder="Final destination"
-                oninput="WIZ.state.dropoff=this.value" onchange="WIZ.clearErr('dropoff',this)">
+                oninput="WIZ.state.dropoff=this.value;WIZ.updateEstimate()" onchange="WIZ.clearErr('dropoff',this)">
             </div>
             <div class="wiz-err-msg" id="err-dropoff"></div>
+          </div>
+
+          <!-- Zone-based flat-rate estimate (filled by WIZ.updateEstimate) -->
+          <div class="fare-est" id="fareEst" style="display:none">
+            <div class="fare-est-row">
+              <span class="fare-est-label" id="fareEstLabel">Estimated flat rate</span>
+              <span class="fare-est-amount" id="fareEstAmount">&mdash;</span>
+            </div>
+            <p class="fare-est-note" id="fareEstNote">All-inclusive &middot; SUV up to 6 &middot; no surge</p>
           </div>
 
           <div class="wiz-nav">
@@ -345,6 +354,11 @@ var DICT = {
     errReq:   'Required',
     errEmail: 'Enter a valid email',
     flightOptional: '(optional)',
+    fareLabel: 'Estimated flat rate',
+    fareNote: 'All-inclusive · SUV up to 6 · no surge',
+    fareCustomLabel: 'Custom quote',
+    fareCustomNote: 'Confirmed within 15 min · all-inclusive · SUV up to 6 · no surge',
+    errOutOfArea: 'We serve Southern California only',
     moreOptions: 'More options — vehicle, flight number',
     notesOptional:  '(optional)',
     services: [
@@ -416,6 +430,11 @@ var DICT = {
     errReq:   'Requerido',
     errEmail: 'Correo inválido',
     flightOptional: '(opcional)',
+    fareLabel: 'Tarifa fija estimada',
+    fareNote: 'Todo incluido · SUV hasta 6 · sin surge',
+    fareCustomLabel: 'Cotización personalizada',
+    fareCustomNote: 'Confirmada en 15 min · todo incluido · SUV hasta 6 · sin surge',
+    errOutOfArea: 'Solo servimos el sur de California',
     moreOptions: 'Más opciones — vehículo, número de vuelo',
     notesOptional:  '(opcional)',
     services: [
@@ -458,6 +477,7 @@ window.WIZ = {
     phone:       '',
     email:       '',
     notes:       '',
+    outOfArea:   { pickup: false, dropoff: false },
     pay:         'later',
     errors:      {}
   },
@@ -568,6 +588,7 @@ window.WIZ = {
     if (el('pickup'))  el('pickup').value  = this.state.pickup;
     if (el('dropoff')) el('dropoff').value = this.state.dropoff;
     this.renderStops(d);
+    this.updateEstimate();
     this.showErrors(['pickup','dropoff']);
   },
 
@@ -609,7 +630,7 @@ window.WIZ = {
       if (window.google && google.maps && google.maps.places) {
         var inp = el('stop' + i);
         if (inp) {
-          var ac = new google.maps.places.Autocomplete(inp, { componentRestrictions: { country: 'us' } });
+          var ac = new google.maps.places.Autocomplete(inp, (typeof acOptions === 'function') ? acOptions() : { componentRestrictions: { country: 'us' } });
           (function(idx, autocomplete) {
             autocomplete.addListener('place_changed', function() {
               var p = autocomplete.getPlace();
@@ -619,6 +640,80 @@ window.WIZ = {
         }
       }
     });
+  },
+
+  /* ── Zone-based flat-rate estimate ──────────────────────────
+     Zones are matched against the address text returned by Places
+     (city name or ZIP). The quote is an estimate shown to reduce
+     price anxiety — the real number is confirmed by email within
+     15 minutes, which is what the note under the card says. */
+  estimateFare: function() {
+    var pu = (this.state.pickup || '').toLowerCase();
+    var dr = (this.state.dropoff || '').toLowerCase();
+    if (!pu.trim() || !dr.trim()) return null;
+
+    var isSAN = function(t) {
+      return /\bsan diego international\b|\bsan diego airport\b|\b\(san\)|\bharbor dr\b.*\bterminal\b|\bterminal [12]\b.*san diego|\b92101\b.*airport/.test(t)
+          || /\bsan\b.*\bairport\b/.test(t);
+    };
+    var isLAX = function(t) {
+      return /\blax\b|\blos angeles international\b|\bworld way\b/.test(t);
+    };
+
+    var puSAN = isSAN(pu), drSAN = isSAN(dr);
+    var puLAX = isLAX(pu), drLAX = isLAX(dr);
+
+    /* LAX leg — flat, either direction */
+    if (puLAX || drLAX) return { amount: 375, exact: true };
+
+    /* Neither endpoint is an airport → we can't zone-price it */
+    if (!puSAN && !drSAN) return { custom: true };
+
+    /* The non-airport endpoint decides the zone */
+    var other = puSAN ? dr : pu;
+
+    var MIN_FARE = 65; /* floor for custom quotes */
+    var ZONES = [
+      { price: 60,  re: /\bdowntown\b|\bgaslamp\b|\bmarina district\b|\beast village\b|\blittle italy\b|\bcore-columbia\b|\b9210[12]\b/ },
+      { price: 80,  re: /\bcoronado\b|\b92118\b|\bcoronado cays\b/ },
+      { price: 90,  re: /\bla jolla\b|\butc\b|\buniversity city\b|\btorrey pines\b|\bbird rock\b|\b9203[78]\b|\b92122\b|\b92121\b/ },
+      { price: 95,  re: /\bdel mar\b|\bcarmel valley\b|\btorrey hills\b|\b92014\b|\b92130\b/ },
+      { price: 115, re: /\bcarlsbad\b|\bencinitas\b|\bsolana beach\b|\bcardiff\b|\bleucadia\b|\b9200[78]\b|\b92009\b|\b9201[01]\b|\b92024\b|\b92075\b/ },
+      { price: 130, re: /\boceanside\b|\bvista\b|\bsan marcos\b|\b9205[478]\b|\b92069\b|\b9208[134]\b/ },
+      { price: 150, re: /\bramona\b|\bfallbrook\b|\b92065\b|\b92028\b/ },
+      { price: 195, re: /\btemecula\b|\bmurrieta\b|\bwildomar\b|\b9259[01234]\b|\b9256[23]\b/ },
+      { price: 250, re: /\briverside\b|\bcorona\b|\b925[0-9]{2}\b|\b9287[89]\b|\b9288[01]\b/ }
+    ];
+
+    /* Published zone rates are exact — the $65 minimum is a floor for
+       custom-quoted trips, not something that overrides the rate card. */
+    for (var i = 0; i < ZONES.length; i++) {
+      if (ZONES[i].re.test(other)) {
+        return { amount: ZONES[i].price, exact: true };
+      }
+    }
+    return { custom: true };
+  },
+
+  updateEstimate: function() {
+    var box = el('fareEst');
+    if (!box) return;
+    var d = DICT[this.state.lang];
+    var res = this.estimateFare();
+    if (!res) { box.style.display = 'none'; return; }
+
+    box.style.display = 'block';
+    if (res.custom) {
+      txt('fareEstLabel', d.fareCustomLabel);
+      txt('fareEstAmount', '');
+      txt('fareEstNote', d.fareCustomNote);
+      box.classList.add('is-custom');
+    } else {
+      txt('fareEstLabel', d.fareLabel);
+      txt('fareEstAmount', '$' + res.amount);
+      txt('fareEstNote', d.fareNote);
+      box.classList.remove('is-custom');
+    }
   },
 
   addStop: function() {
@@ -660,6 +755,26 @@ window.WIZ = {
     this.renderStep0(DICT[this.state.lang]);
   },
 
+  /* Out-of-area guard: an address outside Southern California blocks
+     submission until it's replaced, and says so in plain language. */
+  flagOutOfArea: function(field, input) {
+    if (!this.state.outOfArea) this.state.outOfArea = {};
+    this.state.outOfArea[field] = true;
+    if (input) input.classList.add('err');
+    var errEl = el('err-' + field);
+    if (errEl) {
+      errEl.textContent = DICT[this.state.lang].errOutOfArea;
+      errEl.style.display = 'block';
+    }
+    var box = el('fareEst');
+    if (box) box.style.display = 'none';
+  },
+
+  clearOutOfArea: function(field) {
+    if (!this.state.outOfArea) this.state.outOfArea = {};
+    this.state.outOfArea[field] = false;
+  },
+
   validateStep: function(step) {
     var e = {};
     var s = this.state;
@@ -670,7 +785,9 @@ window.WIZ = {
     }
     if (step === 1) {
       if (!s.pickup.trim())  e.pickup  = 'req';
+      else if (s.outOfArea && s.outOfArea.pickup)  e.pickup  = 'area';
       if (!s.dropoff.trim()) e.dropoff = 'req';
+      else if (s.outOfArea && s.outOfArea.dropoff) e.dropoff = 'area';
     }
     if (step === 2) {
       if (!s.name.trim())  e.name  = 'req';
@@ -707,7 +824,7 @@ window.WIZ = {
       if (input) input.classList.add('err');
       var errEl = el('err-' + field);
       if (errEl) {
-        errEl.textContent = errors[field] === 'email' ? d.errEmail : d.errReq;
+        errEl.textContent = errors[field] === 'email' ? d.errEmail : (errors[field] === 'area' ? d.errOutOfArea : d.errReq);
         errEl.style.display = 'block';
       }
     }, this);
@@ -734,7 +851,7 @@ window.WIZ = {
       if (input) input.classList.toggle('err', !!errType);
       if (errEl) {
         if (errType) {
-          errEl.textContent = errType === 'email' ? d.errEmail : d.errReq;
+          errEl.textContent = errType === 'email' ? d.errEmail : (errType === 'area' ? d.errOutOfArea : d.errReq);
           errEl.style.display = 'block';
         } else {
           errEl.style.display = 'none';
@@ -890,6 +1007,7 @@ window.WIZ = {
       phone:       '',
       email:       '',
       notes:       '',
+      outOfArea:   { pickup: false, dropoff: false },
       pay:         'later',
       errors:      {}
     };
@@ -963,17 +1081,50 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-/* ── Google Places callback ──────────────────────────────── */
+/* ── Google Places callback ──────────────────────────────────
+   Autocomplete is hard-limited to Southern California. strictBounds
+   keeps suggestions inside the box; the place_changed handler is the
+   real guard, because a user can still type or paste an address. */
+var SOCAL_BOUNDS = { south: 32.5, west: -118.7, north: 34.8, east: -116.0 };
+
+function inSoCal(place) {
+  if (!place || !place.geometry || !place.geometry.location) return true; // can't tell → don't block
+  var lat = place.geometry.location.lat();
+  var lng = place.geometry.location.lng();
+  return lat >= SOCAL_BOUNDS.south && lat <= SOCAL_BOUNDS.north &&
+         lng >= SOCAL_BOUNDS.west  && lng <= SOCAL_BOUNDS.east;
+}
+
+function acOptions() {
+  return {
+    componentRestrictions: { country: 'us' },
+    bounds: new google.maps.LatLngBounds(
+      new google.maps.LatLng(SOCAL_BOUNDS.south, SOCAL_BOUNDS.west),
+      new google.maps.LatLng(SOCAL_BOUNDS.north, SOCAL_BOUNDS.east)
+    ),
+    strictBounds: true,
+    fields: ['formatted_address', 'name', 'geometry'],
+    types: ['establishment', 'geocode']
+  };
+}
+window.acOptions = acOptions;
+
 window.initPlaces = function() {
   ['pickup','dropoff'].forEach(function(id) {
     var input = el(id);
     if (!input) return;
-    var ac = new google.maps.places.Autocomplete(input, { componentRestrictions: { country: 'us' } });
+    var ac = new google.maps.places.Autocomplete(input, acOptions());
     ac.addListener('place_changed', function() {
       var p = ac.getPlace();
       var val = p.formatted_address || input.value;
+      if (!inSoCal(p)) {
+        WIZ.flagOutOfArea(id, input);
+        return;
+      }
+      WIZ.clearOutOfArea(id);
       if (id === 'pickup')  { WIZ.state.pickup  = val; WIZ.clearErr('pickup', input); }
       if (id === 'dropoff') { WIZ.state.dropoff = val; WIZ.clearErr('dropoff', input); }
+      WIZ.updateEstimate();
     });
   });
 };
