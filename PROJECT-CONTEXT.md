@@ -217,10 +217,13 @@ the listing is too new to be found by text search through the API).
 **Analytics** — GA4 `G-MRH0C5ZBF1` on every page. The Google Ads line
 `gtag('config', 'AW-XXXXXXXXX')` is commented out, waiting for a real Ads ID.
 
-**SMS lead alerts — still unresolved.** Carrier email-to-SMS gateways (`@tmomail.net`) accept mail
-from Apps Script and silently drop it; ntfy.sh is unreachable from Google's egress. Andrii chose
-Twilio and is part-way through A2P 10DLC brand and campaign registration. Give him code with
-placeholders — never handle his Auth Token.
+**SMS lead alerts — removed 2026-09-21. Do not rebuild this without him asking.** Three approaches
+were tried and all failed: carrier email-to-SMS (`@tmomail.net`) returned
+`452 4.1.0 server temporarily unavailable AUP#MXRT` and bounced for days; ntfy.sh is unreachable
+from Google's egress; Twilio needs A2P 10DLC registration that was never finished. The gateway
+block is gone from `google-apps-script.js`. **Lead notification now runs on email only** — EmailJS
+fires from the booking form, and the row lands in the sheet. If he raises SMS again, Twilio is the
+only path that actually works, and it needs the A2P registration finished first.
 
 **Scheduled task `gbp-weekly-content`** — runs every Monday, writes a full blog article into
 `blog/`, adds the index card and sitemap entry, and drafts two Google Business Profile posts that
@@ -248,8 +251,6 @@ thing hotels and corporate accounts ask about.
 
 # 10. Open items
 
-- **Twilio A2P 10DLC** registration → then he pastes credentials into the Apps Script and we test
-  the full lead → SMS chain.
 - **Google Ads ID** → uncomment the `AW-` line site-wide and wire the conversion event on
   `thank-you.html`.
 - **NLA membership** — $395/yr for the 1–5 vehicle tier, which includes the NLARide.com listing

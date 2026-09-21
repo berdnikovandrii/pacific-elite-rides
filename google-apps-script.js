@@ -39,14 +39,10 @@ function doPost(e) {
     var row = sheet.getLastRow();
     sheet.getRange(row, 1, 1, 17).setBackground("#FDF6E3");
 
-    // ── SMS-сповіщення про новий лід (Mint / T-Mobile gateway) ──
-    try {
-      var smsMsg = "NEW LEAD " + id + "\n" +
-        (data.clientName || "") + " " + (data.clientPhone || "") + "\n" +
-        (data.serviceType || "") + " · " + (data.rideDate || "") + " " + (data.rideTime || "") + "\n" +
-        (data.pickup || "") + " -> " + (data.dropoff || "");
-      MailApp.sendEmail("6193945340@tmomail.net", "PER Lead", smsMsg);
-    } catch (smsErr) { /* SMS-збій не блокує запис бронювання */ }
+    // SMS-сповіщення прибрано 2026-09-21: шлюз оператора (tmomail.net)
+    // повертав "452 4.1.0 server temporarily unavailable AUP#MXRT",
+    // повідомлення приходили з годинними затримками або зовсім не доходили.
+    // Сповіщення про лід ідуть на email через EmailJS з самої форми.
 
     return ok({ id: id });
   } catch(err) {
