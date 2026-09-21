@@ -1,3 +1,18 @@
+# ── Build artefacts / heavy originals ────────────────────────────
 photos/
-Pacific_Elite_Rides_Earnings.xlsx
 .DS_Store
+
+# ── Private business data — NEVER publish ────────────────────────
+Pacific_Elite_Rides_Earnings.xlsx
+Pacific_Elite_Rides_Bookings.xlsx
+~$*.xlsx
+~$*.docx
+
+# ── Internal working documents — NEVER publish ───────────────────
+# Handoff briefs, strategy, content queues. They live in the folder
+# on Andrii's machine and work exactly the same when untracked.
+PROJECT-CONTEXT.md
+ЯК-ПРАЦЮВАТИ.md
+GBP-Weekly-Content-Queue.md
+Pacific_Elite_Rides_Content_Strategy.docx
+design_handoff_booking_wizard/
