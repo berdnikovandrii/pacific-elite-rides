@@ -1,41 +1,134 @@
 # Pacific Elite Rides — context for a new Claude session
 
-**Read this first.** It is the fastest way to pick up where the last session left off.
-Last updated: 2026-09-16.
+**Read this file first, before touching anything.** It is the fastest way to pick up where the
+previous session left off. Last updated: 2026-09-21.
 
 ---
 
-## The business
+# 1. What this project is
 
-Pacific Elite Rides LLC — premium black car / chauffeur service, San Diego County, California.
-Owner: Andrii Berdnikov. Phone (619) 394-5340. Site: **pacificeliterides.com** (static HTML on
-GitHub Pages, repo `berdnikovandrii/pacific-elite-rides`, custom domain via Squarespace DNS).
+Pacific Elite Rides LLC — premium black car / chauffeur service in San Diego County, California.
+Owner: **Andrii Berdnikov**, phone (619) 394-5340, email berdnikov@pacificeliterides.com.
 
-Strategic goal: documented operating history for an **E-2 visa** application (18–24 month horizon).
-That is why paperwork, published rates and a real paper trail matter more than they would for a
-normal small business.
+The deliverable is a **static marketing website** — `pacificeliterides.com` — that converts search
+traffic and paid ads into direct bookings, so the business depends less on Uber Black and Lyft Lux.
 
-## How Andrii works
+- Plain HTML / CSS / vanilla JS. **No build step, no framework, no package manager.** You edit the
+  `.html` files directly and that is the whole deploy pipeline.
+- Hosted on **GitHub Pages** from repo `berdnikovandrii/pacific-elite-rides`, custom domain via
+  Squarespace DNS (A records to GitHub, `CNAME` file in the repo root).
+- Bilingual **EN / ES** everywhere. Every user-visible string exists twice, as
+  `<span class="lang-en">…</span><span class="lang-es">…</span>`. `js/main.js` toggles them.
 
-- Speaks **Ukrainian**; everything customer-facing is **English** (site is bilingual EN/ES).
-- Wants concise answers. No long preambles.
-- **He pushes to git himself.** The sandbox cannot reach GitHub, and `.git/*.lock` files appear
-  constantly. Always finish by giving him the exact terminal commands:
-  ```
-  cd ~/Documents/Claude/Projects/New\ beginning\ -\ Transport\ LLC
-  rm -f .git/HEAD.lock .git/index.lock
-  git add -A && git commit -m "..." && git push
-  ```
-- **Never `git add`** `Pacific_Elite_Rides_Earnings.xlsx` (his revenue data) or `photos/`
-  (840 MB of originals). Both are deliberately gitignored.
-- Edit `Pacific_Elite_Rides_Earnings.xlsx` **in place** in the project folder — never round-trip
-  it through the outputs folder, that wipes his manual edits (paid-cell colouring).
-- Verify work before declaring it done: validate JSON-LD, check tag balance, run the booking
-  wizard's state machine in Node with a DOM stub (see the pattern in the git history).
+**Strategic context that changes how you should weigh decisions:** Andrii is building a documented
+operating history for an **E-2 visa** application, horizon 18–24 months. Published rates, real
+invoices, business memberships and a clean paper trail are worth more to him than a shortcut that
+looks good this week.
 
-## Current pricing — this supersedes anything older you find
+---
 
-| SAN zone | Flat |
+# 2. Ground rules
+
+These are learned the hard way. Violating them costs real money or real time.
+
+**Git — he pushes, not you.** The sandbox cannot reach GitHub (403 through the proxy) and
+`.git/HEAD.lock` / `.git/index.lock` appear constantly. Commit locally if you can, then always end
+your reply with the exact commands for him:
+
+```bash
+cd ~/Documents/Claude/Projects/New\ beginning\ -\ Transport\ LLC
+rm -f .git/HEAD.lock .git/index.lock
+git add -A && git commit -m "…" && git push
+```
+
+**Never stage these:**
+- `Pacific_Elite_Rides_Earnings.xlsx` — his revenue data. It lives in the repo root but is
+  gitignored on purpose (it was once public; we removed it).
+- `photos/` — 840 MB of camera originals. Only the optimised `web-photos/` copies are committed.
+
+**Edit the earnings spreadsheet in place.** Never copy it to the outputs folder and back — that
+wipes his manual formatting, including the paid-cell colouring he relies on.
+
+**Never ask him for secrets.** API keys, Twilio Auth Tokens, passwords — hand him code with
+placeholders and let him paste his own values. This is a hard rule, not a preference.
+
+**The sandbox filesystem is flaky.** `Resource deadlock avoided` and `Operation not permitted` on
+the mounted folder are routine. Retry after `sleep 3`, or use the Read/Write/Edit tools instead of
+shell commands — those are more reliable on that mount.
+
+---
+
+# 3. How we make changes — the standard loop
+
+1. **Clarify only what is genuinely ambiguous**, and only when the answer changes the work. A price
+   with two possible readings: ask. A wording choice: just pick the better one and say why.
+2. **Make a task list** for anything with three or more steps. He watches progress there.
+3. **Find every occurrence before editing one.** Grep the whole site. The most common failure mode
+   in this project is changing a price in two files and missing the other eight.
+4. **Edit.** Prefer the Edit tool for surgical changes; a Python script when the same change hits
+   many files, so the transformation is reviewable and repeatable.
+5. **Verify — always, not just when it feels risky.** See §4.
+6. **Update memory** if pricing, structure, or a workflow changed.
+7. **Hand him the git commands.** Summarise what changed in a few lines, not a wall of text.
+
+## The price-change checklist
+
+Prices are the single most-edited thing here and they live in **ten** places. When one rate moves,
+walk this list or something will contradict something else:
+
+- [ ] `index.html` — main rate table in the Airport service card
+- [ ] `index.html` — mini rate table inside the Pricing card
+- [ ] `index.html` — footer "Popular Routes" links
+- [ ] `index.html` — pricing FAQ answer (EN **and** ES)
+- [ ] `airport.html` — rate table + `<title>` + meta description + JSON-LD `price`
+- [ ] `san-airport-car-service.html` — rate table + FAQ answer + **every** JSON-LD `Offer`
+- [ ] the matching route page (`san-airport-to-*.html`) — hero figure, route facts, FAQ, CTA
+- [ ] `san-diego-to-lax.html` / `lax.html` if the LAX rate moved
+- [ ] `services.html` — service-detail price block + FAQ + FAQPage schema
+- [ ] `booking.html` — sidebar rate list, service-card descriptions (EN + ES), **and the
+      `ZONES` array in the fare estimator**
+- [ ] `blog/*.html` — prose mentions. **Careful:** some `$60–90` figures are *rideshare comparison
+      numbers*, not our prices. Protect them with a placeholder token before a blanket replace.
+
+Afterwards grep the old number across the whole site to confirm nothing survived.
+
+---
+
+# 4. How to verify
+
+Do this before you tell him it is done.
+
+**JSON-LD** — every page carrying schema must still parse:
+```python
+import json, re, glob
+for f in glob.glob('*.html') + glob.glob('blog/*.html'):
+    if 'design_handoff' in f: continue
+    for m in re.finditer(r'<script type="application/ld\+json">(.*?)</script>', open(f).read(), re.S):
+        json.loads(m.group(1))
+```
+
+**Tag balance** — after any structural edit: `s.count('<div') == s.count('</div')`, same for
+`<section>`.
+
+**Sitemap** — `xml.dom.minidom.parse('sitemap.xml')`.
+
+**The booking wizard** — it has a real state machine, so test it rather than eyeballing it. Extract
+the inline `<script>` into a file, stub `document` / `localStorage` / `emailjs`, then drive
+`validateStep`, `next`, `back`, `estimateFare` directly in Node. Two genuine bugs were caught this
+way that a visual check would have missed: the `$65` minimum silently overriding the published `$60`
+Downtown rate, and `state.outOfArea` being undefined because it was added to `resetAll` but not to
+the initial state.
+
+**Ads pages must stay out of the index.** `airport.html` and `lax.html` carry `noindex,follow` plus
+a canonical pointing at their SEO twin, and are deliberately absent from `sitemap.xml`. If a change
+ever puts them back in, that is keyword cannibalisation — precisely the weakness we documented in a
+competitor.
+
+---
+
+# 5. Current pricing — supersedes anything older you find anywhere
+
+| SAN zone | Flat rate |
 |---|---|
 | Downtown / Gaslamp | $60 |
 | Coronado | $80 |
@@ -48,77 +141,119 @@ normal small business.
 | Riverside / Corona | $250 |
 | San Diego ↔ LAX | $375 |
 
-Minimum fare **$65** — a floor for *custom* quotes only; it must never override a published zone rate.
-Hourly charter **$95/hr, 2 h min** · Sprinter Party Bus **$180/hr, 4 h min** · Maybach S-Class
-**$280/hr, 3 h min**. No limousine — that service was removed.
+**Minimum fare $65** — a floor for *custom* quotes only. It must never override a published zone
+rate; that bug has already been introduced and fixed once.
 
-**LAX is a route, not a service area.** Every ride starts or ends in San Diego County. Do not let
-copy imply the company operates locally in Los Angeles.
+Hourly charter **$95/hr, 2 h minimum** · Sprinter Party Bus **$180/hr, 4 h minimum** (LED lighting,
+premium sound, TV, bar with ice, up to 14 passengers) · Mercedes-Maybach S-Class **$280/hr, 3 h
+minimum** (white leather, reclining seats, weddings and VIP) · Special events: custom quote.
 
-## Site map
+**No limousine.** That service was removed from the site — do not reintroduce it.
 
-| Purpose | Page |
+**LAX is a route, not a service area.** Every ride starts or ends in San Diego County. Copy must
+never imply the company operates locally in Los Angeles; the site says so explicitly in several
+places, and the ad targeting depends on it.
+
+---
+
+# 6. Site map
+
+| Purpose | File |
 |---|---|
 | Home | `index.html` |
-| Services (airport, LAX, corporate, party bus, Maybach, events) | `services.html` |
-| SAN hub — **SEO** | `san-airport-car-service.html` |
-| SAN — **paid ads only** (noindex + canonical → hub) | `airport.html` |
-| LAX — **SEO** | `san-diego-to-lax.html` |
-| LAX — **paid ads only** (noindex + canonical → SEO) | `lax.html` |
-| Routes | `san-airport-to-downtown / -coronado / -la-jolla / -del-mar / -temecula.html` |
+| Services — airport, LAX, corporate, party bus, Maybach, events | `services.html` |
+| SAN airport hub — **SEO, indexed** | `san-airport-car-service.html` |
+| SAN airport — **paid ads only**, noindex + canonical → hub | `airport.html` |
+| San Diego ↔ LAX — **SEO, indexed** | `san-diego-to-lax.html` |
+| San Diego ↔ LAX — **paid ads only**, noindex + canonical → SEO | `lax.html` |
+| Route pages | `san-airport-to-downtown.html`, `-coronado`, `-la-jolla`, `-del-mar`, `-temecula` |
 | Party bus guide | `sprinter-van-san-diego.html` |
 | Booking wizard | `booking.html` |
-| Ads conversion page (noindex) | `thank-you.html` |
+| Ads conversion page, noindex | `thank-you.html` |
 | Blog | `blog.html` + `blog/` |
+| About / Privacy / Terms | `about.html`, `privacy.html`, `terms.html` |
+| Styles — single file, everything | `css/style.css` |
+| Menu, language toggle, reveal animations | `js/main.js` |
+| Apps Script reference copy | `google-apps-script.js` |
 
-**The ads pages and their SEO twins must never both be indexed** — that is keyword cannibalisation,
-the exact weakness we documented in a competitor. Ads pages stay out of `sitemap.xml`.
+---
 
-## Booking form
+# 7. The booking form
 
-Three steps: (1) Service + Date + Time + Passengers, with Vehicle and Flight Number collapsed under
-"More options"; (2) Pickup / Drop-off; (3) Name + Phone + Email → Send. No Payment or Review step.
-Submit redirects to `thank-you.html` so Google Ads has a conversion URL.
+Three steps: **(1)** Service + Date + Time + Passengers, with Vehicle and Flight Number collapsed
+under a "More options" `<details>`; **(2)** Pickup / Drop-off with optional stops; **(3)** Name +
+Phone + Email → Send. There is no Payment step and no Review step — they were removed to cut
+abandonment. Submitting redirects to `thank-you.html` so Google Ads has a unique conversion URL.
 
-Step 2 shows a live zone-based estimate. Places autocomplete is hard-limited to Southern California
-(32.5–34.8 lat, −118.7 to −116.0 lng, `strictBounds`, US only); an out-of-area address blocks
-submission with "We serve Southern California only".
+Step 2 shows a **live zone-based fare estimate** — "Estimated flat rate $XXX · All-inclusive · SUV
+up to 6 · no surge" — falling back to "Custom quote, confirmed within 15 min" when neither endpoint
+is SAN/LAX or the zone is unrecognised. The zone table is the `ZONES` array inside `estimateFare()`;
+it matches on city names and ZIP codes in the address string Places returns.
 
-## Integrations
+Places autocomplete is hard-limited to **Southern California** (bounds 32.5–34.8 lat, −118.7 to
+−116.0 lng, `strictBounds`, `country: 'us'`). Because a user can still paste an address, the real
+guard is a coordinate check in `place_changed`: an out-of-area address shows
+**"We serve Southern California only"** and blocks submission until it is replaced.
 
-- **Google Sheets CRM** — Apps Script webhook (`doPost`) appends each booking. Bound script; uses
-  `SpreadsheetApp.getActiveSpreadsheet()`, *not* `openById`. Fetch from the site must use
-  `mode: 'no-cors'` + `Content-Type: text/plain`, otherwise CORS preflight kills it.
-  **After editing the script you must Deploy → Manage deployments → Edit → New version → Deploy**,
-  or nothing changes. Status column P has a colour-coded dropdown (New / Confirmed / Waiting on
-  answer / No answer / Refused).
-- **EmailJS** — service `formsender`, template `template_3g6ev1c`, public key `iOE_629EUQLFOEy-S`.
-  The private key is server-side only and must never appear in frontend code.
-- **Google Places** — live reviews on the homepage, Place ID `ChIJE0qtZLk4QSARFMPubxQjFBs`
-  (GBP listing "Pacific Elite Rides LLC"). Same key powers booking autocomplete.
-- **GA4** `G-MRH0C5ZBF1` on every page. The Google Ads line `gtag('config','AW-XXXXXXXXX')` is
-  commented out and waiting for a real Ads ID.
-- **SMS lead alerts** — unresolved. Email-to-SMS gateways (`@tmomail.net`) accept the mail and
-  silently drop it when sent from Apps Script servers; ntfy.sh is unreachable from Google's egress.
-  Andrii chose Twilio and is mid-way through A2P 10DLC brand/campaign registration.
-  **Do not ask him for the Twilio Auth Token** — give him the code with placeholders and let him
-  paste his own credentials.
-- **Scheduled task `gbp-weekly-content`** — every Monday writes a full blog article into `blog/`,
-  adds the card and sitemap entry, and drafts two Google Business Profile posts that link to it.
-  The content flow is deliberately **article on the site → GBP post links back**, never the reverse.
+---
 
-## Competitive position
+# 8. Integrations, and what breaks them
 
-Two local competitors: **Pompeii Limousine** (weddings / downtown, really one car, messy duplicated
-SEO but posts to GBP every 1–3 days, which is what keeps them in the map pack) and **Richline
-Transportation** (corporate / airport / North County, 2–3 cars, clean route-page SEO, near-daily blog).
-**Neither publishes prices.** Andrii's published rate card is the fastest wedge, and neither offers
-corporate direct billing, COI, or duty-of-care — which hotels and companies ask about first.
+**Google Sheets CRM** — an Apps Script `doPost` webhook appends each booking to the Bookings sheet.
+Three things matter: it is a **bound** script and must use `SpreadsheetApp.getActiveSpreadsheet()`
+rather than `openById()`; the site must POST with `mode: 'no-cors'` and
+`Content-Type: text/plain`, because `application/json` triggers a CORS preflight that Apps Script
+rejects; and **after any edit you must Deploy → Manage deployments → Edit → New version → Deploy**,
+otherwise the live webhook keeps running the old code. Column P has a colour-coded status dropdown:
+New / Confirmed / Waiting on answer / No answer / Refused.
 
-## Open items
+**EmailJS** — service `formsender`, template `template_3g6ev1c`, public key `iOE_629EUQLFOEy-S`.
+The private key is server-side only and must never appear in frontend code.
 
-- Twilio A2P registration → then paste credentials into the Apps Script and test the full chain.
-- Google Ads ID → uncomment the `AW-` line and wire the conversion event on `thank-you.html`.
-- NLA membership ($395/yr for the 1–5 vehicle tier, which includes the NLARide.com listing).
-- BBB: free profile now, paid accreditation once there are 10+ Google reviews.
-- Submit `sitemap.xml` in Google Search Console after each batch of new pages.
+**Google Places** — powers both the live review widget on the homepage and the booking autocomplete.
+GBP listing is "Pacific Elite Rides LLC", Place ID `ChIJE0qtZLk4QSARFMPubxQjFBs` (hardcoded, because
+the listing is too new to be found by text search through the API).
+
+**Analytics** — GA4 `G-MRH0C5ZBF1` on every page. The Google Ads line
+`gtag('config', 'AW-XXXXXXXXX')` is commented out, waiting for a real Ads ID.
+
+**SMS lead alerts — still unresolved.** Carrier email-to-SMS gateways (`@tmomail.net`) accept mail
+from Apps Script and silently drop it; ntfy.sh is unreachable from Google's egress. Andrii chose
+Twilio and is part-way through A2P 10DLC brand and campaign registration. Give him code with
+placeholders — never handle his Auth Token.
+
+**Scheduled task `gbp-weekly-content`** — runs every Monday, writes a full blog article into
+`blog/`, adds the index card and sitemap entry, and drafts two Google Business Profile posts that
+link to it. The direction is deliberate: **article on the site first, GBP post links back to it** —
+never the reverse, because SEO equity should accumulate on his domain, not inside Google's profile.
+
+---
+
+# 9. Market position
+
+Two direct competitors, and neither is strong where Andrii is:
+
+**Pompeii Limousine** — weddings, downtown, Rolls-Royce positioning. One vehicle in FMCSA records;
+everything else is farmed out. Messy SEO (duplicate domain, ~70 doorway pages) but posts to Google
+Business Profile every 1–3 days, which is what actually keeps them in the local map pack.
+
+**Richline Transportation** — corporate, airport, North County. Two or three real vehicles. Clean
+route-page SEO, near-daily blog, collects reviews about twice as fast as Pompeii.
+
+**Neither publishes prices.** The published rate card is Andrii's fastest wedge. Neither offers
+corporate direct billing, a Certificate of Insurance, or a duty-of-care package — which is the first
+thing hotels and corporate accounts ask about.
+
+---
+
+# 10. Open items
+
+- **Twilio A2P 10DLC** registration → then he pastes credentials into the Apps Script and we test
+  the full lead → SMS chain.
+- **Google Ads ID** → uncomment the `AW-` line site-wide and wire the conversion event on
+  `thank-you.html`.
+- **NLA membership** — $395/yr for the 1–5 vehicle tier, which includes the NLARide.com listing
+  (the $99 single-vehicle tier does not, and that listing is half the value).
+- **BBB** — free profile now; paid accreditation once there are 10+ Google reviews, so it does not
+  look empty.
+- **Google Search Console** — resubmit `sitemap.xml` after each batch of new pages.
