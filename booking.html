@@ -194,7 +194,7 @@
             <div class="wiz-addr-wrap">
               <span class="wiz-dot pickup"></span>
               <input type="text" id="pickup" class="wiz-input addr-pad" placeholder="Airport, hotel, or address"
-                oninput="WIZ.state.pickup=this.value;WIZ.updateEstimate()" onchange="WIZ.clearErr('pickup',this)">
+                oninput="WIZ.state.pickup=this.value;WIZ.state.pickupLoc=null;WIZ.updateEstimate()" onchange="WIZ.clearErr('pickup',this)">
             </div>
             <div class="wiz-err-msg" id="err-pickup"></div>
           </div>
@@ -211,7 +211,7 @@
             <div class="wiz-addr-wrap">
               <span class="wiz-dot dropoff"></span>
               <input type="text" id="dropoff" class="wiz-input addr-pad" placeholder="Final destination"
-                oninput="WIZ.state.dropoff=this.value;WIZ.updateEstimate()" onchange="WIZ.clearErr('dropoff',this)">
+                oninput="WIZ.state.dropoff=this.value;WIZ.state.dropoffLoc=null;WIZ.updateEstimate()" onchange="WIZ.clearErr('dropoff',this)">
             </div>
             <div class="wiz-err-msg" id="err-dropoff"></div>
           </div>
@@ -358,6 +358,9 @@ var DICT = {
     fareNote: 'All-inclusive · SUV up to 6 · no surge',
     fareCustomLabel: 'Custom quote',
     fareCustomNote: 'Confirmed within 15 min · all-inclusive · SUV up to 6 · no surge',
+    fareCalcLabel: 'Calculating estimate…',
+    fareTimeLabel: 'Estimated fare',
+    fareTimeNote: 'Based on drive time · hourly rate, 2hr min · confirmed within 15 min',
     errOutOfArea: 'We serve Southern California only',
     moreOptions: 'More options — vehicle, flight number',
     notesOptional:  '(optional)',
@@ -434,6 +437,9 @@ var DICT = {
     fareNote: 'Todo incluido · SUV hasta 6 · sin surge',
     fareCustomLabel: 'Cotización personalizada',
     fareCustomNote: 'Confirmada en 15 min · todo incluido · SUV hasta 6 · sin surge',
+    fareCalcLabel: 'Calculando estimado…',
+    fareTimeLabel: 'Tarifa estimada',
+    fareTimeNote: 'Según tiempo de viaje · tarifa por hora, 2hrs mín · confirmada en 15 min',
     errOutOfArea: 'Solo servimos el sur de California',
     moreOptions: 'Más opciones — vehículo, número de vuelo',
     notesOptional:  '(opcional)',
@@ -471,8 +477,10 @@ window.WIZ = {
     passengers:  '1',
     flight:      '',
     pickup:      '',
+    pickupLoc:   null,
     stops:       [],
     dropoff:     '',
+    dropoffLoc:  null,
     name:        '',
     phone:       '',
     email:       '',
@@ -646,7 +654,19 @@ window.WIZ = {
      Zones are matched against the address text returned by Places
      (city name or ZIP). The quote is an estimate shown to reduce
      price anxiety — the real number is confirmed by email within
-     15 minutes, which is what the note under the card says. */
+     15 minutes, which is what the note under the card says.
+
+     Zone rates only cover SAN/LAX airport legs. For point-to-point
+     trips (wine tours, venue-to-venue) or destinations outside the
+     zone list, estimateFare() falls back to {custom:true} and
+     updateEstimate() tries a drive-time-based hourly estimate via
+     Google Distance Matrix if we have coordinates for both ends
+     (only available once the user picks a real Places suggestion,
+     not free-typed text). If that fails or isn't available, it
+     falls back to the plain "Custom quote" message. */
+  HOURLY_RATE: 95,   /* Suburban/Escalade hourly rate, matches pricing page */
+  HOURLY_MIN_HRS: 2,
+
   estimateFare: function() {
     var pu = (this.state.pickup || '').toLowerCase();
     var dr = (this.state.dropoff || '').toLowerCase();
@@ -704,15 +724,70 @@ window.WIZ = {
 
     box.style.display = 'block';
     if (res.custom) {
-      txt('fareEstLabel', d.fareCustomLabel);
-      txt('fareEstAmount', '');
-      txt('fareEstNote', d.fareCustomNote);
-      box.classList.add('is-custom');
+      var self = this;
+      var s = this.state;
+      /* Track which request this is so a slow response can't overwrite
+         a newer one if the user keeps typing/picking addresses. */
+      var reqId = ++this._estReq;
+      if (s.pickupLoc && s.dropoffLoc && window.google && google.maps && google.maps.DistanceMatrixService) {
+        txt('fareEstLabel', d.fareCalcLabel);
+        txt('fareEstAmount', '');
+        txt('fareEstNote', d.fareCustomNote);
+        box.classList.add('is-custom');
+        this.estimateByDriveTime(s.pickupLoc, s.dropoffLoc, function(hrs) {
+          if (reqId !== self._estReq) return; /* stale response, ignore */
+          if (hrs == null) {
+            /* Distance Matrix failed/unavailable → plain custom message */
+            txt('fareEstLabel', d.fareCustomLabel);
+            txt('fareEstNote', d.fareCustomNote);
+            return;
+          }
+          var billedHrs = Math.max(self.HOURLY_MIN_HRS, Math.ceil(hrs * 2) / 2); /* round up to nearest 30 min */
+          var amount = Math.round(billedHrs * self.HOURLY_RATE / 5) * 5; /* round to nearest $5 */
+          txt('fareEstLabel', d.fareTimeLabel);
+          txt('fareEstAmount', '~$' + amount);
+          txt('fareEstNote', d.fareTimeNote);
+        });
+      } else {
+        txt('fareEstLabel', d.fareCustomLabel);
+        txt('fareEstAmount', '');
+        txt('fareEstNote', d.fareCustomNote);
+        box.classList.add('is-custom');
+      }
     } else {
+      this._estReq = (this._estReq || 0) + 1; /* invalidate any in-flight drive-time lookup */
       txt('fareEstLabel', d.fareLabel);
       txt('fareEstAmount', '$' + res.amount);
       txt('fareEstNote', d.fareNote);
       box.classList.remove('is-custom');
+    }
+  },
+
+  _estReq: 0,
+
+  /* Estimates drive time (hours) between two {lat,lng} points via Google
+     Distance Matrix, with traffic if available. Calls cb(hoursOrNull).
+     Requires the "Distance Matrix API" to be enabled for the Maps API
+     key in Google Cloud Console — if it isn't, this fails silently and
+     cb(null) is called, so the UI just falls back to "Custom quote". */
+  estimateByDriveTime: function(origin, destination, cb) {
+    try {
+      var service = new google.maps.DistanceMatrixService();
+      service.getDistanceMatrix({
+        origins: [new google.maps.LatLng(origin.lat, origin.lng)],
+        destinations: [new google.maps.LatLng(destination.lat, destination.lng)],
+        travelMode: 'DRIVING',
+        drivingOptions: { departureTime: new Date(), trafficModel: 'bestguess' },
+        unitSystem: google.maps.UnitSystem.IMPERIAL
+      }, function(response, status) {
+        if (status !== 'OK') { cb(null); return; }
+        var el0 = response && response.rows && response.rows[0] && response.rows[0].elements && response.rows[0].elements[0];
+        if (!el0 || el0.status !== 'OK') { cb(null); return; }
+        var seconds = (el0.duration_in_traffic || el0.duration).value;
+        cb(seconds / 3600);
+      });
+    } catch (e) {
+      cb(null);
     }
   },
 
@@ -1001,8 +1076,10 @@ window.WIZ = {
       passengers:  '1',
       flight:      '',
       pickup:      '',
+      pickupLoc:   null,
       stops:       [],
       dropoff:     '',
+      dropoffLoc:  null,
       name:        '',
       phone:       '',
       email:       '',
@@ -1117,13 +1194,14 @@ window.initPlaces = function() {
     ac.addListener('place_changed', function() {
       var p = ac.getPlace();
       var val = p.formatted_address || input.value;
+      var loc = (p.geometry && p.geometry.location) ? { lat: p.geometry.location.lat(), lng: p.geometry.location.lng() } : null;
       if (!inSoCal(p)) {
         WIZ.flagOutOfArea(id, input);
         return;
       }
       WIZ.clearOutOfArea(id);
-      if (id === 'pickup')  { WIZ.state.pickup  = val; WIZ.clearErr('pickup', input); }
-      if (id === 'dropoff') { WIZ.state.dropoff = val; WIZ.clearErr('dropoff', input); }
+      if (id === 'pickup')  { WIZ.state.pickup  = val; WIZ.state.pickupLoc  = loc; WIZ.clearErr('pickup', input); }
+      if (id === 'dropoff') { WIZ.state.dropoff = val; WIZ.state.dropoffLoc = loc; WIZ.clearErr('dropoff', input); }
       WIZ.updateEstimate();
     });
   });

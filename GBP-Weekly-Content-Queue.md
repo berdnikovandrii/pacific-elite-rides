@@ -156,3 +156,31 @@ Eighth blog article live, timed to Temecula's harvest season (40+ wineries pouri
 **2. Sprinter Party Bus (different service tie-in)**
 > Got a bachelorette weekend or birthday crew of [number] headed to [event type] this [day]? Our Mercedes Sprinter Party Bus seats up to 14 — LED lighting, premium sound, TV, bar with ice — for $180/hr, 4-hour minimum. Everyone rides together, one pickup, one drop-off. This week we ran a group out to [pickup location] and back without a hitch. Reach out to lock in your date.
 
+---
+
+## Week of 2026-09-17 — Emmy Awards Article
+
+Ninth blog article live. Our black Suburban was credentialed for limo service at the 78th Emmy Awards (Sept 14, 2026) — behind-the-scenes look at the event-routing process, tied back to the same standard we bring to every San Diego ride.
+
+### GBP Post Drafts (fill in bracketed details before posting)
+
+**1. Emmy Awards article promo**
+> One of our black Suburbans spent Monday credentialed for limo service at the 78th Emmy Awards — routing packet, arrival window, the whole event-access process. We broke down what "credentialed" actually means on a show like this, and why the same discipline (flight tracking, on-time arrival, a clean vehicle) is exactly what shows up for your San Diego airport run or wedding day. Full story on our blog: https://pacificeliterides.com/blog/pacific-elite-rides-emmy-awards-limo-service.html
+
+**2. Corporate Ride (different service tie-in)**
+> Business travel doesn't leave room for a late pickup or a cancelled driver. Pacific Elite Rides runs corporate car service across San Diego — airport runs, client meetings, downtown office transfers — in a clean Suburban or Escalade, every time. This [day] we had a rider headed from [pickup location] to a meeting near [destination], on time with zero scrambling for parking. Set up a standing account for your team or book one-off trips as needed.
+
+---
+
+## Week of 2026-09-21 — San Diego to LAX Cost Article
+
+Tenth blog article live. First price/comparison piece to tackle the "how much is a car service from San Diego to LAX" query head-on — real published Uber/Uber Black averages against our $375 flat rate, honest about when rideshare wins.
+
+### GBP Post Drafts (fill in bracketed details before posting)
+
+**1. San Diego to LAX cost article promo**
+> "How much is a car service from San Diego to LAX?" We actually answered it — with real numbers. UberX averages $218, Uber Black averages $503, our flat rate is $375 either direction. We break down when each one wins, including the honest answer for when rideshare beats us. Full breakdown on our blog: https://pacificeliterides.com/blog/san-diego-to-lax-car-service-cost.html
+
+**2. Maybach / VIP Service (different service tie-in)**
+> Not every ride is an airport run. Our Mercedes-Maybach S-Class is built for the nights that matter — weddings, VIP arrivals, anniversary dinners — $280/hr, 3-hour minimum. This [day] we had one out for a [event type] pickup at [pickup location], and the difference shows the moment the door opens. Booking ahead for an upcoming special occasion? Reach out and we'll build the timeline around it.
+
