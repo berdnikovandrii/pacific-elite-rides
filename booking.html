@@ -720,6 +720,10 @@ window.WIZ = {
     if (!box) return;
     var d = DICT[this.state.lang];
     var res = this.estimateFare();
+    /* Remember the last number actually shown to the customer so the lead
+       record carries the same figure they saw. Cleared whenever we can't
+       quote — a custom trip stores no price rather than a stale one. */
+    this._lastFare = null;
     if (!res) { box.style.display = 'none'; return; }
 
     box.style.display = 'block';
@@ -744,6 +748,7 @@ window.WIZ = {
           }
           var billedHrs = Math.max(self.HOURLY_MIN_HRS, Math.ceil(hrs * 2) / 2); /* round up to nearest 30 min */
           var amount = Math.round(billedHrs * self.HOURLY_RATE / 5) * 5; /* round to nearest $5 */
+          self._lastFare = amount;
           txt('fareEstLabel', d.fareTimeLabel);
           txt('fareEstAmount', '~$' + amount);
           txt('fareEstNote', d.fareTimeNote);
@@ -756,6 +761,7 @@ window.WIZ = {
       }
     } else {
       this._estReq = (this._estReq || 0) + 1; /* invalidate any in-flight drive-time lookup */
+      this._lastFare = res.amount;
       txt('fareEstLabel', d.fareLabel);
       txt('fareEstAmount', '$' + res.amount);
       txt('fareEstNote', d.fareNote);
@@ -764,6 +770,24 @@ window.WIZ = {
   },
 
   _estReq: 0,
+  _lastFare: null,
+
+  /* "2026-09-23" + "04:30 PM" → ISO timestamp. Returns null if either
+     part is missing or unparseable, so we never send a bogus date. */
+  rideDateTimeISO: function() {
+    var date = this.state.date, time = this.state.time;
+    if (!date) return null;
+    var m = /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec((time || '').trim());
+    var h = 0, min = 0;
+    if (m) {
+      h = parseInt(m[1], 10) % 12;
+      if (/pm/i.test(m[3])) h += 12;
+      min = parseInt(m[2], 10);
+    }
+    var p = date.split('-');
+    var d = new Date(+p[0], +p[1] - 1, +p[2], h, min, 0);
+    return isNaN(d.getTime()) ? null : d.toISOString();
+  },
 
   /* Estimates drive time (hours) between two {lat,lng} points via Google
      Distance Matrix, with traffic if available. Calls cb(hoursOrNull).
@@ -1044,6 +1068,43 @@ window.WIZ = {
         })
       : Promise.resolve();
 
+    /* 3) Пишемо лід у Supabase. Незалежний від перших двох канал:
+       не входить у Promise.all нижче, тому ні його падіння, ні його
+       повільність не затримують редірект на thank-you.html.
+       keepalive:true — щоб запит долетів навіть після того, як
+       браузер уже почав переходити на іншу сторінку. */
+    if (window.SUPABASE_URL && window.SUPABASE_KEY) {
+      try {
+        fetch(window.SUPABASE_URL + '/rest/v1/leads', {
+          method: 'POST',
+          keepalive: true,
+          headers: {
+            'Content-Type':  'application/json',
+            'apikey':        window.SUPABASE_KEY,
+            'Authorization': 'Bearer ' + window.SUPABASE_KEY,
+            'Prefer':        'return=minimal'
+          },
+          body: JSON.stringify({
+            client_name:   s.name    || null,
+            phone:         s.phone   || null,
+            email:         s.email   || null,
+            pickup:        s.pickup  || null,
+            dropoff:       s.dropoff || null,
+            ride_datetime: this.rideDateTimeISO(),
+            flight_number: s.flight  || null,
+            vehicle:       s.vehicle || null,
+            price:         (typeof this._lastFare === 'number') ? this._lastFare : null,
+            source:        'Website'
+            /* status навмисно не передаємо — колонка має DEFAULT 'New' */
+          })
+        }).catch(function(err) {
+          console.error('Supabase lead insert failed:', err);
+        });
+      } catch (err) {
+        console.error('Supabase lead insert failed:', err);
+      }
+    }
+
     Promise.all([emailPromise, sheetsPromise])
       .then(function() {
         self.showSuccess();
@@ -1114,6 +1175,15 @@ document.addEventListener('DOMContentLoaded', function() {
   // ── Google Sheets webhook URL ──────────────────────────────────
   // Після деплою Apps Script встав сюди URL:
   window.SHEETS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbz_E4VMMrlMt37MZBGdluoQO8xYWCjUbFn2IBCelY34yDScw82yXjhCClMaxNfVy0Df/exec';
+  // ──────────────────────────────────────────────────────────────
+
+  // ── Supabase (таблиця leads) ───────────────────────────────────
+  // Це publishable-ключ: він призначений для браузера і його видно в коді
+  // сторінки. Захист — виключно RLS на стороні Supabase. На таблиці leads
+  // має бути політика ТІЛЬКИ на INSERT для ролі anon; без політики на
+  // SELECT, інакше будь-хто зможе вичитати базу клієнтів.
+  window.SUPABASE_URL = 'https://krvdbtmrddhcafhvajin.supabase.co';
+  window.SUPABASE_KEY = 'sb_publishable_AsOTWt55cPPnc367icIVIQ_7q44i';
   // ──────────────────────────────────────────────────────────────
 
   if (typeof emailjs !== 'undefined') {
