@@ -1178,12 +1178,18 @@ document.addEventListener('DOMContentLoaded', function() {
   // ──────────────────────────────────────────────────────────────
 
   // ── Supabase (таблиця leads) ───────────────────────────────────
-  // Це publishable-ключ: він призначений для браузера і його видно в коді
-  // сторінки. Захист — виключно RLS на стороні Supabase. На таблиці leads
-  // має бути політика ТІЛЬКИ на INSERT для ролі anon; без політики на
-  // SELECT, інакше будь-хто зможе вичитати базу клієнтів.
+  // Це anon-ключ: він призначений для браузера і його видно в коді
+  // сторінки. Захист — виключно RLS на стороні Supabase: для ролі anon
+  // дозволено ТІЛЬКИ INSERT, SELECT заборонено (перевірено — читання
+  // віддає 42501 "permission denied"). Інакше будь-хто вичитав би базу
+  // клієнтів.
+  //
+  // 24.09.2026: тут стояв ключ формату sb_publishable_… і Supabase
+  // віддавав 401 "Invalid API key" — ліди мовчки не доходили. Проєкт
+  // працює на старих JWT-ключах, той самий використовує і CRM-застосунок.
+  // Коли мігруватимеш на нові ключі — міняй ОБИДВА боки одночасно.
   window.SUPABASE_URL = 'https://krvdbtmrddhcafhvajin.supabase.co';
-  window.SUPABASE_KEY = 'sb_publishable_AsOTWt55cPPnc367icIVIQ_7q44i';
+  window.SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtydmRidG1yZGRoY2FmaHZhamluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwMjEyOTcsImV4cCI6MjEwNTU5NzI5N30.WcoaDX1LuWbMUenUg04KjRYhk2u8U7Eeqdi-MHO4RS0';
   // ──────────────────────────────────────────────────────────────
 
   if (typeof emailjs !== 'undefined') {
