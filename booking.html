@@ -693,7 +693,12 @@ window.WIZ = {
       return /\blax\b|\blos angeles international\b|\bworld way\b/.test(t);
     };
 
-    var puSAN = isSAN(pu), drSAN = isSAN(dr);
+    var nearSAN = function(loc) {
+      if (!loc) return false;
+      var dLat = (loc.lat - 32.7336) * 111, dLng = (loc.lng + 117.1897) * 93.6;
+      return Math.sqrt(dLat * dLat + dLng * dLng) < 2;
+    };
+    var puSAN = isSAN(pu) || nearSAN(this.state.pickupLoc), drSAN = isSAN(dr) || nearSAN(this.state.dropoffLoc);
     var puLAX = isLAX(pu), drLAX = isLAX(dr);
 
     /* LAX leg — flat, either direction */
@@ -827,6 +832,28 @@ window.WIZ = {
      key in Google Cloud Console — if it isn't, this fails silently and
      cb(null) is called, so the UI just falls back to "Custom quote". */
   estimateByDriveTime: function(origin, destination, cb) {
+    var self = this;
+    /* Routes API (Maps JS "routes" library). Distance Matrix is a legacy
+       API that new keys can't use, so it's only a fallback. */
+    try {
+      google.maps.importLibrary('routes').then(function(lib) {
+        return lib.Route.computeRoutes({
+          origin: origin, destination: destination,
+          travelMode: 'DRIVING', routingPreference: 'TRAFFIC_AWARE',
+          fields: ['durationMillis']
+        });
+      }).then(function(res) {
+        var ms = res && res.routes && res.routes[0] && res.routes[0].durationMillis;
+        if (ms) cb(ms / 3600000); else self.estimateByDistanceMatrix(origin, destination, cb);
+      }).catch(function() {
+        self.estimateByDistanceMatrix(origin, destination, cb);
+      });
+    } catch (e) {
+      self.estimateByDistanceMatrix(origin, destination, cb);
+    }
+  },
+
+  estimateByDistanceMatrix: function(origin, destination, cb) {
     try {
       var service = new google.maps.DistanceMatrixService();
       service.getDistanceMatrix({
@@ -1308,6 +1335,13 @@ window.initPlaces = function() {
     ac.addListener('place_changed', function() {
       var p = ac.getPlace();
       var val = p.formatted_address || input.value;
+      /* Businesses/airports/hotels: Google's formatted_address drops the name
+         ("Harbor Island Dr, San Diego…" instead of "San Diego International
+         Airport (SAN), …"), which broke airport detection and pricing.
+         Keep the name in front so the estimate, the lead and the CRM see it. */
+      if (p.name && p.formatted_address && p.formatted_address.toLowerCase().indexOf(p.name.toLowerCase()) === -1) {
+        val = p.name + ', ' + p.formatted_address;
+      }
       var loc = (p.geometry && p.geometry.location) ? { lat: p.geometry.location.lat(), lng: p.geometry.location.lng() } : null;
       if (!inSoCal(p)) {
         WIZ.flagOutOfArea(id, input);

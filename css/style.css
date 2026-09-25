@@ -362,10 +362,18 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
   overflow: hidden;
 }
 .service-card {
-  background: var(--black-card); padding: 48px 40px;
+  background: var(--black-card); padding: 44px 40px 40px;
   position: relative; overflow: hidden;
   transition: background var(--trans);
+  display: flex; flex-direction: column;
 }
+/* An odd last card spans the full row so the grid never ends with an empty cell */
+.services-grid > .service-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.service-foot {
+  margin-top: auto; padding-top: 4px;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 14px 20px;
+}
+.service-foot .service-link { margin-top: 0; }
 .service-card::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
   background: linear-gradient(90deg, transparent, var(--gold), transparent);
@@ -375,7 +383,7 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
 .service-card:hover::before { transform: scaleX(1); }
 .service-num {
   font-family: var(--font-head); font-size: 3.5rem; font-weight: 700;
-  color: rgba(201,168,76,0.1); line-height: 1; margin-bottom: 20px;
+  color: rgba(201,168,76,0.16); line-height: 1; margin-bottom: 20px;
   transition: color var(--trans);
 }
 .service-card:hover .service-num { color: rgba(201,168,76,0.2); }
@@ -1579,6 +1587,14 @@ input[type=time].wiz-input::-webkit-calendar-picker-indicator {
   font-family: 'Playfair Display', serif; font-size: 1.1rem;
   color: var(--white); font-weight: 600; white-space: nowrap;
 }
+.rate-group {
+  font-size: 10.5px; letter-spacing: 1.1px; text-transform: uppercase;
+  color: rgba(201,168,76,0.75); font-weight: 600;
+  margin: 16px 0 2px; padding-top: 12px;
+  border-top: 1px solid rgba(201,168,76,0.12);
+}
+.rate-group:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+.rate-row + .rate-group { margin-top: 10px; }
 .rate-note {
   margin-top: 12px; font-size: 11.5px; line-height: 1.6;
   color: rgba(255,255,255,0.45);
