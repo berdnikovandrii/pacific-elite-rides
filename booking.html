@@ -1093,6 +1093,9 @@ window.WIZ = {
             ride_datetime: this.rideDateTimeISO(),
             flight_number: s.flight  || null,
             vehicle:       s.vehicle || null,
+            passengers:    s.passengers || null,
+            notes:         [s.notes, (s.stops && s.stops.length) ? 'Stops: ' + s.stops.join(', ') : '']
+                             .filter(function(x) { return x && String(x).trim(); }).join('\n') || null,
             price:         (typeof this._lastFare === 'number') ? this._lastFare : null,
             source:        'Website'
             /* status навмисно не передаємо — колонка має DEFAULT 'New' */
