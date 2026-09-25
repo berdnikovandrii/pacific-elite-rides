@@ -262,6 +262,13 @@
               placeholder="Child seat, meet &amp; greet, extra luggage&#8230;"
               oninput="WIZ.state.notes=this.value"></textarea>
           </div>
+          <div class="wiz-field">
+            <label for="smsConsent" style="display:flex;gap:12px;align-items:flex-start;cursor:pointer">
+              <input type="checkbox" id="smsConsent" onchange="WIZ.state.smsConsent=this.checked"
+                style="flex:0 0 auto;width:20px;height:20px;margin:2px 0 0;accent-color:var(--gold);cursor:pointer">
+              <span id="lSms" style="font-size:13px;line-height:1.5;color:rgba(243,239,230,.72)">Text me about this booking (quote, confirmation, driver details and ride updates) from Pacific Elite Rides at the number above. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. Optional &mdash; not required to book. <a href="privacy.html#sms" target="_blank" style="color:var(--gold)">Privacy</a> &middot; <a href="terms.html#sms" target="_blank" style="color:var(--gold)">Terms</a></span>
+            </label>
+          </div>
 
           <div class="wiz-nav">
             <button class="wiz-back" onclick="WIZ.back()" id="s2back">&#8592; Back</button>
@@ -364,6 +371,7 @@ var DICT = {
     errOutOfArea: 'We serve Southern California only',
     moreOptions: 'More options — vehicle, flight number',
     notesOptional:  '(optional)',
+    smsConsent: 'Text me about this booking (quote, confirmation, driver details and ride updates) from Pacific Elite Rides at the number above. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. Optional &mdash; not required to book. <a href="privacy.html#sms" target="_blank" style="color:var(--gold)">Privacy</a> &middot; <a href="terms.html#sms" target="_blank" style="color:var(--gold)">Terms</a>',
     services: [
       { id:'Airport Transfer', t:'SAN Airport Transfer', d:'San Diego International — flat rate by zone' },
       { id:'LAX Transfer',     t:'LAX Transfer',         d:'San Diego ↔ LAX — flat $375, either direction' },
@@ -443,6 +451,7 @@ var DICT = {
     errOutOfArea: 'Solo servimos el sur de California',
     moreOptions: 'Más opciones — vehículo, número de vuelo',
     notesOptional:  '(opcional)',
+    smsConsent: 'Envíenme mensajes de texto sobre esta reserva (cotización, confirmación, datos del chofer y avisos del viaje) de Pacific Elite Rides al número indicado. La frecuencia varía. Pueden aplicarse tarifas de mensajes y datos. Responde STOP para cancelar, HELP para ayuda. Opcional &mdash; no es necesario para reservar. <a href="privacy.html#sms" target="_blank" style="color:var(--gold)">Privacidad</a> &middot; <a href="terms.html#sms" target="_blank" style="color:var(--gold)">Términos</a>',
     services: [
       { id:'Airport Transfer', t:'Traslado aeropuerto SAN', d:'San Diego International — tarifa fija por zona' },
       { id:'LAX Transfer',     t:'Traslado a LAX',          d:'San Diego ↔ LAX — $375 fijos, ambos sentidos' },
@@ -485,6 +494,7 @@ window.WIZ = {
     phone:       '',
     email:       '',
     notes:       '',
+    smsConsent:  false,
     outOfArea:   { pickup: false, dropoff: false },
     pay:         'later',
     errors:      {}
@@ -613,6 +623,8 @@ window.WIZ = {
     if (el('clientPhone')) el('clientPhone').value = s.phone;
     if (el('clientEmail')) el('clientEmail').value = s.email;
     if (el('notes'))       el('notes').value       = s.notes;
+    if (el('smsConsent'))  el('smsConsent').checked = !!s.smsConsent;
+    var ls = el('lSms'); if (ls && d.smsConsent) ls.innerHTML = d.smsConsent;
     this.state.pay = 'later';
     this.showErrors(['name','phone','email']);
   },
@@ -1005,6 +1017,7 @@ window.WIZ = {
     if (step === 2) {
       var n = el('clientName');  if (n && n.value)  this.state.name  = n.value;
       var p = el('clientPhone'); if (p && p.value)  this.state.phone = p.value;
+      var sc = el('smsConsent'); if (sc) this.state.smsConsent = sc.checked;
       var e = el('clientEmail'); if (e && e.value)  this.state.email = e.value;
       var nt = el('notes');      if (nt && nt.value) this.state.notes = nt.value;
     }
@@ -1117,6 +1130,7 @@ window.WIZ = {
             notes:         [s.notes, (s.stops && s.stops.length) ? 'Stops: ' + s.stops.join(', ') : '']
                              .filter(function(x) { return x && String(x).trim(); }).join('\n') || null,
             price:         (typeof this._lastFare === 'number') ? this._lastFare : null,
+            sms_consent:   !!s.smsConsent,
             source:        'Website'
             /* status навмисно не передаємо — колонка має DEFAULT 'New' */
           })
@@ -1168,6 +1182,7 @@ window.WIZ = {
       phone:       '',
       email:       '',
       notes:       '',
+      smsConsent:  false,
       outOfArea:   { pickup: false, dropoff: false },
       pay:         'later',
       errors:      {}
