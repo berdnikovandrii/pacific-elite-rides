@@ -151,9 +151,23 @@ window.initPlaces = function() {
   function show() {
     if (document.getElementById('perCookieBanner')) return;
     var es = false; try { es = localStorage.getItem('per_lang') === 'es'; } catch (e) {}
+    /* On a phone the long notice wrapped to five lines and pushed the buttons
+       onto a second row — 177px, 22% of a 375x812 screen, covering three
+       service cards on booking.html and the primary CTA on the ads pages.
+       Every paid click from a new visitor lands on that. The short notice keeps
+       both facts that matter (what the cookies are for, that data is not sold);
+       the full disclosure lives on cookies.html, which is linked right here. */
+    var narrow = false;
+    try { narrow = window.matchMedia('(max-width: 600px)').matches; } catch (e) {}
     var t = es
-      ? { msg: 'Usamos cookies de Google Analytics y Google Ads para medir visitas y anuncios. No vendemos sus datos.', more: 'Política de cookies', ok: 'Aceptar', no: 'Rechazar' }
-      : { msg: 'We use Google Analytics and Google Ads cookies to measure visits and ad performance. We never sell your data.', more: 'Cookie Policy', ok: 'Accept', no: 'Decline' };
+      ? { msg: narrow
+            ? 'Cookies de Google Analytics y Ads. No vendemos sus datos.'
+            : 'Usamos cookies de Google Analytics y Google Ads para medir visitas y anuncios. No vendemos sus datos.',
+          more: 'Política de cookies', ok: 'Aceptar', no: 'Rechazar' }
+      : { msg: narrow
+            ? 'Google Analytics and Ads cookies. We never sell your data.'
+            : 'We use Google Analytics and Google Ads cookies to measure visits and ad performance. We never sell your data.',
+          more: 'Cookie Policy', ok: 'Accept', no: 'Decline' };
 
     if (!document.getElementById('perCookieCss')) {
       var css = document.createElement('style');
@@ -166,7 +180,18 @@ window.initPlaces = function() {
         '#perCookieBanner a{color:var(--gold,#C9A84C);text-decoration:underline}' +
         '#perCookieBanner .pcb-actions{display:flex;gap:10px;flex:0 0 auto}' +
         '#perCookieBanner .btn{padding:10px 22px;min-width:110px;justify-content:center}' +
-        '#perCookieBanner .btn:focus-visible{outline:2px solid var(--gold,#C9A84C);outline-offset:3px}';
+        '#perCookieBanner .btn:focus-visible{outline:2px solid var(--gold,#C9A84C);outline-offset:3px}' +
+        /* Compact on phones: ~72px instead of 177px, and the buttons stay on the
+           same row as the text instead of wrapping below it. Tap targets stay at
+           44px, which is the accessibility floor — height is saved on padding,
+           font size and line count, not on making the buttons harder to hit. */
+        '@media (max-width:600px){' +
+          '#perCookieBanner{left:8px;right:8px;bottom:8px;padding:10px 12px;gap:10px;' +
+            'font-size:12.5px;line-height:1.35;border-radius:10px;flex-wrap:nowrap;align-items:center}' +
+          '#perCookieBanner p{flex:1 1 auto;min-width:0}' +
+          '#perCookieBanner .pcb-actions{gap:6px}' +
+          '#perCookieBanner .btn{padding:0 12px;min-width:74px;height:44px;font-size:12px;white-space:nowrap}' +
+        '}';
       document.head.appendChild(css);
     }
 

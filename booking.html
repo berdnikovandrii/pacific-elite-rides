@@ -364,7 +364,7 @@ var DICT = {
     trustTitle:   'What to expect',
     prices: [
       ['SAN Airport','Flat rate by zone'],
-      ['Hourly Charter',  '$95 / hr'],
+      ['Hourly Charter',  '$95 / hr · 2h min'],
       ['Sprinter Party Bus','$180 / hr · 4h min'],
       ['Maybach S-Class', '$280 / hr · 3h min'],
       ['Special Events',  'Quote']
@@ -390,6 +390,8 @@ var DICT = {
     fareCalcLabel: 'Calculating estimate…',
     fareTimeLabel: 'Estimated fare',
     fareTimeNote: 'Based on drive time · hourly rate, $75 min · confirmed within 15 min',
+    fareEventLabel: 'Estimated flat rate',
+    fareEventNote: 'Round trip · includes up to 5 hrs wait during the event · SUV up to 6',
     errOutOfArea: 'We serve Southern California only',
     moreOptions: 'More options — vehicle, flight number',
     notesOptional:  '(optional)',
@@ -398,7 +400,7 @@ var DICT = {
       { id:'Airport Transfer', t:'SAN Airport Transfer', d:'San Diego International — flat rate by zone' },
       { id:'LAX Transfer',     t:'LAX Transfer',         d:'San Diego ↔ LAX — flat $375, either direction' },
       { id:'Corporate Ride',   t:'Corporate Ride',      d:'Meetings, roadshows, client pickups' },
-      { id:'Hourly Charter',   t:'Hourly Charter',      d:'$95/hr — as-directed, you set the pace' },
+      { id:'Hourly Charter',   t:'Hourly Charter',      d:'$95/hr · 2h min — as-directed, you set the pace' },
       { id:'Sprinter Van',     t:'Sprinter Party Bus',  d:'$180/hr — LED, sound, TV, bar with ice' },
       { id:'Maybach VIP',      t:'Maybach S-Class',     d:'$280/hr · 3h min — first-class chauffeur' },
       { id:'Special Event',    t:'Special Event / VIP', d:'Weddings, nights out, premieres' },
@@ -444,7 +446,7 @@ var DICT = {
     trustTitle:   'Qué esperar',
     prices: [
       ['Aeropuerto SAN','Tarifa fija por zona'],
-      ['Alquiler por hora',     '$95 / hr'],
+      ['Alquiler por hora',     '$95 / hr · mín. 2h'],
       ['Sprinter Party Bus',    '$180 / hr · mín. 4h'],
       ['Maybach Clase S',       '$280 / hr · mín. 3h'],
       ['Eventos especiales',    'Cotización']
@@ -470,6 +472,8 @@ var DICT = {
     fareCalcLabel: 'Calculando estimado…',
     fareTimeLabel: 'Tarifa estimada',
     fareTimeNote: 'Según tiempo de viaje · tarifa por hora, mín. $75 · confirmada en 15 min',
+    fareEventLabel: 'Tarifa fija estimada',
+    fareEventNote: 'Ida y vuelta · incluye hasta 5 h de espera durante el evento · SUV hasta 6',
     errOutOfArea: 'Solo servimos el sur de California',
     moreOptions: 'Más opciones — vehículo, número de vuelo',
     notesOptional:  '(opcional)',
@@ -478,7 +482,7 @@ var DICT = {
       { id:'Airport Transfer', t:'Traslado aeropuerto SAN', d:'San Diego International — tarifa fija por zona' },
       { id:'LAX Transfer',     t:'Traslado a LAX',          d:'San Diego ↔ LAX — $375 fijos, ambos sentidos' },
       { id:'Corporate Ride',   t:'Viaje corporativo',      d:'Reuniones, presentaciones, clientes' },
-      { id:'Hourly Charter',   t:'Alquiler por hora',      d:'$95/hr — tú marcas el ritmo' },
+      { id:'Hourly Charter',   t:'Alquiler por hora',      d:'$95/hr · mín. 2h — tú marcas el ritmo' },
       { id:'Sprinter Van',     t:'Sprinter Party Bus',     d:'$180/hr — LED, sonido, TV, bar con hielo' },
       { id:'Maybach VIP',      t:'Maybach Clase S',        d:'$280/hr · mín. 3h — chofer de primera clase' },
       { id:'Special Event',    t:'Evento especial / VIP',  d:'Bodas, salidas, estrenos' },
@@ -726,6 +730,23 @@ window.WIZ = {
     /* LAX leg — flat, either direction */
     if (puLAX || drLAX) return { amount: 375, exact: true };
 
+    /* LA / Orange County event venues — flat ROUND TRIP including up to 5 hrs
+       of wait during the event, matching la-events.html and
+       san-diego-to-los-angeles-car-service.html. Deliberately matches venue
+       names only, never the cities: "Anaheim, CA" on its own is an ordinary
+       long-distance transfer, not an event package, and must not be priced as
+       one. Sits after the LAX check so an LAX run stays a one-way $375, and
+       before the airport check because neither endpoint is SAN. */
+    var EVENT_VENUES = [
+      { price: 795, re: /\bsofi stadium\b|\bdodger stadium\b|\bcrypto\.com arena\b|\bintuit dome\b|\bhollywood bowl\b|\brose bowl\b|\bkia forum\b|\bbmo stadium\b/ },
+      { price: 695, re: /\bhonda center\b|\bangel stadium\b|\bdisneyland\b|\bdisney california adventure\b/ }
+    ];
+    for (var v = 0; v < EVENT_VENUES.length; v++) {
+      if (EVENT_VENUES[v].re.test(pu) || EVENT_VENUES[v].re.test(dr)) {
+        return { amount: EVENT_VENUES[v].price, exact: true, roundTrip: true };
+      }
+    }
+
     /* Neither endpoint is an airport → we can't zone-price it */
     if (!puSAN && !drSAN) return { custom: true };
 
@@ -821,9 +842,9 @@ window.WIZ = {
     } else {
       this._estReq = (this._estReq || 0) + 1; /* invalidate any in-flight drive-time lookup */
       this._lastFare = res.amount;
-      txt('fareEstLabel', d.fareLabel);
+      txt('fareEstLabel', res.roundTrip ? d.fareEventLabel : d.fareLabel);
       txt('fareEstAmount', '$' + res.amount);
-      txt('fareEstNote', d.fareNote);
+      txt('fareEstNote', res.roundTrip ? d.fareEventNote : d.fareNote);
       box.classList.remove('is-custom');
     }
   },

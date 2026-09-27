@@ -130,16 +130,20 @@
           <div class="about-stat-label"><span class="lang-en">Rides completed</span><span class="lang-es">Viajes completados</span></div>
         </div>
         <div class="about-stat">
-          <div class="about-stat-num gold">4.9★</div>
-          <div class="about-stat-label"><span class="lang-en">Average rating</span><span class="lang-es">Calificación promedio</span></div>
+          <!-- Filled from the live Google rating, same source as the badge below.
+               Fallback shows a star with no number rather than an unsourced 4.9. -->
+          <div class="about-stat-num gold" id="aboutStatRating">★</div>
+          <div class="about-stat-label"><span class="lang-en">Google rating</span><span class="lang-es">Calificación en Google</span></div>
         </div>
         <div class="about-stat">
           <div class="about-stat-num gold">24/7</div>
           <div class="about-stat-label"><span class="lang-en">Availability</span><span class="lang-es">Disponibilidad</span></div>
         </div>
         <div class="about-stat">
-          <div class="about-stat-num gold">100%</div>
-          <div class="about-stat-label"><span class="lang-en">On-time rate</span><span class="lang-es">Puntualidad</span></div>
+          <!-- Was "100% On-time rate": an absolute performance claim nobody can
+               evidence. A promise we control is both safer and more persuasive. -->
+          <div class="about-stat-num gold" style="font-size:clamp(20px,3vw,30px);line-height:1.2"><span class="lang-en">On&#8209;time</span><span class="lang-es">Puntual</span></div>
+          <div class="about-stat-label"><span class="lang-en">or we make it right</span><span class="lang-es">o lo compensamos</span></div>
         </div>
       </div>
     </div>
@@ -261,10 +265,10 @@
       <div class="why-us-img-col">
         <img src="img-suburban.jpg" alt="Pacific Elite Rides luxury Suburban San Diego" loading="lazy" style="border-radius:4px;width:100%;object-fit:cover;max-height:460px"/>
         <div class="why-us-badge">
-          <div style="font-size:22px">🏆</div>
+          <div style="font-size:22px">🛡</div>
           <div>
-            <div style="font-weight:600;font-size:14px;color:var(--gold)"><span class="lang-en">San Diego's Best</span><span class="lang-es">El Mejor de San Diego</span></div>
-            <div style="font-size:12px;opacity:.7;margin-top:2px"><span class="lang-en">Rated 4.9★ by clients</span><span class="lang-es">Calificado 4.9★ por clientes</span></div>
+            <div style="font-weight:600;font-size:14px;color:var(--gold)"><span class="lang-en">Licensed &amp; Insured</span><span class="lang-es">Con Licencia y Seguro</span></div>
+            <div style="font-size:12px;opacity:.7;margin-top:2px">CPUC TCP 35857B</div>
           </div>
         </div>
       </div>
@@ -304,8 +308,12 @@
       </div>
       <div class="trust-badge">
         <div class="trust-badge-icon">⭐</div>
-        <div class="trust-badge-title"><span class="lang-en">4.9★ Rated</span><span class="lang-es">Calificación 4.9★</span></div>
-        <div class="trust-badge-sub"><span class="lang-en">On Google & Uber</span><span class="lang-es">En Google y Uber</span></div>
+        <!-- Filled from the live Google Business Profile rating. Until it
+             resolves (or if it fails) the fallback carries no number at all —
+             it used to hard-code "4.9★ on Google & Uber", which was both
+             unsourced and aggregated across two platforms. -->
+        <div class="trust-badge-title" id="aboutRatingTitle"><span class="lang-en">Google Reviews</span><span class="lang-es">Reseñas de Google</span></div>
+        <div class="trust-badge-sub" id="aboutRatingSub"><a href="https://search.google.com/local/reviews?placeid=ChIJE0qtZLk4QSARFMPubxQjFBs" target="_blank" rel="noopener" style="color:inherit"><span class="lang-en">Read them on Google →</span><span class="lang-es">Léelas en Google →</span></a></div>
       </div>
     </div>
   </div>
@@ -406,5 +414,34 @@
 </div>
 
 <script src="js/main.js"></script>
+
+<!-- ══════ LIVE GOOGLE RATING ══════
+     Same Place ID and API key as the reviews widget on index.html. Only the
+     rating and review count are requested. If anything fails the static
+     fallback above stays, and it states no rating — never a made-up one. -->
+<script>
+var PER_PLACE_ID = 'ChIJE0qtZLk4QSARFMPubxQjFBs';
+window.initAboutRating = function() {
+  if (typeof window.initPlaces === 'function') window.initPlaces();
+  (async function () {
+    try {
+      if (!window.google || !google.maps) return;
+      var lib = await google.maps.importLibrary('places');
+      var place = new lib.Place({ id: PER_PLACE_ID });
+      await place.fetchFields({ fields: ['rating', 'userRatingCount'] });
+      if (!place.rating) return;
+      var es = document.documentElement.getAttribute('data-lang') === 'es';
+      document.getElementById('aboutRatingTitle').textContent =
+        place.rating.toFixed(1) + '★ ' + (es ? 'en Google' : 'on Google');
+      document.getElementById('aboutRatingSub').textContent =
+        (place.userRatingCount || 0) + (es ? ' reseñas verificadas' : ' verified reviews');
+      var stat = document.getElementById('aboutStatRating');
+      if (stat) stat.textContent = place.rating.toFixed(1) + '★';
+    } catch (e) { /* keep the number-free fallback */ }
+  })();
+};
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyChchqhl_aWwNHGm_uZqzYxLJ3ZUyIY8gM&libraries=places&callback=initAboutRating"></script>
+
 </body>
 </html>
