@@ -17,6 +17,9 @@
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var _perC=null;try{_perC=localStorage.getItem('per_cookie_consent');}catch(e){}
+    var _perOff=_perC==='denied'||navigator.globalPrivacyControl===true;
+    gtag('consent','default',{analytics_storage:_perOff?'denied':'granted',ad_storage:_perOff?'denied':'granted',ad_user_data:_perOff?'denied':'granted',ad_personalization:_perOff?'denied':'granted'});
     gtag('js', new Date());
     gtag('config', 'G-MRH0C5ZBF1');
   </script>
@@ -90,7 +93,7 @@
     <p class="body-md">No mobile information will be shared with third parties or affiliates for marketing or promotional purposes. Text messaging originator opt-in data and consent will not be shared with any third parties. We share your number only with the messaging provider that delivers our texts, solely to deliver them.</p>
 
     <h2 class="heading-md" style="margin-top:36px">Cookies &amp; Advertising</h2>
-    <p class="body-md">We use Google Analytics and Google Ads cookies to measure site traffic and ad performance. You can opt out of personalized advertising at any time through <a href="https://adssettings.google.com" target="_blank" rel="noopener" style="color:var(--gold)">Google's Ads Settings</a>, or block cookies entirely in your browser settings.</p>
+    <p class="body-md">We use Google Analytics and Google Ads cookies to measure site traffic and ad performance. You can opt out of personalized advertising at any time through <a href="https://adssettings.google.com" target="_blank" rel="noopener" style="color:var(--gold)">Google's Ads Settings</a>, or block cookies entirely in your browser settings. See our <a href="cookies.html" style="color:var(--gold)">Cookie Policy</a> for details and to change your choice.</p>
 
     <h2 class="heading-md" style="margin-top:36px">Data Retention</h2>
     <p class="body-md">We retain booking records as required for accounting, tax, and insurance purposes, typically for the duration required by California business recordkeeping law.</p>
@@ -140,10 +143,10 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <span class="footer-copy">© 2025 Pacific Elite Rides LLC · Registered in California.</span>
+      <span class="footer-copy">© 2026 Pacific Elite Rides LLC · Registered in California · Rides operated under CPUC TCP 35857B · <a href="tel:+16193945340" style="color:inherit">(619) 394-5340</a>.</span>
       <div class="footer-legal">
         <a href="privacy.html">Privacy</a>
-        <a href="terms.html">Terms</a>
+        <a href="terms.html">Terms</a> <a href="cookies.html">Cookies</a>
       </div>
     </div>
   </div>

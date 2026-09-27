@@ -24,6 +24,9 @@
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var _perC=null;try{_perC=localStorage.getItem('per_cookie_consent');}catch(e){}
+    var _perOff=_perC==='denied'||navigator.globalPrivacyControl===true;
+    gtag('consent','default',{analytics_storage:_perOff?'denied':'granted',ad_storage:_perOff?'denied':'granted',ad_user_data:_perOff?'denied':'granted',ad_personalization:_perOff?'denied':'granted'});
     gtag('js', new Date());
     gtag('config', 'G-MRH0C5ZBF1');
   </script>
@@ -514,7 +517,7 @@
 <footer class="footer">
   <div class="container">
     <div class="footer-bottom" style="border-top:none;padding-top:0">
-      <span class="footer-copy">&copy; 2025 Pacific Elite Rides LLC &middot; Registered in California. <span class="lang-en">All rights reserved.</span><span class="lang-es">Todos los derechos reservados.</span></span>
+      <span class="footer-copy">© 2026 Pacific Elite Rides LLC · Registered in California · Rides operated under CPUC TCP 35857B · <a href="tel:+16193945340" style="color:inherit">(619) 394-5340</a>. <span class="lang-en">All rights reserved.</span><span class="lang-es">Todos los derechos reservados.</span></span>
       <div style="display:flex;gap:18px;flex-wrap:wrap">
         <a href="index.html" style="color:rgba(255,255,255,.55);font-size:13px">Home</a>
         <a href="services.html" style="color:rgba(255,255,255,.55);font-size:13px">Services</a>
@@ -522,6 +525,7 @@
         <a href="booking.html" style="color:rgba(255,255,255,.55);font-size:13px"><span class="lang-en">Book a Ride</span><span class="lang-es">Reservar</span></a>
         <a href="privacy.html" style="color:rgba(255,255,255,.55);font-size:13px">Privacy</a>
         <a href="terms.html" style="color:rgba(255,255,255,.55);font-size:13px">Terms</a>
+        <a href="cookies.html" style="color:rgba(255,255,255,.55);font-size:13px">Cookies</a>
       </div>
     </div>
   </div>

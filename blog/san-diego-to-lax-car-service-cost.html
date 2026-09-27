@@ -23,6 +23,9 @@
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var _perC=null;try{_perC=localStorage.getItem('per_cookie_consent');}catch(e){}
+    var _perOff=_perC==='denied'||navigator.globalPrivacyControl===true;
+    gtag('consent','default',{analytics_storage:_perOff?'denied':'granted',ad_storage:_perOff?'denied':'granted',ad_user_data:_perOff?'denied':'granted',ad_personalization:_perOff?'denied':'granted'});
     gtag('js', new Date());
     gtag('config', 'G-MRH0C5ZBF1');
   </script>
@@ -156,7 +159,7 @@
 <footer class="footer">
   <div class="container">
     <div class="footer-bottom" style="border-top:none;padding-top:0">
-      <span class="footer-copy">© 2025 Pacific Elite Rides LLC · Registered in California. All rights reserved.</span>
+      <span class="footer-copy">© 2026 Pacific Elite Rides LLC · Registered in California · Rides operated under CPUC TCP 35857B · <a href="tel:+16193945340" style="color:inherit">(619) 394-5340</a>. All rights reserved.</span>
       <div style="display:flex;gap:18px;flex-wrap:wrap">
         <a href="../index.html" style="color:rgba(255,255,255,.55);font-size:13px">Home</a>
         <a href="../services.html" style="color:rgba(255,255,255,.55);font-size:13px">Services</a>

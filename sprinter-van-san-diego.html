@@ -28,6 +28,9 @@
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var _perC=null;try{_perC=localStorage.getItem('per_cookie_consent');}catch(e){}
+    var _perOff=_perC==='denied'||navigator.globalPrivacyControl===true;
+    gtag('consent','default',{analytics_storage:_perOff?'denied':'granted',ad_storage:_perOff?'denied':'granted',ad_user_data:_perOff?'denied':'granted',ad_personalization:_perOff?'denied':'granted'});
     gtag('js', new Date());
     gtag('config', 'G-MRH0C5ZBF1');
     // gtag('config', 'AW-XXXXXXXXX');
@@ -240,36 +243,6 @@
   </div>
 </section>
 
-<!-- ══════════════════════════ TESTIMONIAL ══════════════════════════ -->
-<section class="section" id="reviews">
-  <div class="container">
-    <div class="section-header section-header-center reveal">
-      <div class="label" style="justify-content:center"><span class="lang-en">From a Recent Trip</span><span class="lang-es">De un Viaje Reciente</span></div>
-      <h2 class="heading-lg" style="margin-top:16px">
-        <span class="lang-en">Trusted for <em class="gold">Group Travel</em></span>
-        <span class="lang-es">Confiado para <em class="gold">Viajes en Grupo</em></span>
-      </h2>
-      <div class="divider divider-center"></div>
-    </div>
-    <div class="testimonials-grid reveal" style="max-width:640px;margin:0 auto">
-      <div class="testimonial-card">
-        <div class="stars">★★★★★</div>
-        <p class="testimonial-quote">
-          <span class="lang-en">Booked the Sprinter for 12 people for a wine tour in Temecula. Best decision we made. Professional, punctual, and the van was stocked with water and snacks. Will book again for our next event.</span>
-          <span class="lang-es">Reservé el Sprinter para 12 personas para un tour de vinos en Temecula. La mejor decisión. Profesional, puntual y la van tenía agua y snacks. Volvería a reservar.</span>
-        </p>
-        <div class="testimonial-author">
-          <div class="author-initials">DK</div>
-          <div>
-            <div class="author-name">David K.</div>
-            <div class="author-detail"><span class="lang-en">Real Estate Developer</span><span class="lang-es">Desarrollador Inmobiliario</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ══════════════════════════ FAQ ══════════════════════════ -->
 <section class="section section-dark" id="faq">
   <div class="container">
@@ -422,10 +395,10 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <span class="footer-copy">© 2025 Pacific Elite Rides LLC · Registered in California.</span>
+      <span class="footer-copy">© 2026 Pacific Elite Rides LLC · Registered in California · Rides operated under CPUC TCP 35857B · <a href="tel:+16193945340" style="color:inherit">(619) 394-5340</a>.</span>
       <div class="footer-legal">
         <a href="privacy.html">Privacy</a>
-        <a href="terms.html">Terms</a>
+        <a href="terms.html">Terms</a> <a href="cookies.html">Cookies</a>
       </div>
     </div>
   </div>

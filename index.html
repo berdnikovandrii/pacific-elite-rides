@@ -30,6 +30,9 @@
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var _perC=null;try{_perC=localStorage.getItem('per_cookie_consent');}catch(e){}
+    var _perOff=_perC==='denied'||navigator.globalPrivacyControl===true;
+    gtag('consent','default',{analytics_storage:_perOff?'denied':'granted',ad_storage:_perOff?'denied':'granted',ad_user_data:_perOff?'denied':'granted',ad_personalization:_perOff?'denied':'granted'});
     gtag('js', new Date());
     gtag('config', 'G-MRH0C5ZBF1');
     // gtag('config', 'AW-XXXXXXXXX');
@@ -93,8 +96,8 @@
     <div class="hero-inner">
       <div class="hero-badge">
         <div class="hero-badge-dot"></div>
-        <span class="lang-en">San Diego's #1 Luxury Black Car Service</span>
-        <span class="lang-es">Servicio de Auto Negro #1 en San Diego</span>
+        <span class="lang-en">San Diego Luxury Black Car Service</span>
+        <span class="lang-es">Servicio de Auto Negro de Lujo en San Diego</span>
       </div>
       <h1 class="hero-h1">
         <span class="lang-en">Your Driver.<br><span class="gold">On Time.</span><br>Every Time.</span>
@@ -558,47 +561,8 @@ document.querySelectorAll('[data-gallery]').forEach(function(el) {
       </div>
     </div>
     <div class="testimonials-grid reveal" id="reviewsGrid">
-      <div class="testimonial-card">
-        <div class="stars">★★★★★</div>
-        <p class="testimonial-quote">
-          <span class="lang-en">I've used every car service in San Diego. Pacific Elite is in a different league — the Escalade was immaculate, driver was early, and communication was flawless. This is now my go-to for every client pickup.</span>
-          <span class="lang-es">He usado todos los servicios de auto en San Diego. Pacific Elite está en otra liga — el Escalade estaba impecable, el conductor llegó temprano. Es mi opción para cada recogida de clientes.</span>
-        </p>
-        <div class="testimonial-author">
-          <div class="author-initials">JM</div>
-          <div>
-            <div class="author-name">James M.</div>
-            <div class="author-detail"><span class="lang-en">CEO, La Jolla</span><span class="lang-es">CEO, La Jolla</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="testimonial-card">
-        <div class="stars">★★★★★</div>
-        <p class="testimonial-quote">
-          <span class="lang-en">Our flight was delayed 2 hours and they tracked it the whole time. Driver was waiting at arrivals with a sign, helped with luggage. That's the kind of service you remember.</span>
-          <span class="lang-es">Nuestro vuelo se retrasó 2 horas y lo siguieron todo el tiempo. El conductor estaba esperando en llegadas con un letrero. Eso es el servicio que recuerdas.</span>
-        </p>
-        <div class="testimonial-author">
-          <div class="author-initials">SR</div>
-          <div>
-            <div class="author-name">Sarah R.</div>
-            <div class="author-detail"><span class="lang-en">VP Marketing, Downtown SD</span><span class="lang-es">VP Marketing, Downtown SD</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="testimonial-card">
-        <div class="stars">★★★★★</div>
-        <p class="testimonial-quote">
-          <span class="lang-en">Booked the Sprinter for 12 people for a wine tour in Temecula. Best decision we made. Professional, punctual, and the van was stocked with water and snacks. Will book again for our next event.</span>
-          <span class="lang-es">Reservé el Sprinter para 12 personas para un tour de vinos en Temecula. La mejor decisión. Profesional, puntual y la van tenía agua y snacks. Volvería a reservar.</span>
-        </p>
-        <div class="testimonial-author">
-          <div class="author-initials">DK</div>
-          <div>
-            <div class="author-name">David K.</div>
-            <div class="author-detail"><span class="lang-en">Real Estate Developer</span><span class="lang-es">Desarrollador Inmobiliario</span></div>
-          </div>
-        </div>
+      <div style="grid-column:1/-1;text-align:center;padding:12px 0">
+        <a class="btn btn-outline" href="https://search.google.com/local/reviews?placeid=ChIJE0qtZLk4QSARFMPubxQjFBs" target="_blank" rel="noopener"><span class="lang-en">Read our Google reviews →</span><span class="lang-es">Lea nuestras reseñas en Google →</span></a>
       </div>
     </div>
   </div>
@@ -712,8 +676,8 @@ document.querySelectorAll('[data-gallery]').forEach(function(el) {
           <span class="nav-logo-tag" style="margin-top:4px">Luxury Transportation</span>
         </a>
         <p class="footer-brand-desc">
-          <span class="lang-en">San Diego's premier luxury black car service. Professional chauffeurs, immaculate vehicles, guaranteed on-time arrival.</span>
-          <span class="lang-es">El servicio premium de auto negro en San Diego. Choferes profesionales, vehículos impecables, llegada puntual garantizada.</span>
+          <span class="lang-en">San Diego's premier luxury black car service. Professional chauffeurs, immaculate vehicles, punctual flight-tracked pickups.</span>
+          <span class="lang-es">El servicio premium de auto negro en San Diego. Choferes profesionales, vehículos impecables, recogidas puntuales con seguimiento de vuelo.</span>
         </p>
         <div class="footer-socials">
           <a href="https://www.instagram.com/pacificeliterides" target="_blank" rel="noopener" class="social-btn" aria-label="Instagram">
@@ -781,10 +745,11 @@ document.querySelectorAll('[data-gallery]').forEach(function(el) {
       </div>
     </div>
     <div class="footer-bottom">
-      <span class="footer-copy">© 2025 Pacific Elite Rides LLC · Registered in California. <span class="lang-en">All rights reserved.</span><span class="lang-es">Todos los derechos reservados.</span></span>
+      <span class="footer-copy">© 2026 Pacific Elite Rides LLC · Registered in California · Rides operated under CPUC TCP 35857B · <a href="tel:+16193945340" style="color:inherit">(619) 394-5340</a>. <span class="lang-en">All rights reserved.</span><span class="lang-es">Todos los derechos reservados.</span></span>
       <div class="footer-legal">
         <a href="privacy.html"><span class="lang-en">Privacy</span><span class="lang-es">Privacidad</span></a>
         <a href="terms.html"><span class="lang-en">Terms</span><span class="lang-es">Términos</span></a>
+        <a href="cookies.html">Cookies</a>
       </div>
     </div>
   </div>

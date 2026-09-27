@@ -24,6 +24,9 @@
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var _perC=null;try{_perC=localStorage.getItem('per_cookie_consent');}catch(e){}
+    var _perOff=_perC==='denied'||navigator.globalPrivacyControl===true;
+    gtag('consent','default',{analytics_storage:_perOff?'denied':'granted',ad_storage:_perOff?'denied':'granted',ad_user_data:_perOff?'denied':'granted',ad_personalization:_perOff?'denied':'granted'});
     gtag('js', new Date());
     gtag('config', 'G-MRH0C5ZBF1');
     // gtag('config', 'AW-XXXXXXXXX');
@@ -287,7 +290,7 @@
       <div class="trust-badge">
         <div class="trust-badge-icon">📋</div>
         <div class="trust-badge-title"><span class="lang-en">Fully Licensed</span><span class="lang-es">Totalmente Licenciado</span></div>
-        <div class="trust-badge-sub"><span class="lang-en">California TCP license</span><span class="lang-es">Licencia TCP California</span></div>
+        <div class="trust-badge-sub"><span class="lang-en">Licensed CPUC carrier (TCP 35857B)</span><span class="lang-es">Transportista autorizado CPUC (TCP 35857B)</span></div>
       </div>
       <div class="trust-badge">
         <div class="trust-badge-icon">🛡</div>
@@ -385,10 +388,10 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <span class="footer-copy">© 2025 Pacific Elite Rides LLC · Registered in California.</span>
+      <span class="footer-copy">© 2026 Pacific Elite Rides LLC · Registered in California · Rides operated under CPUC TCP 35857B · <a href="tel:+16193945340" style="color:inherit">(619) 394-5340</a>.</span>
       <div class="footer-legal">
         <a href="privacy.html">Privacy</a>
-        <a href="terms.html">Terms</a>
+        <a href="terms.html">Terms</a> <a href="cookies.html">Cookies</a>
       </div>
     </div>
   </div>
