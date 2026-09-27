@@ -16,3 +16,8 @@ PROJECT-CONTEXT.md
 GBP-Weekly-Content-Queue.md
 Pacific_Elite_Rides_Content_Strategy.docx
 design_handoff_booking_wizard/
+
+# ── Cross-chat coordination, internal ────────────────────────────
+# Shared board for the SITE / CRM / ADS chats. Local only — it names
+# accounts, open security items and internal decisions.
+claude/
