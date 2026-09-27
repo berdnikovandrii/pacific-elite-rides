@@ -141,6 +141,11 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
 .btn-ghost:hover { color: var(--white); }
 .btn-lg { font-size: 15px; padding: 18px 40px; }
 .btn-sm { font-size: 13px; padding: 10px 20px; }
+/* Language toggles and other small buttons still need a 44px tap target
+   on touch screens; the visual size is unchanged on desktop. */
+@media (hover: none) and (pointer: coarse) {
+  .btn-sm { min-height: 44px; padding-top: 0; padding-bottom: 0; }
+}
 .btn-full { width: 100%; }
 
 /* ===== NAVBAR ===== */
@@ -197,7 +202,11 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
 /* Hamburger */
 .hamburger {
   display: none; flex-direction: column; gap: 5px; cursor: pointer;
-  padding: 4px;
+  /* 44x44 is the minimum comfortable tap target. The bars stay 22px wide and
+     visually identical — the padding grows the hit area, not the icon. */
+  padding: 0; width: 44px; height: 44px;
+  align-items: center; justify-content: center;
+  background: none; border: 0;
 }
 .hamburger span {
   display: block; width: 22px; height: 1.5px;
