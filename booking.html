@@ -287,6 +287,25 @@
   </div>
 </div>
 
+<!-- ══════ FOOTER ══════
+     Google Ads destination requirements expect the business to be identifiable
+     on the page where the visitor hands over their details — this is that page,
+     and it had no footer at all. Mirrors the footer on the other landing pages. -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:none;padding-top:0">
+      <span class="footer-copy">© 2026 Pacific Elite Rides LLC · Registered in California · Rides operated under CPUC TCP 35857B · <a href="tel:+16193945340" style="color:inherit">(619) 394-5340</a>. <span class="lang-en">All rights reserved.</span><span class="lang-es">Todos los derechos reservados.</span></span>
+      <div style="display:flex;gap:18px;flex-wrap:wrap">
+        <a href="index.html" style="color:rgba(255,255,255,.55);font-size:13px">Home</a>
+        <a href="services.html" style="color:rgba(255,255,255,.55);font-size:13px">Services</a>
+        <a href="privacy.html" style="color:rgba(255,255,255,.55);font-size:13px">Privacy</a>
+        <a href="terms.html" style="color:rgba(255,255,255,.55);font-size:13px">Terms</a>
+        <a href="cookies.html" style="color:rgba(255,255,255,.55);font-size:13px">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
 <!-- ─────────────────────────────────────────────────────────── -->
 <!-- External SDKs (replace YOUR_* placeholders with real keys) -->
 <!-- ─────────────────────────────────────────────────────────── -->
@@ -713,7 +732,6 @@ window.WIZ = {
     /* The non-airport endpoint decides the zone */
     var other = puSAN ? dr : pu;
 
-    var MIN_FARE = 65; /* floor for custom quotes */
     /* Order matters: first match wins, so specific areas come before broad
        ones ("Chula Vista"/"Linda Vista" before the "Vista" zone).
        Keep in sync with the CRM app: src/lib/pricing.ts */
@@ -745,8 +763,9 @@ window.WIZ = {
       { price: 350, re: /\briverside\b|\bcorona\b|\b925[0-9]{2}\b|\b9287[89]\b|\b9288[01]\b/ }
     ];
 
-    /* Published zone rates are exact — the $65 minimum is a floor for
-       custom-quoted trips, not something that overrides the rate card. */
+    /* Published zone rates are exact and are never clamped by a minimum.
+       The $75 floor (this.MIN_FARE) applies only to custom, drive-time
+       quotes — see estimateByDriveTime below. */
     for (var i = 0; i < ZONES.length; i++) {
       if (ZONES[i].re.test(other)) {
         return { amount: ZONES[i].price, exact: true };
@@ -1186,10 +1205,20 @@ window.WIZ = {
   showSuccess: function() {
     /* Redirect to a real, dedicated thank-you page instead of an in-page success
        state. This gives Google Ads (and anything else) a unique URL to key
-       conversion tracking off of, on top of the generate_lead GA4 event (which
-       now fires on the thank-you page itself — see thank-you.html). */
+       conversion tracking off of.
+
+       The sessionStorage flag below is what makes that conversion trustworthy:
+       thank-you.html only counts a lead when the flag is present, so a direct
+       visit, a refresh, or the back button count nothing. It is set HERE, not
+       after the Supabase insert resolves, on purpose — that call is deliberately
+       fire-and-forget (keepalive, outside the Promise.all), so waiting on it
+       would either delay this redirect or silently drop the conversion for a
+       real lead whenever Supabase is slow. Reaching showSuccess already means
+       validation passed and all three sinks were dispatched. */
+    var service = this.state.serviceType || '';
+    try { sessionStorage.setItem('per_lead_submitted', service); } catch (e) {}
     this.state.submitted = true;
-    window.location.href = 'thank-you.html?service=' + encodeURIComponent(this.state.serviceType || '');
+    window.location.href = 'thank-you.html?service=' + encodeURIComponent(service);
   },
 
   resetAll: function() {

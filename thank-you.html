@@ -130,14 +130,23 @@
 <script src="js/main.js"></script>
 
 <!-- ── Google Ads conversion event for "Submit lead form" (SUBMIT_LEAD_FORM).
-     Fires directly to the Google tag on page load — this page only loads
-     after a real booking is submitted (see booking.html's showSuccess
-     redirect), so page load = conversion. Replaces the earlier generate_lead
-     GA4 event to avoid double-counting the same conversion twice. ────── -->
+     Reaches Google Ads through the GA4 → Google Ads import (property
+     G-MRH0C5ZBF1), not through an AW- tag. The event name is wired to the
+     conversion action of the same name in the Ads account — DO NOT RENAME IT.
+
+     Gate: booking.html sets sessionStorage 'per_lead_submitted' immediately
+     before redirecting here. Without that flag nothing fires, so a direct
+     visit, a refresh, the back button, or reopening this URL from history all
+     count zero. The flag is consumed on read, which is what makes a refresh
+     right after a real submit count zero as well. Before this gate existed the
+     event fired on every page load and inflated the primary conversion. ── -->
 <script>
   (function() {
-    var params = new URLSearchParams(window.location.search);
-    var service = params.get('service') || '';
+    var flag = null;
+    try { flag = sessionStorage.getItem('per_lead_submitted'); } catch (e) {}
+    if (flag === null) return;                 // not a real submission
+    try { sessionStorage.removeItem('per_lead_submitted'); } catch (e) {}
+    var service = new URLSearchParams(window.location.search).get('service') || flag || '';
     if (typeof gtag === 'function') {
       gtag('event', 'conversion_event_submit_lead_form', { service: service });
     }
