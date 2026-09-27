@@ -1178,6 +1178,33 @@ window.WIZ = {
        браузер уже почав переходити на іншу сторінку. */
     if (window.SUPABASE_URL && window.SUPABASE_KEY) {
       try {
+        var lead = {
+          client_name:   s.name    || null,
+          phone:         s.phone   || null,
+          email:         s.email   || null,
+          pickup:        s.pickup  || null,
+          dropoff:       s.dropoff || null,
+          ride_datetime: this.rideDateTimeISO(),
+          flight_number: s.flight  || null,
+          vehicle:       s.vehicle || null,
+          passengers:    s.passengers || null,
+          notes:         [s.notes, (s.stops && s.stops.length) ? 'Stops: ' + s.stops.join(', ') : '']
+                           .filter(function(x) { return x && String(x).trim(); }).join('\n') || null,
+          price:         (typeof this._lastFare === 'number') ? this._lastFare : null,
+          sms_consent:   !!s.smsConsent,
+          source:        'Website'
+          /* status навмисно не передаємо — колонка має DEFAULT 'New' */
+        };
+
+        /* Google Ads click ids, captured on the landing page (js/main.js).
+           Absent for organic traffic and for anyone who declined cookies or
+           sends GPC — that is expected, not an error. Only keys that actually
+           have a value are added: PostgREST rejects the WHOLE insert with
+           PGRST204 if it is handed a column the schema doesn't have, so this
+           must never send a key speculatively. */
+        var ads = (window.PER_ADS && window.PER_ADS.get()) || {};
+        ['gclid', 'gbraid', 'wbraid'].forEach(function(k) { if (ads[k]) lead[k] = ads[k]; });
+
         fetch(window.SUPABASE_URL + '/rest/v1/leads', {
           method: 'POST',
           keepalive: true,
@@ -1187,23 +1214,15 @@ window.WIZ = {
             'Authorization': 'Bearer ' + window.SUPABASE_KEY,
             'Prefer':        'return=minimal'
           },
-          body: JSON.stringify({
-            client_name:   s.name    || null,
-            phone:         s.phone   || null,
-            email:         s.email   || null,
-            pickup:        s.pickup  || null,
-            dropoff:       s.dropoff || null,
-            ride_datetime: this.rideDateTimeISO(),
-            flight_number: s.flight  || null,
-            vehicle:       s.vehicle || null,
-            passengers:    s.passengers || null,
-            notes:         [s.notes, (s.stops && s.stops.length) ? 'Stops: ' + s.stops.join(', ') : '']
-                             .filter(function(x) { return x && String(x).trim(); }).join('\n') || null,
-            price:         (typeof this._lastFare === 'number') ? this._lastFare : null,
-            sms_consent:   !!s.smsConsent,
-            source:        'Website'
-            /* status навмисно не передаємо — колонка має DEFAULT 'New' */
-          })
+          body: JSON.stringify(lead)
+        }).then(function(r) {
+          if (!r.ok) {
+            /* Loud on purpose: a 400 here means every lead is being dropped,
+               and the fire-and-forget design would otherwise hide it. */
+            r.text().then(function(t) {
+              console.error('Supabase lead insert rejected:', r.status, t);
+            });
+          }
         }).catch(function(err) {
           console.error('Supabase lead insert failed:', err);
         });

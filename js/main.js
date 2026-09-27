@@ -108,6 +108,59 @@ document.querySelectorAll('a[href^="tel:"]').forEach(a => {
   });
 });
 
+/* ===== GOOGLE ADS CLICK IDS =====
+   Google stamps the landing URL with gclid on most ad clicks, and with gbraid
+   or wbraid on iOS where gclid is often absent — so all three are captured,
+   not just the first one found. They ride along with the booking into Supabase
+   so that confirmed rides can later be uploaded back to Google Ads as offline
+   conversions. The upload has to happen within 90 days of the click, which is
+   why that is the retention window here.
+
+   Consent: these are advertising identifiers, so they follow the same rule as
+   the ad cookies. If the visitor declined, or their browser sends a Global
+   Privacy Control signal, nothing is stored and nothing is sent — the booking
+   still goes through, it just carries no attribution. Declining also clears
+   anything captured earlier in the session. */
+window.PER_ADS = (function () {
+  var KEY = 'per_ads_click', KEYS = ['gclid', 'gbraid', 'wbraid'];
+  var NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;
+
+  function optedOut() {
+    if (navigator.globalPrivacyControl === true) return true;
+    try { return localStorage.getItem('per_cookie_consent') === 'denied'; } catch (e) { return false; }
+  }
+
+  function read() {
+    if (optedOut()) return {};
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return {};
+      var o = JSON.parse(raw);
+      if (!o || !o.t || Date.now() - o.t > NINETY_DAYS) { localStorage.removeItem(KEY); return {}; }
+      var out = {};
+      KEYS.forEach(function (k) { if (o[k]) out[k] = o[k]; });
+      return out;
+    } catch (e) { return {}; }
+  }
+
+  function capture() {
+    if (optedOut()) { try { localStorage.removeItem(KEY); } catch (e) {} return; }
+    var q;
+    try { q = new URLSearchParams(window.location.search); } catch (e) { return; }
+    var found = null;
+    KEYS.forEach(function (k) {
+      var v = q.get(k);
+      if (v) { found = found || {}; found[k] = v.slice(0, 200); }
+    });
+    if (!found) return;               /* organic visit — keep whatever we had */
+    found.t = Date.now();
+    try { localStorage.setItem(KEY, JSON.stringify(found)); } catch (e) {}
+  }
+
+  capture();
+  return { get: read, forget: function () { try { localStorage.removeItem(KEY); } catch (e) {} } };
+})();
+
 /* ===== GOOGLE PLACES INIT ===== */
 window.initPlaces = function() {
   ['pickup','dropoff'].forEach(id => {
@@ -145,6 +198,9 @@ window.initPlaces = function() {
           });
         }
       });
+      /* Declining also drops any Google Ads click id captured earlier — it is
+         an advertising identifier and has no business surviving an opt-out. */
+      if (window.PER_ADS && typeof window.PER_ADS.forget === 'function') window.PER_ADS.forget();
     }
   }
 
