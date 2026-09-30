@@ -32,6 +32,24 @@
 <body>
 
 <!-- ── MOBILE MENU ─────────────────────────────────────────── -->
+<!-- Sending overlay. Shown the moment the form is submitted and left up until
+     the browser paints thank-you.html. Before this, the only feedback was the
+     send button dropping to 65% opacity, which on a phone reads as "nothing
+     happened" — people tapped again. -->
+<div class="send-overlay" id="sendOverlay" role="status" aria-live="polite" aria-hidden="true">
+  <div class="send-overlay-inner">
+    <div class="send-spinner" aria-hidden="true"></div>
+    <div class="send-overlay-text">
+      <span class="lang-en">Sending your request&hellip;</span>
+      <span class="lang-es">Enviando tu solicitud&hellip;</span>
+    </div>
+    <div class="send-overlay-sub">
+      <span class="lang-en">We confirm within 15 minutes</span>
+      <span class="lang-es">Confirmamos en 15 minutos</span>
+    </div>
+  </div>
+</div>
+
 <div class="mobile-menu" id="mobileMenu">
   <nav style="display:flex;flex-direction:column;align-items:center;gap:28px">
     <a href="index.html" onclick="closeMenu()">Home</a>
@@ -309,7 +327,7 @@
 <!-- ─────────────────────────────────────────────────────────── -->
 <!-- External SDKs (replace YOUR_* placeholders with real keys) -->
 <!-- ─────────────────────────────────────────────────────────── -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<!-- EmailJS SDK removed 2026-09-30: sending goes through the REST endpoint with keepalive -->
 <script src="js/main.js"></script>
 
 <!-- ─────────────────────────────────────────────────────────── -->
@@ -1134,6 +1152,8 @@ window.WIZ = {
 
     var btn = el('s2Send');
     if (btn) btn.classList.add('loading');
+    var ov = el('sendOverlay');
+    if (ov) { ov.classList.add('is-on'); ov.setAttribute('aria-hidden', 'false'); }
 
     var s = this.state;
     var route = [s.pickup].concat(s.stops).concat([s.dropoff]).join(' → ');
@@ -1156,20 +1176,48 @@ window.WIZ = {
       route:        route
     };
 
-    // 1) Відправляємо email через EmailJS
-    var emailPromise = (typeof emailjs !== 'undefined')
-      ? emailjs.send('formsender', 'template_3g6ev1c', bookingData)
-      : Promise.resolve();
+    /* All three sinks are dispatched and NONE of them is awaited. Measured
+       2026-09-30: EmailJS 0.8s, Apps Script 1.4s, Supabase 0.3s on a fast
+       connection — but Apps Script cold starts and mobile networks pushed the
+       real-world wait to 10–15 seconds, during which the customer stared at a
+       barely-dimmed button and could not tell whether anything had happened.
 
-    // 2) Відправляємо в Google Sheets (якщо webhook налаштований)
-    var sheetsPromise = (window.SHEETS_WEBHOOK && window.SHEETS_WEBHOOK !== 'PASTE_YOUR_APPS_SCRIPT_URL_HERE')
-      ? fetch(window.SHEETS_WEBHOOK, {
+       `keepalive: true` is what makes this safe: the browser finishes the
+       request even after navigation has started. Waiting bought us nothing
+       anyway — the Sheets call is `no-cors`, so its response is opaque and
+       unreadable by design. */
+
+    // 1) Email через EmailJS — REST замість SDK, бо SDK не вміє keepalive
+    if (window.EMAILJS_SERVICE && window.EMAILJS_TEMPLATE && window.EMAILJS_KEY) {
+      try {
+        fetch('https://api.emailjs.com/api/v1.0/email/send', {
+          method: 'POST',
+          keepalive: true,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            service_id:      window.EMAILJS_SERVICE,
+            template_id:     window.EMAILJS_TEMPLATE,
+            user_id:         window.EMAILJS_KEY,
+            template_params: bookingData
+          })
+        }).then(function(r) {
+          if (!r.ok) r.text().then(function(t) { console.error('EmailJS rejected:', r.status, t); });
+        }).catch(function(err) { console.error('EmailJS failed:', err); });
+      } catch (err) { console.error('EmailJS failed:', err); }
+    }
+
+    // 2) Google Sheets через Apps Script
+    if (window.SHEETS_WEBHOOK && window.SHEETS_WEBHOOK !== 'PASTE_YOUR_APPS_SCRIPT_URL_HERE') {
+      try {
+        fetch(window.SHEETS_WEBHOOK, {
           method: 'POST',
           mode: 'no-cors',
+          keepalive: true,
           headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify(bookingData)
-        })
-      : Promise.resolve();
+        }).catch(function(err) { console.error('Sheets webhook failed:', err); });
+      } catch (err) { console.error('Sheets webhook failed:', err); }
+    }
 
     /* 3) Пишемо лід у Supabase. Незалежний від перших двох канал:
        не входить у Promise.all нижче, тому ні його падіння, ні його
@@ -1231,15 +1279,9 @@ window.WIZ = {
       }
     }
 
-    Promise.all([emailPromise, sheetsPromise])
-      .then(function() {
-        self.showSuccess();
-      })
-      .catch(function(err) {
-        console.error('Booking submit error:', err);
-        // Якщо email пройшов — все одно показуємо успіх
-        self.showSuccess();
-      });
+    /* Straight to the thank-you page. The three requests above are already in
+       flight and keepalive carries them to completion. */
+    self.showSuccess();
   },
 
   showSuccess: function() {
@@ -1329,9 +1371,12 @@ document.addEventListener('DOMContentLoaded', function() {
   window.SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtydmRidG1yZGRoY2FmaHZhamluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwMjEyOTcsImV4cCI6MjEwNTU5NzI5N30.WcoaDX1LuWbMUenUg04KjRYhk2u8U7Eeqdi-MHO4RS0';
   // ──────────────────────────────────────────────────────────────
 
-  if (typeof emailjs !== 'undefined') {
-    emailjs.init('iOE_629EUQLFOEy-S');
-  }
+  // EmailJS public key — designed to sit in browser code. Sending now goes
+  // through the REST endpoint rather than the SDK, because the SDK cannot set
+  // keepalive and its request was being cut off by the redirect.
+  window.EMAILJS_SERVICE  = 'formsender';
+  window.EMAILJS_TEMPLATE = 'template_3g6ev1c';
+  window.EMAILJS_KEY      = 'iOE_629EUQLFOEy-S';
   var lang = localStorage.getItem('per_lang') || 'en';
   WIZ.state.lang = lang;
 

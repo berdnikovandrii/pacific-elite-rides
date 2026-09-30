@@ -1661,3 +1661,41 @@ input[type=time].wiz-input::-webkit-calendar-picker-indicator {
   font-family: 'Playfair Display', serif; font-size: 1.15rem;
   text-transform: none; letter-spacing: .2px; color: var(--white); font-weight: 600;
 }
+
+/* ── SENDING OVERLAY ──────────────────────────────────────
+   Covers the gap between tapping Send and thank-you.html painting.
+   The three lead sinks are fire-and-forget now, so this is short —
+   but on a slow phone the navigation itself is visible, and silence
+   there is what made people tap Send twice. */
+.send-overlay {
+  position: fixed; inset: 0; z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(8,8,8,0.88);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  opacity: 0; pointer-events: none;
+  transition: opacity .18s ease;
+}
+.send-overlay.is-on { opacity: 1; pointer-events: all; }
+.send-overlay-inner { text-align: center; padding: 0 24px; }
+.send-spinner {
+  width: 46px; height: 46px; margin: 0 auto 22px;
+  border: 2px solid rgba(201,168,76,0.22);
+  border-top-color: var(--gold, #C9A84C);
+  border-radius: 50%;
+  animation: send-spin .9s linear infinite;
+}
+@keyframes send-spin { to { transform: rotate(360deg); } }
+.send-overlay-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(19px, 4vw, 24px); color: var(--white, #F3EFE6);
+  letter-spacing: .2px;
+}
+.send-overlay-sub {
+  margin-top: 8px; font-size: 13px; letter-spacing: .3px;
+  color: rgba(255,255,255,0.5);
+}
+/* Respect a reduced-motion preference: keep the overlay, drop the spin. */
+@media (prefers-reduced-motion: reduce) {
+  .send-spinner { animation: none; border-top-color: rgba(201,168,76,0.5); }
+  .send-overlay { transition: none; }
+}
