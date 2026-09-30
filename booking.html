@@ -36,7 +36,8 @@
      the browser paints thank-you.html. Before this, the only feedback was the
      send button dropping to 65% opacity, which on a phone reads as "nothing
      happened" — people tapped again. -->
-<div class="send-overlay" id="sendOverlay" role="status" aria-live="polite" aria-hidden="true">
+<div class="send-overlay" id="sendOverlay" role="status" aria-live="polite" aria-hidden="true"
+     style="display:none">
   <div class="send-overlay-inner">
     <div class="send-spinner" aria-hidden="true"></div>
     <div class="send-overlay-text">
@@ -1153,7 +1154,15 @@ window.WIZ = {
     var btn = el('s2Send');
     if (btn) btn.classList.add('loading');
     var ov = el('sendOverlay');
-    if (ov) { ov.classList.add('is-on'); ov.setAttribute('aria-hidden', 'false'); }
+    if (ov) {
+      /* display is set inline rather than left to the stylesheet on purpose:
+         a visitor holding a cached css/style.css would otherwise render this
+         block as plain text at the top of the form. Belt and braces — the
+         class does the styling when the fresh stylesheet is present. */
+      ov.style.display = 'flex';
+      ov.classList.add('is-on');
+      ov.setAttribute('aria-hidden', 'false');
+    }
 
     var s = this.state;
     var route = [s.pickup].concat(s.stops).concat([s.dropoff]).join(' → ');
@@ -1220,8 +1229,8 @@ window.WIZ = {
     }
 
     /* 3) Пишемо лід у Supabase. Незалежний від перших двох канал:
-       не входить у Promise.all нижче, тому ні його падіння, ні його
-       повільність не затримують редірект на thank-you.html.
+       відправляється і не чекається, тому ні падіння, ні повільність
+       не затримують редірект на thank-you.html.
        keepalive:true — щоб запит долетів навіть після того, як
        браузер уже почав переходити на іншу сторінку. */
     if (window.SUPABASE_URL && window.SUPABASE_KEY) {
@@ -1293,7 +1302,7 @@ window.WIZ = {
        thank-you.html only counts a lead when the flag is present, so a direct
        visit, a refresh, or the back button count nothing. It is set HERE, not
        after the Supabase insert resolves, on purpose — that call is deliberately
-       fire-and-forget (keepalive, outside the Promise.all), so waiting on it
+       fire-and-forget (keepalive, never awaited), so waiting on it
        would either delay this redirect or silently drop the conversion for a
        real lead whenever Supabase is slow. Reaching showSuccess already means
        validation passed and all three sinks were dispatched. */
