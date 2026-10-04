@@ -22,3 +22,6 @@ design_handoff_booking_wizard/
 # accounts, open security items and internal decisions.
 claude/
 supabase/
+
+# ── Temp files left by the Claude folder bridge ──────────────────
+.fuse_hidden*
