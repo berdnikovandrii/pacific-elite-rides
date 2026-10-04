@@ -129,7 +129,7 @@
               <div class="wiz-err-msg" id="err-date"></div>
             </div>
             <div class="wiz-field">
-              <label class="wiz-label" id="lTime">Pickup Time *</label>
+              <label class="wiz-label" id="lTime">Pickup Time * (San Diego time)</label>
               <div style="display:flex;gap:8px">
                 <div class="wiz-select-wrap" style="flex:1">
                   <select id="rideHour" class="wiz-input" onchange="WIZ.syncTime()">
@@ -375,7 +375,7 @@ var DICT = {
     s5title: 'Review & Confirm',
     s5sub:   'Everything look good?',
     lDate:    'Date *',
-    lTime:    'Pickup Time *',
+    lTime:    'Pickup Time * (San Diego time)',
     lPax:     'Passengers',
     lVehicle: 'Vehicle Preference',
     lFlight:  'Flight Number',
@@ -457,7 +457,7 @@ var DICT = {
     s5title: 'Revisión y confirmación',
     s5sub:   '¿Todo se ve bien?',
     lDate:    'Fecha *',
-    lTime:    'Hora de recogida *',
+    lTime:    'Hora de recogida * (hora de San Diego)',
     lPax:     'Pasajeros',
     lVehicle: 'Preferencia de vehículo',
     lFlight:  'Número de vuelo',
@@ -907,8 +907,53 @@ window.WIZ = {
   _estReq: 0,
   _lastFare: null,
 
+  /* How far America/Los_Angeles is from UTC, in ms, at the instant utcMs.
+     Negative (-7h in PDT, -8h in PST). Asks Intl what the wall clock in
+     Los Angeles reads at that instant and measures the gap, so DST comes
+     from the browser's own tz database rather than from hardcoded dates.
+     Returns null when Intl can't do time zones (very old browsers) — the
+     caller then falls back to the US DST rules. */
+  _laOffsetMs: function(utcMs) {
+    try {
+      var p = {};
+      new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Los_Angeles', hour12: false,
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+      }).formatToParts(new Date(utcMs)).forEach(function(x) { p[x.type] = x.value; });
+      if (!p.year) return null;
+      var asIfUTC = Date.UTC(+p.year, +p.month - 1, +p.day,
+                             (+p.hour) % 24, +p.minute, +p.second);
+      return asIfUTC - utcMs;
+    } catch (e) { return null; }
+  },
+
+  /* Fallback offset: US DST since 2007 — PDT from the 2nd Sunday in March
+     at 2:00 local to the 1st Sunday in November. Fed the naive wall-clock
+     parts, which is exactly what the rule is written in terms of. */
+  _laOffsetFallbackMs: function(y, mo, d, h) {
+    function nthSunday(year, month, n) {           // month 1-12, n 1-based
+      var first = new Date(Date.UTC(year, month - 1, 1)).getUTCDay();
+      return 1 + ((7 - first) % 7) + (n - 1) * 7;  // day of month
+    }
+    var start = nthSunday(y, 3, 2), end = nthSunday(y, 11, 1);
+    var dst;
+    if (mo > 3 && mo < 11)       dst = true;
+    else if (mo < 3 || mo > 11)  dst = false;
+    else if (mo === 3)           dst = (d > start) || (d === start && h >= 2);
+    else                         dst = (d < end)   || (d === end   && h <  2);
+    return (dst ? -7 : -8) * 3600000;
+  },
+
   /* "2026-09-23" + "04:30 PM" → ISO timestamp. Returns null if either
-     part is missing or unparseable, so we never send a bogus date. */
+     part is missing or unparseable, so we never send a bogus date.
+
+     The entered time is ALWAYS San Diego time, whatever time zone the
+     browser happens to be in. Building `new Date(y, m, d, h, min)` would
+     read it as the visitor's local time, so a client in London booking
+     12:00 PM landed in the CRM as 4:00 AM PT (real leads #55 and #59 —
+     both had to be corrected by hand). We therefore anchor the wall clock
+     to America/Los_Angeles and convert to UTC ourselves. */
   rideDateTimeISO: function() {
     var date = this.state.date, time = this.state.time;
     if (!date) return null;
@@ -920,8 +965,25 @@ window.WIZ = {
       min = parseInt(m[2], 10);
     }
     var p = date.split('-');
-    var d = new Date(+p[0], +p[1] - 1, +p[2], h, min, 0);
-    return isNaN(d.getTime()) ? null : d.toISOString();
+    var y = +p[0], mo = +p[1], d = +p[2];
+    if (!y || !mo || !d) return null;
+
+    /* The wall clock the visitor meant, read as if it were UTC. */
+    var naive = Date.UTC(y, mo - 1, d, h, min, 0);
+    if (isNaN(naive)) return null;
+
+    var off = this._laOffsetMs(naive);
+    if (off === null) {
+      off = this._laOffsetFallbackMs(y, mo, d, h);
+    } else {
+      /* `naive` is up to 8h off the real instant, which matters only
+         within a few hours of a DST switch. One refinement with the
+         offset applied settles it. */
+      var off2 = this._laOffsetMs(naive - off);
+      if (off2 !== null) off = off2;
+    }
+    var out = new Date(naive - off);
+    return isNaN(out.getTime()) ? null : out.toISOString();
   },
 
   /* Estimates drive time (hours) between two {lat,lng} points via Google
