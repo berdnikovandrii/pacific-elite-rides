@@ -313,6 +313,17 @@
 <footer class="footer">
   <div class="container">
     <div class="footer-bottom" style="border-top:none;padding-top:0">
+      <div class="footer-socials" style="margin-top:0">
+        <a href="https://www.instagram.com/pacificeliterides" target="_blank" rel="noopener" class="social-btn" aria-label="Instagram">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+        <a href="https://www.facebook.com/1290356920824545" target="_blank" rel="noopener" class="social-btn" aria-label="Facebook">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h3l1-3h-4v-2c0-.6.4-1 1-1z"/></svg>
+        </a>
+        <a href="https://www.tiktok.com/@pacific.elite.ride" target="_blank" rel="noopener" class="social-btn" aria-label="TikTok">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 2h-3v13.2a2.6 2.6 0 11-2.1-2.55V9.6a5.7 5.7 0 105.1 5.67V8.9a6.6 6.6 0 003.5 1v-3a3.6 3.6 0 01-3.5-3.6V2z"/></svg>
+        </a>
+      </div>
       <span class="footer-copy">© 2026 Pacific Elite Rides LLC · Registered in California · Rides operated under CPUC TCP 35857B · <a href="tel:+16193945340" style="color:inherit">(619) 394-5340</a>. <span class="lang-en">All rights reserved.</span><span class="lang-es">Todos los derechos reservados.</span></span>
       <div style="display:flex;gap:18px;flex-wrap:wrap">
         <a href="index.html" style="color:rgba(255,255,255,.55);font-size:13px">Home</a>
@@ -771,6 +782,31 @@ window.WIZ = {
 
     /* The non-airport endpoint decides the zone */
     var other = puSAN ? dr : pu;
+
+    /* Street names used to leak into the zone lookup. Real lead #53:
+       "1163 Via Vista Dr, Riverside" matched \bvista\b and quoted $130
+       (Oceanside/Vista) instead of $350 (Riverside) — a $220 undercharge the
+       customer saw on screen. Same trap in "Coronado Ave, San Diego",
+       "Del Mar Heights Rd", "Vista Way".
+
+       So: drop the street component before matching. Split on commas and
+       discard any part that starts with a house number or ends in a street
+       suffix — but only when there is more than one part, so a bare
+       "Vista, CA" or a hotel name on its own survives. Mirrors the fix CRM
+       shipped in src/lib/pricing.ts and the auto-quote function. */
+    var STREETY = /^\d+[a-z]?\s+\S|\b(st|street|ave|avenue|dr|drive|rd|road|blvd|boulevard|way|ln|lane|ct|court|pl|place|pkwy|parkway|hwy|highway|cir|circle|ter|terrace|trl|trail|row|loop)\.?$/i;
+    var parts = other.split(',').map(function(x) { return x.trim(); }).filter(Boolean);
+    if (parts.length > 1) {
+      var kept = parts.filter(function(x) { return !STREETY.test(x); });
+      if (kept.length) other = kept.join(', ');
+    }
+
+    /* Out of San Diego County → no zone rate, quote it by hand. Without this,
+       "Corona del Mar, Newport Beach" matches \bcorona\b and gets billed as
+       Riverside/Corona. Runs after the event-venue check above on purpose:
+       Dodger Stadium is in Los Angeles and must stay a $795 round trip. */
+    var OUT_OF_COUNTY = /\blos angeles\b|\bnewport beach\b|\bcorona del mar\b|\birvine\b|\bsanta ana\b|\blong beach\b|\bhuntington beach\b|\borange county\b|\b9[01][0-8]\d\d\b|\b92[67]\d\d\b/i;
+    if (OUT_OF_COUNTY.test(other)) return { custom: true };
 
     /* Order matters: first match wins, so specific areas come before broad
        ones ("Chula Vista"/"Linda Vista" before the "Vista" zone).
