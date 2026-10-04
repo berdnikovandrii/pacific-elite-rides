@@ -415,6 +415,8 @@ var DICT = {
     flightOptional: '(optional)',
     fareLabel: 'Estimated flat rate',
     fareNote: 'All-inclusive · SUV up to 6 · no surge',
+    fareOneStop: 'includes 1 stop',
+    fareNStops: 'includes {n} stops',
     fareCustomLabel: 'Custom quote',
     fareCustomNote: 'Confirmed within 15 min · all-inclusive · SUV up to 6 · no surge',
     fareCalcLabel: 'Calculating estimate…',
@@ -497,6 +499,8 @@ var DICT = {
     flightOptional: '(opcional)',
     fareLabel: 'Tarifa fija estimada',
     fareNote: 'Todo incluido · SUV hasta 6 · sin surge',
+    fareOneStop: 'incluye 1 parada',
+    fareNStops: 'incluye {n} paradas',
     fareCustomLabel: 'Cotización personalizada',
     fareCustomNote: 'Confirmada en 15 min · todo incluido · SUV hasta 6 · sin surge',
     fareCalcLabel: 'Calculando estimado…',
@@ -735,53 +739,20 @@ window.WIZ = {
   HOURLY_RATE: 95,   /* Suburban/Escalade hourly rate, matches pricing page */
   HOURLY_MIN_HRS: 0,  /* no hourly minimum for point-to-point; MIN_FARE is the floor */
   MIN_FARE: 75,
+  STOP_FEE: 25,      /* per intermediate stop, on top of any price — Andrii, 04.10 */
 
-  estimateFare: function() {
-    var pu = (this.state.pickup || '').toLowerCase();
-    var dr = (this.state.dropoff || '').toLowerCase();
-    if (!pu.trim() || !dr.trim()) return null;
+  /* Hourly products bill by the clock, so stops are already paid for — and the
+     "$95 / hr" card on the home page says "Multiple stops included" in so many
+     words. The stop fee therefore applies only to fixed-price transfers.
+     Andrii's call, 04.10. */
+  HOURLY_SERVICES: ['Hourly Charter', 'Sprinter Van', 'Maybach VIP'],
 
-    var isSAN = function(t) {
-      return /\bsan diego international\b|\bsan diego airport\b|\b\(san\)|\bharbor dr\b.*\bterminal\b|\bterminal [12]\b.*san diego|\b92101\b.*airport/.test(t)
-          || /\bsan\b.*\bairport\b/.test(t);
-    };
-    var isLAX = function(t) {
-      return /\blax\b|\blos angeles international\b|\bworld way\b/.test(t);
-    };
-
-    var nearSAN = function(loc) {
-      if (!loc) return false;
-      var dLat = (loc.lat - 32.7336) * 111, dLng = (loc.lng + 117.1897) * 93.6;
-      return Math.sqrt(dLat * dLat + dLng * dLng) < 2;
-    };
-    var puSAN = isSAN(pu) || nearSAN(this.state.pickupLoc), drSAN = isSAN(dr) || nearSAN(this.state.dropoffLoc);
-    var puLAX = isLAX(pu), drLAX = isLAX(dr);
-
-    /* LAX leg — flat, either direction */
-    if (puLAX || drLAX) return { amount: 375, exact: true };
-
-    /* LA / Orange County event venues — flat ROUND TRIP including up to 5 hrs
-       of wait during the event, matching la-events.html and
-       san-diego-to-los-angeles-car-service.html. Deliberately matches venue
-       names only, never the cities: "Anaheim, CA" on its own is an ordinary
-       long-distance transfer, not an event package, and must not be priced as
-       one. Sits after the LAX check so an LAX run stays a one-way $375, and
-       before the airport check because neither endpoint is SAN. */
-    var EVENT_VENUES = [
-      { price: 795, re: /\bsofi stadium\b|\bdodger stadium\b|\bcrypto\.com arena\b|\bintuit dome\b|\bhollywood bowl\b|\brose bowl\b|\bkia forum\b|\bbmo stadium\b/ },
-      { price: 695, re: /\bhonda center\b|\bangel stadium\b|\bdisneyland\b|\bdisney california adventure\b/ }
-    ];
-    for (var v = 0; v < EVENT_VENUES.length; v++) {
-      if (EVENT_VENUES[v].re.test(pu) || EVENT_VENUES[v].re.test(dr)) {
-        return { amount: EVENT_VENUES[v].price, exact: true, roundTrip: true };
-      }
-    }
-
-    /* Neither endpoint is an airport → we can't zone-price it */
-    if (!puSAN && !drSAN) return { custom: true };
-
-    /* The non-airport endpoint decides the zone */
-    var other = puSAN ? dr : pu;
+  /* Zone price for one address, or null when we can't zone it. Factored out of
+     estimateFare because stops have to go through exactly the same lookup:
+     street-stripping, the out-of-county guard, then the zone table. */
+  _zoneFor: function(text) {
+    var other = String(text || '').toLowerCase();
+    if (!other.trim()) return null;
 
     /* Street names used to leak into the zone lookup. Real lead #53:
        "1163 Via Vista Dr, Riverside" matched \bvista\b and quoted $130
@@ -803,16 +774,24 @@ window.WIZ = {
 
     /* Out of San Diego County → no zone rate, quote it by hand. Without this,
        "Corona del Mar, Newport Beach" matches \bcorona\b and gets billed as
-       Riverside/Corona. Runs after the event-venue check above on purpose:
-       Dodger Stadium is in Los Angeles and must stay a $795 round trip. */
+       Riverside/Corona. Callers run the event-venue check BEFORE this on
+       purpose: Dodger Stadium is in Los Angeles and must stay a $795 round
+       trip. */
     var OUT_OF_COUNTY = /\blos angeles\b|\bnewport beach\b|\bcorona del mar\b|\birvine\b|\bsanta ana\b|\blong beach\b|\bhuntington beach\b|\borange county\b|\b9[01][0-8]\d\d\b|\b92[67]\d\d\b/i;
-    if (OUT_OF_COUNTY.test(other)) return { custom: true };
+    if (OUT_OF_COUNTY.test(other)) return null;
 
     /* Order matters: first match wins, so specific areas come before broad
        ones ("Chula Vista"/"Linda Vista" before the "Vista" zone).
-       Keep in sync with the CRM app: src/lib/pricing.ts */
+       Keep in sync with the CRM app: src/lib/pricing.ts
+
+       The Downtown row carries landmark and hotel names as well as the ZIPs,
+       because Places often returns "The Westgate Hotel, Second Ave, San Diego"
+       with no 92101 in it — real lead #59 was quoted the $75 floor instead of
+       $60 for exactly that. Deliberately NOT "convention center" on its own
+       (Anaheim's would become Downtown) and NOT "broadway" (that street also
+       exists in Chula Vista and El Cajon). */
     var ZONES = [
-      { price: 60,  re: /\bdowntown\b|\bgaslamp\b|\bmarina district\b|\beast village\b|\blittle italy\b|\bcore-columbia\b|\b9210[12]\b/ },
+      { price: 60,  re: /\bdowntown\b|\bgaslamp\b|\bmarina district\b|\beast village\b|\blittle italy\b|\bcore-columbia\b|\bcortez hill\b|\bwestgate hotel\b|\bpetco park\b|\bsan diego convention center\b|\bhorton plaza\b|\bseaport village\b|\bmanchester grand hyatt\b|\bhilton san diego bayfront\b|\bmarriott marquis san diego\b|\bu\.?s\.? grant\b|\bhard rock hotel san diego\b|\bpendry san diego\b|\bomni san diego\b|\b9210[12]\b/ },
       { price: 80,  re: /\bcoronado\b|\b92118\b|\bcoronado cays\b/ },
       { price: 80,  re: /\bpoint loma\b|\bocean beach\b|\bliberty station\b|\bloma portal\b|\bsunset cliffs\b|\b9210[67]\b/ },
       { price: 85,  re: /\bpacific beach\b|\bmission beach\b|\b92109\b/ },
@@ -839,15 +818,89 @@ window.WIZ = {
       { price: 350, re: /\briverside\b|\bcorona\b|\b925[0-9]{2}\b|\b9287[89]\b|\b9288[01]\b/ }
     ];
 
+    for (var i = 0; i < ZONES.length; i++) {
+      if (ZONES[i].re.test(other)) return ZONES[i].price;
+    }
+    return null;
+  },
+
+  estimateFare: function() {
+    var pu = (this.state.pickup || '').toLowerCase();
+    var dr = (this.state.dropoff || '').toLowerCase();
+    if (!pu.trim() || !dr.trim()) return null;
+
+    /* Intermediate stops. Each one adds a flat fee, and on an airport run each
+       one is also a candidate for the zone — a stop further out than the
+       drop-off is what actually sets the distance driven. */
+    var stops = (this.state.stops || [])
+      .map(function(x) { return String(x || '').toLowerCase().trim(); })
+      .filter(Boolean);
+    var freeStops = this.HOURLY_SERVICES.indexOf(this.state.serviceType) !== -1;
+    var extra = freeStops ? 0 : this.STOP_FEE * stops.length;
+
+    var isSAN = function(t) {
+      return /\bsan diego international\b|\bsan diego airport\b|\b\(san\)|\bharbor dr\b.*\bterminal\b|\bterminal [12]\b.*san diego|\b92101\b.*airport/.test(t)
+          || /\bsan\b.*\bairport\b/.test(t);
+    };
+    var isLAX = function(t) {
+      return /\blax\b|\blos angeles international\b|\bworld way\b/.test(t);
+    };
+
+    var nearSAN = function(loc) {
+      if (!loc) return false;
+      var dLat = (loc.lat - 32.7336) * 111, dLng = (loc.lng + 117.1897) * 93.6;
+      return Math.sqrt(dLat * dLat + dLng * dLng) < 2;
+    };
+    var puSAN = isSAN(pu) || nearSAN(this.state.pickupLoc), drSAN = isSAN(dr) || nearSAN(this.state.dropoffLoc);
+    var puLAX = isLAX(pu), drLAX = isLAX(dr);
+
+    /* LAX leg — flat, either direction. A stop on the way is just the stop
+       fee: the $375 already covers the distance, wherever the stop sits. */
+    if (puLAX || drLAX) return { amount: 375 + extra, exact: true, stops: stops.length, stopFee: extra };
+
+    /* LA / Orange County event venues — flat ROUND TRIP including up to 5 hrs
+       of wait during the event, matching la-events.html and
+       san-diego-to-los-angeles-car-service.html. Deliberately matches venue
+       names only, never the cities: "Anaheim, CA" on its own is an ordinary
+       long-distance transfer, not an event package, and must not be priced as
+       one. Sits after the LAX check so an LAX run stays a one-way $375, and
+       before the airport check because neither endpoint is SAN. */
+    var EVENT_VENUES = [
+      { price: 795, re: /\bsofi stadium\b|\bdodger stadium\b|\bcrypto\.com arena\b|\bintuit dome\b|\bhollywood bowl\b|\brose bowl\b|\bkia forum\b|\bbmo stadium\b/ },
+      { price: 695, re: /\bhonda center\b|\bangel stadium\b|\bdisneyland\b|\bdisney california adventure\b/ }
+    ];
+    for (var v = 0; v < EVENT_VENUES.length; v++) {
+      if (EVENT_VENUES[v].re.test(pu) || EVENT_VENUES[v].re.test(dr)) {
+        return { amount: EVENT_VENUES[v].price + extra, exact: true, roundTrip: true, stops: stops.length, stopFee: extra };
+      }
+    }
+
+    /* Neither endpoint is an airport → we can't zone-price it */
+    if (!puSAN && !drSAN) return { custom: true, stops: stops.length, stopFee: extra };
+
+    /* The non-airport endpoint decides the zone — but a stop can override it.
+       Real lead #59: SAN → stop in 92104 → a Downtown hotel. Pricing only the
+       drop-off bills the shortest leg of a trip that actually went out to
+       North Park and back in. So we take the DEAREST zone among the far
+       endpoint and every stop, then add the per-stop fee on top. A stop that
+       is itself the airport is just a terminal swing and is skipped. */
+    var zone = this._zoneFor(puSAN ? dr : pu);
+    if (zone === null) return { custom: true, stops: stops.length, stopFee: extra };
+
+    for (var s = 0; s < stops.length; s++) {
+      if (isSAN(stops[s])) continue;
+      var sz = this._zoneFor(stops[s]);
+      /* One unzonable stop makes the whole route unzonable: we'd rather quote
+         it by hand than guess low. Same rule as the auto-quote, which sends
+         "preparing your quote" instead of a price in this case. */
+      if (sz === null) return { custom: true, stops: stops.length, stopFee: extra };
+      if (sz > zone) zone = sz;
+    }
+
     /* Published zone rates are exact and are never clamped by a minimum.
        The $75 floor (this.MIN_FARE) applies only to custom, drive-time
        quotes — see estimateByDriveTime below. */
-    for (var i = 0; i < ZONES.length; i++) {
-      if (ZONES[i].re.test(other)) {
-        return { amount: ZONES[i].price, exact: true };
-      }
-    }
-    return { custom: true };
+    return { amount: zone + extra, exact: true, stops: stops.length, stopFee: extra };
   },
 
   updateEstimate: function() {
@@ -883,10 +936,13 @@ window.WIZ = {
           }
           var billedHrs = Math.max(self.HOURLY_MIN_HRS, Math.ceil(hrs * 2) / 2); /* round up to nearest 30 min */
           var amount = Math.max(self.MIN_FARE, Math.round(billedHrs * self.HOURLY_RATE / 5) * 5); /* round to nearest $5, $75 floor */
+          /* Stop fee rides on top of the hourly figure too, and after the $75
+             floor — the floor is the price of the ride, not of the stops. */
+          amount += (res.stopFee || 0);
           self._lastFare = amount;
           txt('fareEstLabel', d.fareTimeLabel);
           txt('fareEstAmount', '~$' + amount);
-          txt('fareEstNote', d.fareTimeNote);
+          txt('fareEstNote', self.stopNote(d, d.fareTimeNote, res.stopFee ? res.stops : 0));
         });
       } else {
         txt('fareEstLabel', d.fareCustomLabel);
@@ -899,9 +955,16 @@ window.WIZ = {
       this._lastFare = res.amount;
       txt('fareEstLabel', res.roundTrip ? d.fareEventLabel : d.fareLabel);
       txt('fareEstAmount', '$' + res.amount);
-      txt('fareEstNote', res.roundTrip ? d.fareEventNote : d.fareNote);
+      txt('fareEstNote', this.stopNote(d, res.roundTrip ? d.fareEventNote : d.fareNote, res.stopFee ? res.stops : 0));
       box.classList.remove('is-custom');
     }
+  },
+
+  /* Appends "· includes 2 stops" so the customer can see what the extra $50 is
+     for. Silent when there are no stops, which is the usual case. */
+  stopNote: function(d, note, n) {
+    if (!n) return note;
+    return note + ' · ' + (n === 1 ? d.fareOneStop : d.fareNStops.replace('{n}', n));
   },
 
   _estReq: 0,
@@ -1039,13 +1102,17 @@ window.WIZ = {
     this.renderStops(DICT[this.state.lang]);
   },
 
+  /* Stops change the price now (flat fee, and on an airport run they can set
+     the zone), so every edit has to re-run the estimate. */
   updateStop: function(i, val) {
     this.state.stops[i] = val;
+    this.updateEstimate();
   },
 
   removeStop: function(i) {
     this.state.stops.splice(i, 1);
     this.renderStops(DICT[this.state.lang]);
+    this.updateEstimate();
   },
 
   /* sync time from 3 selects */
@@ -1071,6 +1138,8 @@ window.WIZ = {
     this.state.serviceType = id;
     this.clearErr('service', null);
     this.renderStep0(DICT[this.state.lang]);
+    /* The service now feeds the price: hourly products don't pay per stop. */
+    this.updateEstimate();
   },
 
   /* Out-of-area guard: an address outside Southern California blocks
