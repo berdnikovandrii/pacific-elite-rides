@@ -25,3 +25,7 @@ supabase/
 
 # ── Temp files left by the Claude folder bridge ──────────────────
 .fuse_hidden*
+
+# ── Private backup of internal files (see backup-internal.sh) ────
+.git-internal/
+backup-internal.sh
