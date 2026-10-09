@@ -122,7 +122,15 @@ document.querySelectorAll('a[href^="tel:"]').forEach(a => {
    still goes through, it just carries no attribution. Declining also clears
    anything captured earlier in the session. */
 window.PER_ADS = (function () {
-  var KEY = 'per_ads_click', KEYS = ['gclid', 'gbraid', 'wbraid'];
+  /* Two separate buckets on purpose. A visitor can arrive from a Google ad
+     today and from the Instagram bio link next week; if both lived under one
+     key the second visit would overwrite the gclid and the ride could never be
+     uploaded back to Google Ads. So the click ids and the UTM tags each keep
+     their own slot, and a lead can carry both. */
+  var BUCKETS = [
+    { key: 'per_ads_click', fields: ['gclid', 'gbraid', 'wbraid'] },
+    { key: 'per_ads_utm',   fields: ['utm_source', 'utm_medium', 'utm_campaign'] }
+  ];
   var NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;
 
   function optedOut() {
@@ -132,33 +140,41 @@ window.PER_ADS = (function () {
 
   function read() {
     if (optedOut()) return {};
-    try {
-      var raw = localStorage.getItem(KEY);
-      if (!raw) return {};
-      var o = JSON.parse(raw);
-      if (!o || !o.t || Date.now() - o.t > NINETY_DAYS) { localStorage.removeItem(KEY); return {}; }
-      var out = {};
-      KEYS.forEach(function (k) { if (o[k]) out[k] = o[k]; });
-      return out;
-    } catch (e) { return {}; }
+    var out = {};
+    BUCKETS.forEach(function (b) {
+      try {
+        var raw = localStorage.getItem(b.key);
+        if (!raw) return;
+        var o = JSON.parse(raw);
+        if (!o || !o.t || Date.now() - o.t > NINETY_DAYS) { localStorage.removeItem(b.key); return; }
+        b.fields.forEach(function (k) { if (o[k]) out[k] = o[k]; });
+      } catch (e) {}
+    });
+    return out;
   }
 
   function capture() {
-    if (optedOut()) { try { localStorage.removeItem(KEY); } catch (e) {} return; }
+    if (optedOut()) { forget(); return; }
     var q;
     try { q = new URLSearchParams(window.location.search); } catch (e) { return; }
-    var found = null;
-    KEYS.forEach(function (k) {
-      var v = q.get(k);
-      if (v) { found = found || {}; found[k] = v.slice(0, 200); }
+    BUCKETS.forEach(function (b) {
+      var found = null;
+      b.fields.forEach(function (k) {
+        var v = q.get(k);
+        if (v) { found = found || {}; found[k] = v.slice(0, 200); }
+      });
+      if (!found) return;             /* nothing of this kind in the URL — keep what we had */
+      found.t = Date.now();
+      try { localStorage.setItem(b.key, JSON.stringify(found)); } catch (e) {}
     });
-    if (!found) return;               /* organic visit — keep whatever we had */
-    found.t = Date.now();
-    try { localStorage.setItem(KEY, JSON.stringify(found)); } catch (e) {}
+  }
+
+  function forget() {
+    BUCKETS.forEach(function (b) { try { localStorage.removeItem(b.key); } catch (e) {} });
   }
 
   capture();
-  return { get: read, forget: function () { try { localStorage.removeItem(KEY); } catch (e) {} } };
+  return { get: read, forget: forget };
 })();
 
 /* ===== GOOGLE PLACES INIT ===== */

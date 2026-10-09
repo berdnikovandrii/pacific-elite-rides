@@ -73,6 +73,19 @@
           Payment is by Zelle, Venmo, or card, or by an emailed invoice &#8212;
           no charge until your ride is confirmed.
         </p>
+        <!-- ── "How did you hear about us?" ───────────────────────────────
+             Asked here rather than in the form: the booking is already in, so
+             a skipped question costs nothing. Hidden by default and revealed
+             only when booking.html left us a heard_ref, so a direct visit or a
+             refresh never shows it. ── -->
+        <div id="heardBox" style="display:none;margin:0 auto 30px;max-width:420px;padding-top:4px;border-top:1px solid rgba(255,255,255,.08)">
+          <p style="margin:24px 0 14px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.55)">
+            How did you hear about us?
+          </p>
+          <div id="heardOpts" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center"></div>
+          <p id="heardThanks" style="display:none;margin:14px 0 0;font-size:13px;color:var(--gold)">Thank you &#8212; that helps.</p>
+        </div>
+
         <a href="booking.html" class="wiz-primary" style="max-width:280px;margin:0 auto;display:block;background:transparent;border:1px solid rgba(201,168,76,.35);color:var(--gold);text-decoration:none;padding:14px 0">
           Book Another Ride
         </a>
@@ -150,7 +163,7 @@
   </div>
 </footer>
 
-<script src="js/main.js?v=9da08164"></script>
+<script src="js/main.js?v=d421cf38"></script>
 
 <!-- ── Google Ads conversion event for "Submit lead form" (SUBMIT_LEAD_FORM).
      Reaches Google Ads through the GA4 → Google Ads import (property
@@ -173,6 +186,71 @@
     if (typeof gtag === 'function') {
       gtag('event', 'conversion_event_submit_lead_form', { service: service });
     }
+  })();
+</script>
+
+<!-- ── "How did you hear about us?" ────────────────────────────────────────
+     Writes the answer straight onto the lead through a SECURITY DEFINER RPC.
+     The anon role still has no SELECT and no UPDATE on `leads`: the function
+     is the only way in, it writes once, and only into the lead carrying this
+     heard_ref and created in the last 3 hours. So the worst a stolen ref can
+     do is answer its own question.
+
+     heard_ref is a one-shot key for a single page transition, not a tracking
+     identifier, so the question appears even for visitors who declined
+     cookies — and the answer is something they type on purpose. ── -->
+<script>
+  (function() {
+    var SUPABASE_URL = 'https://krvdbtmrddhcafhvajin.supabase.co';
+    var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtydmRidG1yZGRoY2FmaHZhamluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwMjEyOTcsImV4cCI6MjEwNTU5NzI5N30.WcoaDX1LuWbMUenUg04KjRYhk2u8U7Eeqdi-MHO4RS0';
+
+    /* Wording must stay in step with the CRM report buckets — CRM, 04.10. */
+    var OPTIONS = ['Google search', 'Google Maps', 'Instagram', 'Facebook', 'TikTok',
+                   'Friend or referral', 'Returning client', 'Hotel or concierge', 'Other'];
+
+    var ref = null;
+    try { ref = sessionStorage.getItem('per_heard_ref'); } catch (e) {}
+    if (!ref) return;                       /* direct visit, refresh, or an older booking */
+    /* Consumed on read, like the conversion flag: one booking, one answer. */
+    try { sessionStorage.removeItem('per_heard_ref'); } catch (e) {}
+
+    var box = document.getElementById('heardBox');
+    var opts = document.getElementById('heardOpts');
+    var thanks = document.getElementById('heardThanks');
+    if (!box || !opts) return;
+
+    function send(answer) {
+      opts.style.display = 'none';
+      thanks.style.display = 'block';       /* thank them regardless — their part is done */
+      fetch(SUPABASE_URL + '/rest/v1/rpc/set_heard_from', {
+        method: 'POST',
+        keepalive: true,
+        headers: {
+          'Content-Type':  'application/json',
+          'apikey':        SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY
+        },
+        body: JSON.stringify({ p_ref: ref, p_answer: answer })
+      }).then(function(r) {
+        if (!r.ok) r.text().then(function(t) { console.error('set_heard_from rejected:', r.status, t); });
+      }).catch(function(err) { console.error('set_heard_from failed:', err); });
+      if (typeof gtag === 'function') gtag('event', 'heard_from', { answer: answer });
+    }
+
+    OPTIONS.forEach(function(label) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn btn-sm';
+      b.textContent = label;
+      b.style.cssText = 'background:transparent;border:1px solid rgba(255,255,255,.14);' +
+                        'color:rgba(255,255,255,.7);font-size:13px;padding:8px 14px;' +
+                        'border-radius:999px;cursor:pointer';
+      b.onmouseover = function() { b.style.borderColor = 'rgba(201,168,76,.5)'; b.style.color = 'var(--gold)'; };
+      b.onmouseout  = function() { b.style.borderColor = 'rgba(255,255,255,.14)'; b.style.color = 'rgba(255,255,255,.7)'; };
+      b.onclick = function() { send(label); };
+      opts.appendChild(b);
+    });
+    box.style.display = 'block';
   })();
 </script>
 

@@ -340,7 +340,7 @@
 <!-- External SDKs (replace YOUR_* placeholders with real keys) -->
 <!-- ─────────────────────────────────────────────────────────── -->
 <!-- EmailJS SDK removed 2026-09-30: sending goes through the REST endpoint with keepalive -->
-<script src="js/main.js?v=9da08164"></script>
+<script src="js/main.js?v=d421cf38"></script>
 
 <!-- ─────────────────────────────────────────────────────────── -->
 <!-- WIZ STATE MACHINE                                          -->
@@ -970,6 +970,32 @@ window.WIZ = {
   _estReq: 0,
   _lastFare: null,
 
+  /* A v4 UUID for heard_ref. crypto.randomUUID needs a secure context and
+     isn't in older Safari, so fall back to getRandomValues and only then to
+     Math.random — the column is uuid, so a malformed string would fail the
+     whole insert, and the question is a nice-to-have, not worth losing a lead
+     over. Returns null if we can't make a valid one. */
+  newHeardRef: function() {
+    try {
+      if (window.crypto && typeof crypto.randomUUID === 'function') return crypto.randomUUID();
+      var b;
+      if (window.crypto && typeof crypto.getRandomValues === 'function') {
+        b = new Uint8Array(16);
+        crypto.getRandomValues(b);
+      } else {
+        b = [];
+        for (var i = 0; i < 16; i++) b.push(Math.floor(Math.random() * 256));
+      }
+      b[6] = (b[6] & 0x0f) | 0x40;    /* version 4 */
+      b[8] = (b[8] & 0x3f) | 0x80;    /* variant 1 */
+      var h = [];
+      for (var j = 0; j < 16; j++) h.push(('0' + b[j].toString(16)).slice(-2));
+      return h.slice(0, 4).join('') + '-' + h.slice(4, 6).join('') + '-' +
+             h.slice(6, 8).join('') + '-' + h.slice(8, 10).join('') + '-' +
+             h.slice(10, 16).join('');
+    } catch (e) { return null; }
+  },
+
   /* How far America/Los_Angeles is from UTC, in ms, at the instant utcMs.
      Negative (-7h in PDT, -8h in PST). Asks Intl what the wall clock in
      Los Angeles reads at that instant and measures the gap, so DST comes
@@ -1420,14 +1446,33 @@ window.WIZ = {
           /* status навмисно не передаємо — колонка має DEFAULT 'New' */
         };
 
-        /* Google Ads click ids, captured on the landing page (js/main.js).
-           Absent for organic traffic and for anyone who declined cookies or
-           sends GPC — that is expected, not an error. Only keys that actually
-           have a value are added: PostgREST rejects the WHOLE insert with
-           PGRST204 if it is handed a column the schema doesn't have, so this
-           must never send a key speculatively. */
+        /* Which card the customer picked. Without it the CRM can't tell an
+           Hourly Charter from a transfer, so its auto-quote would add the $25
+           stop fee to an hourly booking that the site quoted without one
+           (CRM asked for this on 05.10; column leads.service). */
+        if (s.serviceType) lead.service = s.serviceType;
+
+        /* Attribution captured on the landing page (js/main.js): Google Ads
+           click ids and UTM tags. Absent for organic traffic and for anyone who
+           declined cookies or sends GPC — that is expected, not an error. Only
+           keys that actually have a value are added: PostgREST rejects the
+           WHOLE insert with PGRST204 if it is handed a column the schema
+           doesn't have, so this must never send a key speculatively. */
         var ads = (window.PER_ADS && window.PER_ADS.get()) || {};
-        ['gclid', 'gbraid', 'wbraid'].forEach(function(k) { if (ads[k]) lead[k] = ads[k]; });
+        ['gclid', 'gbraid', 'wbraid',
+         'utm_source', 'utm_medium', 'utm_campaign'].forEach(function(k) { if (ads[k]) lead[k] = ads[k]; });
+
+        /* One-time key that lets thank-you.html attach the "How did you hear
+           about us?" answer to THIS lead without ever being able to read it
+           back: the RPC is SECURITY DEFINER, writes once, and only into a lead
+           created in the last 3 hours. Not a tracking identifier — it survives
+           for one page transition — so it is sent even when cookies were
+           declined. The answer itself the customer gives knowingly. */
+        var heardRef = this.newHeardRef();
+        if (heardRef) {
+          lead.heard_ref = heardRef;
+          try { sessionStorage.setItem('per_heard_ref', heardRef); } catch (e) {}
+        }
 
         fetch(window.SUPABASE_URL + '/rest/v1/leads', {
           method: 'POST',
