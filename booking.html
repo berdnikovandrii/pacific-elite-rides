@@ -340,7 +340,7 @@
 <!-- External SDKs (replace YOUR_* placeholders with real keys) -->
 <!-- ─────────────────────────────────────────────────────────── -->
 <!-- EmailJS SDK removed 2026-09-30: sending goes through the REST endpoint with keepalive -->
-<script src="js/main.js?v=d421cf38"></script>
+<script src="js/main.js?v=c85298c6"></script>
 
 <!-- ─────────────────────────────────────────────────────────── -->
 <!-- WIZ STATE MACHINE                                          -->
@@ -1473,6 +1473,17 @@ window.WIZ = {
           lead.heard_ref = heardRef;
           try { sessionStorage.setItem('per_heard_ref', heardRef); } catch (e) {}
         }
+
+        /* Deliberately a SEPARATE id from heard_ref, not the same value.
+           heard_ref is a capability — whoever holds it can write the "how did
+           you hear" answer onto this lead — and the event id is handed to Meta,
+           so reusing it would turn a browser-local key into something a third
+           party has seen. Kept in sessionStorage only for now: the matching
+           column is not in the schema yet, and PostgREST rejects the WHOLE
+           insert on one unknown column, so sending it would drop every lead.
+           See the meta_event_id question on the board. */
+        var eventId = this.newHeardRef();
+        if (eventId) { try { sessionStorage.setItem('per_event_id', eventId); } catch (e) {} }
 
         fetch(window.SUPABASE_URL + '/rest/v1/leads', {
           method: 'POST',

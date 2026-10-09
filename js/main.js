@@ -177,6 +177,64 @@ window.PER_ADS = (function () {
   return { get: read, forget: forget };
 })();
 
+/* ===== META PIXEL =====
+   Lives here rather than as a copy of Meta's snippet in the <head> of all 33
+   pages: one place to change the id, and it cannot drift page to page. The
+   base code itself is Meta's, unchanged — the only difference is that it runs
+   behind the same consent check as the Google tags instead of unconditionally.
+
+   Consent follows the site's California opt-out model: on by default, off for
+   anyone who declines or sends Global Privacy Control. A visitor who declines
+   *after* the pixel has loaded gets `fbq('consent','revoke')` plus their _fbp
+   and _fbc cookies deleted (see the banner below) — fbevents.js can't be
+   unloaded, but it can be told to stop.
+
+   PageView fires on every page. The `Lead` event is fired only by
+   thank-you.html, behind the same sessionStorage gate that guards the Google
+   conversion, so a refresh, a direct visit or the back button count zero. */
+window.PER_META = (function () {
+  var PIXEL_ID = '3525755600931021';
+  var started = false;
+
+  function optedOut() {
+    if (navigator.globalPrivacyControl === true) return true;
+    try { return localStorage.getItem('per_cookie_consent') === 'denied'; } catch (e) { return false; }
+  }
+
+  function load() {
+    if (started || optedOut()) return;
+    started = true;
+    /* Meta base code */
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+      };
+      if (!f._fbq) f._fbq = n;
+      n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = [];
+      t = b.createElement(e); t.async = !0; t.src = v;
+      s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
+    }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', PIXEL_ID);
+    fbq('track', 'PageView');
+  }
+
+  /* eventID lets a future Conversions API call be matched to this browser
+     event so Meta counts one lead, not two. Harmless when unused. */
+  function track(name, params, eventID) {
+    load();
+    if (typeof fbq !== 'function') return;          /* declined, or script blocked */
+    if (eventID) fbq('track', name, params || {}, { eventID: eventID });
+    else fbq('track', name, params || {});
+  }
+
+  function revoke() {
+    try { if (typeof fbq === 'function') fbq('consent', 'revoke'); } catch (e) {}
+  }
+
+  load();
+  return { load: load, track: track, revoke: revoke, id: PIXEL_ID };
+})();
+
 /* ===== GOOGLE PLACES INIT ===== */
 window.initPlaces = function() {
   ['pickup','dropoff'].forEach(id => {
@@ -203,11 +261,15 @@ window.initPlaces = function() {
     if (typeof gtag === 'function') {
       gtag('consent', 'update', { analytics_storage: v, ad_storage: v, ad_user_data: v, ad_personalization: v });
     }
+    /* The pixel loads by default under the opt-out model, so "Decline" has to
+       stop one that is already running, and "Accept" has to start one that was
+       held back. */
+    if (window.PER_META) { granted ? window.PER_META.load() : window.PER_META.revoke(); }
     if (!granted) {
-      // remove Google Analytics / Ads cookies already set on this domain
+      // remove Google Analytics / Ads / Meta cookies already set on this domain
       document.cookie.split(';').forEach(function (c) {
         var name = c.split('=')[0].trim();
-        if (/^(_ga|_gid|_gat|_gcl)/.test(name)) {
+        if (/^(_ga|_gid|_gat|_gcl|_fbp|_fbc)/.test(name)) {
           var host = location.hostname.replace(/^www\./, '');
           ['', '; domain=' + host, '; domain=.' + host].forEach(function (d) {
             document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/' + d;

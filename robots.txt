@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
 
+# Ad creative only. These images exist so Meta can fetch them from a stable
+# public URL; they are not site content and should not appear in search.
+# Not in sitemap.xml either.
+Disallow: /ads-media/
+
 Sitemap: https://pacificeliterides.com/sitemap.xml

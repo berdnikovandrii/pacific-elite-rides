@@ -163,7 +163,7 @@
   </div>
 </footer>
 
-<script src="js/main.js?v=d421cf38"></script>
+<script src="js/main.js?v=c85298c6"></script>
 
 <!-- ── Google Ads conversion event for "Submit lead form" (SUBMIT_LEAD_FORM).
      Reaches Google Ads through the GA4 → Google Ads import (property
@@ -185,6 +185,17 @@
     var service = new URLSearchParams(window.location.search).get('service') || flag || '';
     if (typeof gtag === 'function') {
       gtag('event', 'conversion_event_submit_lead_form', { service: service });
+    }
+
+    /* Meta's Lead event rides the SAME gate, deliberately inside this block:
+       one flag, read once, so the two platforms can never disagree about what
+       counted as a lead. PER_META declines to fire at all if the visitor opted
+       out. The event id is for future Conversions API de-duplication. */
+    var eventId = null;
+    try { eventId = sessionStorage.getItem('per_event_id'); } catch (e) {}
+    try { sessionStorage.removeItem('per_event_id'); } catch (e) {}
+    if (window.PER_META) {
+      window.PER_META.track('Lead', { content_name: service }, eventId || null);
     }
   })();
 </script>
