@@ -161,6 +161,61 @@
             </div>
           </div>
 
+          <!-- Round trip. Shown only when the ride involves LAX, because that is
+               the only route with a published round-trip price ($700 vs 2 x $375).
+               Hidden inline so a stale cached stylesheet can't flash it on every
+               other booking — same reason the sending overlay is hidden inline. -->
+          <div class="wiz-field" id="rtWrap" style="display:none">
+            <label for="roundTrip" style="display:flex;gap:12px;align-items:flex-start;cursor:pointer">
+              <input type="checkbox" id="roundTrip" onchange="WIZ.setRoundTrip(this.checked)"
+                style="flex:0 0 auto;width:20px;height:20px;margin:2px 0 0;accent-color:var(--gold);cursor:pointer">
+              <span style="font-size:14px;line-height:1.5">
+                <strong id="lRT">Round trip &mdash; $700 instead of $750</strong><br>
+                <span id="lRTsub" style="font-size:13px;color:rgba(255,255,255,.5)">Return any day. Both legs booked together.</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="wiz-grid-2" id="rtWhen" style="display:none;margin-top:18px">
+            <div class="wiz-field">
+              <label class="wiz-label" id="lRetDate">Return Date *</label>
+              <input type="date" id="returnDate" class="wiz-input"
+                     onchange="WIZ.state.returnDate=this.value;WIZ.clearErr('returnDate',this)">
+              <div class="wiz-err-msg" id="err-returnDate"></div>
+            </div>
+            <div class="wiz-field">
+              <label class="wiz-label" id="lRetTime">Return Pickup Time * (San Diego time)</label>
+              <div style="display:flex;gap:8px">
+                <div class="wiz-select-wrap" style="flex:1">
+                  <select id="retHour" class="wiz-input" onchange="WIZ.syncReturnTime()">
+                    <option value="">HH</option>
+                    <option>1</option><option>2</option><option>3</option><option>4</option>
+                    <option>5</option><option>6</option><option>7</option><option>8</option>
+                    <option>9</option><option>10</option><option>11</option><option>12</option>
+                  </select>
+                  <span class="wiz-chev">&#9662;</span>
+                </div>
+                <div class="wiz-select-wrap" style="flex:1">
+                  <select id="retMin" class="wiz-input" onchange="WIZ.syncReturnTime()">
+                    <option value="">MM</option>
+                    <option value="00">00</option><option value="15">15</option>
+                    <option value="30">30</option><option value="45">45</option>
+                  </select>
+                  <span class="wiz-chev">&#9662;</span>
+                </div>
+                <div class="wiz-select-wrap" style="flex:1">
+                  <select id="retAmPm" class="wiz-input" onchange="WIZ.syncReturnTime()">
+                    <option value="">&mdash;</option>
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                  </select>
+                  <span class="wiz-chev">&#9662;</span>
+                </div>
+              </div>
+              <div class="wiz-err-msg" id="err-returnTime"></div>
+            </div>
+          </div>
+
           <div class="wiz-field">
             <label class="wiz-label" id="lPax">Passengers</label>
             <div class="wiz-select-wrap">
@@ -216,7 +271,7 @@
             <div class="wiz-addr-wrap">
               <span class="wiz-dot pickup"></span>
               <input type="text" id="pickup" class="wiz-input addr-pad" placeholder="Airport, hotel, or address"
-                oninput="WIZ.state.pickup=this.value;WIZ.state.pickupLoc=null;WIZ.updateEstimate()" onchange="WIZ.clearErr('pickup',this)">
+                oninput="WIZ.state.pickup=this.value;WIZ.state.pickupLoc=null;WIZ.syncRoundTripVisibility();WIZ.updateEstimate()" onchange="WIZ.clearErr('pickup',this)">
             </div>
             <div class="wiz-err-msg" id="err-pickup"></div>
           </div>
@@ -233,7 +288,7 @@
             <div class="wiz-addr-wrap">
               <span class="wiz-dot dropoff"></span>
               <input type="text" id="dropoff" class="wiz-input addr-pad" placeholder="Final destination"
-                oninput="WIZ.state.dropoff=this.value;WIZ.state.dropoffLoc=null;WIZ.updateEstimate()" onchange="WIZ.clearErr('dropoff',this)">
+                oninput="WIZ.state.dropoff=this.value;WIZ.state.dropoffLoc=null;WIZ.syncRoundTripVisibility();WIZ.updateEstimate()" onchange="WIZ.clearErr('dropoff',this)">
             </div>
             <div class="wiz-err-msg" id="err-dropoff"></div>
           </div>
@@ -376,6 +431,11 @@ var DICT = {
     s5sub:   'Everything look good?',
     lDate:    'Date *',
     lTime:    'Pickup Time * (San Diego time)',
+    lRT:      'Round trip \u2014 $700 instead of $750',
+    lRTsub:   'Return any day. Both legs booked together.',
+    lRetDate: 'Return Date *',
+    lRetTime: 'Return Pickup Time * (San Diego time)',
+    fareRT:   'round trip, both legs',
     lPax:     'Passengers',
     lVehicle: 'Vehicle Preference',
     lFlight:  'Flight Number',
@@ -430,7 +490,7 @@ var DICT = {
     smsConsent: 'Text me about this booking (quote, confirmation, driver details and ride updates) from Pacific Elite Rides at the number above. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. Optional &mdash; not required to book. <a href="privacy.html#sms" target="_blank" style="color:var(--gold)">Privacy</a> &middot; <a href="terms.html#sms" target="_blank" style="color:var(--gold)">Terms</a>',
     services: [
       { id:'Airport Transfer', t:'SAN Airport Transfer', d:'San Diego International — flat rate by zone' },
-      { id:'LAX Transfer',     t:'LAX Transfer',         d:'San Diego ↔ LAX — flat $375, either direction' },
+      { id:'LAX Transfer',     t:'LAX Transfer',         d:'San Diego ↔ LAX — $375 one way, $700 round trip' },
       { id:'Corporate Ride',   t:'Corporate Ride',      d:'Meetings, roadshows, client pickups' },
       { id:'Hourly Charter',   t:'Hourly Charter',      d:'$95/hr · 2h min — as-directed, you set the pace' },
       { id:'Sprinter Van',     t:'Sprinter Party Bus',  d:'$180/hr — LED, sound, TV, bar with ice' },
@@ -460,6 +520,11 @@ var DICT = {
     s5sub:   '¿Todo se ve bien?',
     lDate:    'Fecha *',
     lTime:    'Hora de recogida * (hora de San Diego)',
+    lRT:      'Ida y vuelta \u2014 $700 en vez de $750',
+    lRTsub:   'Regreso cualquier d\u00eda. Ambos trayectos se reservan juntos.',
+    lRetDate: 'Fecha de regreso *',
+    lRetTime: 'Hora de recogida de regreso * (hora de San Diego)',
+    fareRT:   'ida y vuelta, ambos trayectos',
     lPax:     'Pasajeros',
     lVehicle: 'Preferencia de vehículo',
     lFlight:  'Número de vuelo',
@@ -514,7 +579,7 @@ var DICT = {
     smsConsent: 'Envíenme mensajes de texto sobre esta reserva (cotización, confirmación, datos del chofer y avisos del viaje) de Pacific Elite Rides al número indicado. La frecuencia varía. Pueden aplicarse tarifas de mensajes y datos. Responde STOP para cancelar, HELP para ayuda. Opcional &mdash; no es necesario para reservar. <a href="privacy.html#sms" target="_blank" style="color:var(--gold)">Privacidad</a> &middot; <a href="terms.html#sms" target="_blank" style="color:var(--gold)">Términos</a>',
     services: [
       { id:'Airport Transfer', t:'Traslado aeropuerto SAN', d:'San Diego International — tarifa fija por zona' },
-      { id:'LAX Transfer',     t:'Traslado a LAX',          d:'San Diego ↔ LAX — $375 fijos, ambos sentidos' },
+      { id:'LAX Transfer',     t:'Traslado a LAX',          d:'San Diego ↔ LAX — $375 por trayecto, $700 ida y vuelta' },
       { id:'Corporate Ride',   t:'Viaje corporativo',      d:'Reuniones, presentaciones, clientes' },
       { id:'Hourly Charter',   t:'Alquiler por hora',      d:'$95/hr · mín. 2h — tú marcas el ritmo' },
       { id:'Sprinter Van',     t:'Sprinter Party Bus',     d:'$180/hr — LED, sonido, TV, bar con hielo' },
@@ -543,6 +608,9 @@ window.WIZ = {
     vehicle:     'Suburban',
     date:        todayISO(),
     time:        '',
+    roundTrip:   false,
+    returnDate:  '',
+    returnTime:  '',
     passengers:  '1',
     flight:      '',
     pickup:      '',
@@ -609,6 +677,8 @@ window.WIZ = {
     txt('s0title', d.s0title);
     txt('s0sub',   d.s0sub);
     txt('lDate', d.lDate); txt('lTime', d.lTime); txt('lPax', d.lPax);
+    txt('lRT', d.lRT); txt('lRTsub', d.lRTsub);
+    txt('lRetDate', d.lRetDate); txt('lRetTime', d.lRetTime);
     txt('lVehicle', d.lVehicle);
     txt('moreOptions', d.moreOptions);
     var lf = el('lFlight');
@@ -855,8 +925,14 @@ window.WIZ = {
     var puLAX = isLAX(pu), drLAX = isLAX(dr);
 
     /* LAX leg — flat, either direction. A stop on the way is just the stop
-       fee: the $375 already covers the distance, wherever the stop sits. */
-    if (puLAX || drLAX) return { amount: 375 + extra, exact: true, stops: stops.length, stopFee: extra };
+       fee: the $375 already covers the distance, wherever the stop sits.
+       Round trip is $700 for both legs, not 2 x $375 (Andrii, 11.10); the stop
+       fee is still charged once, because the stop is on the way out. */
+    if (puLAX || drLAX) {
+      var laxBase = this.state.roundTrip ? 700 : 375;
+      return { amount: laxBase + extra, exact: true, roundTrip: this.state.roundTrip,
+               rtKind: 'lax', stops: stops.length, stopFee: extra };
+    }
 
     /* LA / Orange County event venues — flat ROUND TRIP including up to 5 hrs
        of wait during the event, matching la-events.html and
@@ -871,7 +947,8 @@ window.WIZ = {
     ];
     for (var v = 0; v < EVENT_VENUES.length; v++) {
       if (EVENT_VENUES[v].re.test(pu) || EVENT_VENUES[v].re.test(dr)) {
-        return { amount: EVENT_VENUES[v].price + extra, exact: true, roundTrip: true, stops: stops.length, stopFee: extra };
+        return { amount: EVENT_VENUES[v].price + extra, exact: true, roundTrip: true,
+                 rtKind: 'event', stops: stops.length, stopFee: extra };
       }
     }
 
@@ -953,9 +1030,14 @@ window.WIZ = {
     } else {
       this._estReq = (this._estReq || 0) + 1; /* invalidate any in-flight drive-time lookup */
       this._lastFare = res.amount;
-      txt('fareEstLabel', res.roundTrip ? d.fareEventLabel : d.fareLabel);
+      var isEventRT = res.roundTrip && res.rtKind === 'event';
+      txt('fareEstLabel', isEventRT ? d.fareEventLabel : d.fareLabel);
       txt('fareEstAmount', '$' + res.amount);
-      txt('fareEstNote', this.stopNote(d, res.roundTrip ? d.fareEventNote : d.fareNote, res.stopFee ? res.stops : 0));
+      /* The stadium package note mentions 5 hours of wait during the event —
+         wrong for a LAX round trip, which is two separate airport runs. */
+      var baseNote = isEventRT ? d.fareEventNote
+                   : (res.roundTrip ? d.fareNote + ' \u00b7 ' + d.fareRT : d.fareNote);
+      txt('fareEstNote', this.stopNote(d, baseNote, res.stopFee ? res.stops : 0));
       box.classList.remove('is-custom');
     }
   },
@@ -1044,7 +1126,17 @@ window.WIZ = {
      both had to be corrected by hand). We therefore anchor the wall clock
      to America/Los_Angeles and convert to UTC ourselves. */
   rideDateTimeISO: function() {
-    var date = this.state.date, time = this.state.time;
+    return this.toPacificISO(this.state.date, this.state.time);
+  },
+
+  /* The return leg goes through the SAME anchoring — a round trip booked from
+     London must not put the return at 4 AM either. */
+  returnDateTimeISO: function() {
+    if (!this.state.roundTrip) return null;
+    return this.toPacificISO(this.state.returnDate, this.state.returnTime);
+  },
+
+  toPacificISO: function(date, time) {
     if (!date) return null;
     var m = /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec((time || '').trim());
     var h = 0, min = 0;
@@ -1159,11 +1251,67 @@ window.WIZ = {
     }
   },
 
+  /* Same three selects, for the return leg. */
+  syncReturnTime: function() {
+    var h = el('retHour')  ? el('retHour').value  : '';
+    var m = el('retMin')   ? el('retMin').value   : '';
+    var p = el('retAmPm')  ? el('retAmPm').value  : '';
+    if (h && m && p) {
+      this.state.returnTime = h + ':' + m + ' ' + p;
+      this.clearErr('returnTime', null);
+      var errEl = el('err-returnTime');
+      if (errEl) errEl.style.display = 'none';
+    } else {
+      this.state.returnTime = '';
+    }
+  },
+
+  setRoundTrip: function(on) {
+    this.state.roundTrip = !!on;
+    var when = el('rtWhen');
+    if (when) when.style.display = on ? 'grid' : 'none';
+    if (!on) {
+      /* Don't leave a half-filled return behind on an unchecked box — it would
+         ride along into the lead and Andrii would plan a leg nobody booked. */
+      this.state.returnDate = '';
+      this.state.returnTime = '';
+      ['returnDate', 'retHour', 'retMin', 'retAmPm'].forEach(function(id) {
+        var n = el(id); if (n) n.value = '';
+      });
+      this.clearErr('returnDate', null);
+      this.clearErr('returnTime', null);
+    } else {
+      var rd = el('returnDate');
+      if (rd && !rd.min) rd.min = this.state.date || todayISO();
+    }
+    this.updateEstimate();
+  },
+
+  /* The round-trip option only exists on the LAX run — that is the one route
+     with a published both-ways price. Re-checked whenever the service or an
+     address changes, and the box is cleared if the ride stops being an LAX one
+     so a stale $700 can't survive a change of destination. */
+  syncRoundTripVisibility: function() {
+    var wrap = el('rtWrap');
+    if (!wrap) return;
+    var s = this.state;
+    var LAX = /\blax\b|\blos angeles international\b|\bworld way\b/i;
+    var isLaxRide = s.serviceType === 'LAX Transfer' ||
+                    LAX.test(s.pickup || '') || LAX.test(s.dropoff || '');
+    wrap.style.display = isLaxRide ? 'block' : 'none';
+    if (!isLaxRide && s.roundTrip) {
+      var box = el('roundTrip');
+      if (box) box.checked = false;
+      this.setRoundTrip(false);
+    }
+  },
+
   /* navigation */
   pickService: function(id) {
     this.state.serviceType = id;
     this.clearErr('service', null);
     this.renderStep0(DICT[this.state.lang]);
+    this.syncRoundTripVisibility();
     /* The service now feeds the price: hourly products don't pay per stop. */
     this.updateEstimate();
   },
@@ -1195,6 +1343,12 @@ window.WIZ = {
       if (!s.serviceType) e.service = 'req';
       if (!s.date) e.date = 'req';
       if (!s.time) e.time = 'req';
+      /* A round trip the customer is paying $700 for has to say when they come
+         back, otherwise the second leg is unplannable. */
+      if (s.roundTrip) {
+        if (!s.returnDate) e.returnDate = 'req';
+        if (!s.returnTime) e.returnTime = 'req';
+      }
     }
     if (step === 1) {
       if (!s.pickup.trim())  e.pickup  = 'req';
@@ -1365,6 +1519,9 @@ window.WIZ = {
       vehicle:      s.vehicle,
       rideDate:     s.date,
       rideTime:     s.time,
+      tripType:     s.roundTrip ? 'Round trip' : 'One way',
+      returnDate:   s.roundTrip ? s.returnDate : '',
+      returnTime:   s.roundTrip ? s.returnTime : '',
       passengers:   s.passengers,
       flight:       s.flight,
       pickup:       s.pickup,
@@ -1445,6 +1602,15 @@ window.WIZ = {
           source:        'Website'
           /* status навмисно не передаємо — колонка має DEFAULT 'New' */
         };
+
+        /* Round trip is a real column in the CRM (trip_type defaults to
+           'One way'), and its 07.10 logic splits a confirmed round trip into
+           two linked leads — so this is all the site needs to send. */
+        if (s.roundTrip) {
+          lead.trip_type = 'Round trip';
+          var ret = this.returnDateTimeISO();
+          if (ret) lead.return_datetime = ret;
+        }
 
         /* Which card the customer picked. Without it the CRM can't tell an
            Hourly Charter from a transfer, so its auto-quote would add the $25
@@ -1544,6 +1710,9 @@ window.WIZ = {
       vehicle:     'Suburban',
       date:        todayISO(),
       time:        '',
+      roundTrip:   false,
+      returnDate:  '',
+      returnTime:  '',
       passengers:  '1',
       flight:      '',
       pickup:      '',
@@ -1699,6 +1868,10 @@ window.initPlaces = function() {
       WIZ.clearOutOfArea(id);
       if (id === 'pickup')  { WIZ.state.pickup  = val; WIZ.state.pickupLoc  = loc; WIZ.clearErr('pickup', input); }
       if (id === 'dropoff') { WIZ.state.dropoff = val; WIZ.state.dropoffLoc = loc; WIZ.clearErr('dropoff', input); }
+      /* Picking "LAX" from the dropdown lands here, not on the input's
+         oninput — so the round-trip option has to be re-checked here too, or
+         it would never appear for the people who use the autocomplete. */
+      WIZ.syncRoundTripVisibility();
       WIZ.updateEstimate();
     });
   });
