@@ -1296,8 +1296,18 @@ window.WIZ = {
     if (!wrap) return;
     var s = this.state;
     var LAX = /\blax\b|\blos angeles international\b|\bworld way\b/i;
-    var isLaxRide = s.serviceType === 'LAX Transfer' ||
-                    LAX.test(s.pickup || '') || LAX.test(s.dropoff || '');
+    var laxByAddress = LAX.test(s.pickup || '') || LAX.test(s.dropoff || '');
+    var bothEnds = (s.pickup || '').trim() && (s.dropoff || '').trim();
+
+    /* Once both addresses are in, THEY decide — not the service card. Someone
+       arriving from an LAX ad (?service=LAX%20Transfer) and then typing a
+       San Diego destination kept seeing a checked "$700" box over a fare that
+       had already fallen back to a custom quote, and `trip_type: 'Round trip'`
+       would have gone into the lead for a ride that never goes near LAX.
+       Before an address is typed we still show it, so the option is visible to
+       someone who clicked an LAX ad and hasn't filled the form yet. */
+    var isLaxRide = bothEnds ? laxByAddress
+                             : (s.serviceType === 'LAX Transfer' || laxByAddress);
     wrap.style.display = isLaxRide ? 'block' : 'none';
     if (!isLaxRide && s.roundTrip) {
       var box = el('roundTrip');
