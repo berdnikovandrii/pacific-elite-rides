@@ -7,7 +7,7 @@
   <meta name="description" content="Book your luxury ride in San Diego. Airport transfers, corporate, Sprinter van, and VIP service.">
   <meta property="og:title" content="Book a Ride | Pacific Elite Rides San Diego"/>
   <meta property="og:description" content="Book your luxury black car ride in San Diego. Flat-rate airport transfers, no surge pricing."/>
-  <meta property="og:image" content="https://pacificeliterides.com/img-suburban.jpg"/>
+  <meta property="og:image" content="https://pacificeliterides.com/web-photos/escalade-card.jpg"/>
   <link rel="canonical" href="https://pacificeliterides.com/booking.html"/>
   <link rel="icon" href="favicon.ico" sizes="any"/>
   <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
@@ -240,9 +240,9 @@
                 <label class="wiz-label" id="lVehicle">Vehicle Preference</label>
                 <div class="wiz-select-wrap">
                   <select id="vehicle" class="wiz-input" onchange="WIZ.state.vehicle=this.value">
-                    <option value="Suburban" data-en="Chevrolet Suburban (recommended)" data-es="Chevrolet Suburban (recomendado)">Chevrolet Suburban (recommended)</option>
+                    <option value="Escalade" data-en="Cadillac Escalade ESV (recommended)" data-es="Cadillac Escalade ESV (recomendado)">Cadillac Escalade ESV (recommended)</option>
                     <option value="Any" data-en="Any Available" data-es="Cualquier veh&iacute;culo">Any Available</option>
-                    <option value="Escalade" data-en="Cadillac Escalade (limited)" data-es="Cadillac Escalade (limitado)">Cadillac Escalade (limited)</option>
+                    <option value="Suburban" data-en="Chevrolet Suburban" data-es="Chevrolet Suburban">Chevrolet Suburban</option>
                     <option value="Sprinter Party Bus" data-en="Sprinter Party Bus ($180/hr)" data-es="Sprinter Party Bus ($180/hr)">Sprinter Party Bus ($180/hr)</option>
                     <option value="Maybach" data-en="Mercedes-Maybach S-Class ($280/hr)" data-es="Mercedes-Maybach Clase S ($280/hr)">Mercedes-Maybach S-Class ($280/hr)</option>
                   </select>
@@ -605,7 +605,7 @@ window.WIZ = {
     step:        0,
     submitted:   false,
     serviceType: '',
-    vehicle:     'Suburban',
+    vehicle:     'Escalade',
     date:        todayISO(),
     time:        '',
     roundTrip:   false,
@@ -806,7 +806,7 @@ window.WIZ = {
      (only available once the user picks a real Places suggestion,
      not free-typed text). If that fails or isn't available, it
      falls back to the plain "Custom quote" message. */
-  HOURLY_RATE: 95,   /* Suburban/Escalade hourly rate, matches pricing page */
+  HOURLY_RATE: 95,   /* Escalade ESV / Suburban hourly rate, matches pricing page */
   HOURLY_MIN_HRS: 0,  /* no hourly minimum for point-to-point; MIN_FARE is the floor */
   MIN_FARE: 75,
   STOP_FEE: 25,      /* per intermediate stop, on top of any price — Andrii, 04.10 */
@@ -1707,7 +1707,7 @@ window.WIZ = {
       step:        0,
       submitted:   false,
       serviceType: '',
-      vehicle:     'Suburban',
+      vehicle:     'Escalade',
       date:        todayISO(),
       time:        '',
       roundTrip:   false,
