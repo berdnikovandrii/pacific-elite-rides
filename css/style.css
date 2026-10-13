@@ -1256,6 +1256,34 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
 .svc-card-check { color: var(--gold); font-size: 15px; }
 .svc-card-desc { font-size: 12.5px; color: rgba(243,239,230,.5); line-height: 1.4; }
 
+/* The less-common services, folded behind one line so the first screen shows
+   four choices instead of eight. Spans the whole grid row; borrows the look of
+   the "More options" toggle already used further down the form, so it reads as
+   the same control rather than a new invention. */
+.svc-more {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding-top: 14px;
+}
+.svc-more > summary {
+  cursor: pointer; list-style: none;
+  font-size: 13px; letter-spacing: .3px;
+  color: var(--gold); padding: 6px 0;
+  display: flex; align-items: center; gap: 8px;
+  transition: opacity .2s;
+}
+.svc-more > summary::-webkit-details-marker { display: none; }
+.svc-more > summary::before {
+  content: '+'; font-size: 15px; line-height: 1;
+  width: 18px; height: 18px; flex-shrink: 0;
+  border: 1px solid rgba(201,168,76,.4); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.svc-more[open] > summary::before { content: '\2212'; }
+.svc-more > summary:hover { opacity: .8; }
+.svc-more > .svc-grid { padding-top: 14px; }
+
 /* Wizard form controls */
 .wiz-label {
   display: block; font-size: 10.5px; font-weight: 600;

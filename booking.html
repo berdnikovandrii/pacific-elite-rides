@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=467b1ce9">
+  <link rel="stylesheet" href="css/style.css?v=1351f2f7">
   <!-- Google tag (gtag.js) — replace G-MRH0C5ZBF1 with your real GA4 Measurement ID (analytics.google.com).
        Once you have a Google Ads account, uncomment the AW- line below with your real Ads ID. -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-MRH0C5ZBF1"></script>
@@ -432,6 +432,7 @@ var DICT = {
     lDate:    'Date *',
     lTime:    'Pickup Time * (San Diego time)',
     lRT:      'Round trip \u2014 $700 instead of $750',
+    svcMore:  'More options \u2014 party bus, Maybach, corporate, events',
     lRTsub:   'Return any day. Both legs booked together.',
     lRetDate: 'Return Date *',
     lRetTime: 'Return Pickup Time * (San Diego time)',
@@ -489,14 +490,22 @@ var DICT = {
     notesOptional:  '(optional)',
     smsConsent: 'Text me about this booking (quote, confirmation, driver details and ride updates) from Pacific Elite Rides at the number above. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. Optional &mdash; not required to book. <a href="privacy.html#sms" target="_blank" style="color:var(--gold)">Privacy</a> &middot; <a href="terms.html#sms" target="_blank" style="color:var(--gold)">Terms</a>',
     services: [
+      /* Four that cover almost every booking, then the rest behind "More".
+         Order is deliberate: airports first because that is what people
+         actually book, then the plain A-to-B ride the form never offered —
+         someone going home to a restaurant used to have to pick "Something
+         Else". `more: true` moves a card into the collapsed group; the ids
+         are unchanged so every ?service= link on the site and in the ads
+         keeps pre-selecting the right card. */
       { id:'Airport Transfer', t:'SAN Airport Transfer', d:'San Diego International — flat rate by zone' },
       { id:'LAX Transfer',     t:'LAX Transfer',         d:'San Diego ↔ LAX — $375 one way, $700 round trip' },
-      { id:'Corporate Ride',   t:'Corporate Ride',      d:'Meetings, roadshows, client pickups' },
-      { id:'Hourly Charter',   t:'Hourly Charter',      d:'$95/hr · 2h min — as-directed, you set the pace' },
-      { id:'Sprinter Van',     t:'Sprinter Party Bus',  d:'$180/hr — LED, sound, TV, bar with ice' },
-      { id:'Maybach VIP',      t:'Maybach S-Class',     d:'$280/hr · 3h min — first-class chauffeur' },
-      { id:'Special Event',    t:'Special Event / VIP', d:'Weddings, nights out, premieres' },
-      { id:'Other',            t:'Something Else',      d:'Tell us in the notes' }
+      { id:'Point to Point',   t:'Point to Point',       d:'Restaurant, hotel, meeting — anywhere in San Diego County' },
+      { id:'Hourly Charter',   t:'By the Hour',          d:'$95/hr · 2h min — as-directed, you set the pace' },
+      { id:'Corporate Ride',   t:'Corporate Ride',      d:'Meetings, roadshows, client pickups', more:true },
+      { id:'Sprinter Van',     t:'Sprinter Party Bus',  d:'$180/hr — LED, sound, TV, bar with ice', more:true },
+      { id:'Maybach VIP',      t:'Maybach S-Class',     d:'$280/hr · 3h min — first-class chauffeur', more:true },
+      { id:'Special Event',    t:'Special Event / VIP', d:'Weddings, nights out, premieres', more:true },
+      { id:'Other',            t:'Something Else',      d:'Tell us in the notes', more:true }
     ]
   },
   es: {
@@ -521,6 +530,7 @@ var DICT = {
     lDate:    'Fecha *',
     lTime:    'Hora de recogida * (hora de San Diego)',
     lRT:      'Ida y vuelta \u2014 $700 en vez de $750',
+    svcMore:  'M\u00e1s opciones \u2014 party bus, Maybach, corporativo, eventos',
     lRTsub:   'Regreso cualquier d\u00eda. Ambos trayectos se reservan juntos.',
     lRetDate: 'Fecha de regreso *',
     lRetTime: 'Hora de recogida de regreso * (hora de San Diego)',
@@ -580,12 +590,13 @@ var DICT = {
     services: [
       { id:'Airport Transfer', t:'Traslado aeropuerto SAN', d:'San Diego International — tarifa fija por zona' },
       { id:'LAX Transfer',     t:'Traslado a LAX',          d:'San Diego ↔ LAX — $375 por trayecto, $700 ida y vuelta' },
-      { id:'Corporate Ride',   t:'Viaje corporativo',      d:'Reuniones, presentaciones, clientes' },
-      { id:'Hourly Charter',   t:'Alquiler por hora',      d:'$95/hr · mín. 2h — tú marcas el ritmo' },
-      { id:'Sprinter Van',     t:'Sprinter Party Bus',     d:'$180/hr — LED, sonido, TV, bar con hielo' },
-      { id:'Maybach VIP',      t:'Maybach Clase S',        d:'$280/hr · mín. 3h — chofer de primera clase' },
-      { id:'Special Event',    t:'Evento especial / VIP',  d:'Bodas, salidas, estrenos' },
-      { id:'Other',            t:'Algo más',          d:'Cuéntanos en las notas' }
+      { id:'Point to Point',   t:'De un punto a otro',      d:'Restaurante, hotel, reunión — en todo el Condado de San Diego' },
+      { id:'Hourly Charter',   t:'Por hora',                d:'$95/hr · mín. 2h — tú marcas el ritmo' },
+      { id:'Corporate Ride',   t:'Viaje corporativo',      d:'Reuniones, presentaciones, clientes', more:true },
+      { id:'Sprinter Van',     t:'Sprinter Party Bus',     d:'$180/hr — LED, sonido, TV, bar con hielo', more:true },
+      { id:'Maybach VIP',      t:'Maybach Clase S',        d:'$280/hr · mín. 3h — chofer de primera clase', more:true },
+      { id:'Special Event',    t:'Evento especial / VIP',  d:'Bodas, salidas, estrenos', more:true },
+      { id:'Other',            t:'Algo más',          d:'Cuéntanos en las notas', more:true }
     ]
   }
 };
@@ -688,8 +699,15 @@ window.WIZ = {
     var grid = el('svcGrid');
     grid.innerHTML = '';
     var self = this;
-    d.services.forEach(function(svc) {
+    /* Eight cards on one screen made the customer classify themselves before
+       they had typed anything, and three of the eight were really a vehicle or
+       a billing mode rather than a kind of trip. The four that cover almost
+       every booking stay visible; the rest sit behind one line. Anyone who
+       arrives with ?service= pointing at a card in that group gets the group
+       opened for them, so a deep link never looks like a dead end. */
+    function card(svc) {
       var btn = document.createElement('button');
+      btn.type = 'button';
       btn.className = 'svc-card' + (self.state.serviceType === svc.id ? ' selected' : '');
       btn.innerHTML =
         '<div class="svc-card-header">' +
@@ -698,8 +716,27 @@ window.WIZ = {
         '</div>' +
         '<span class="svc-card-desc">' + svc.d + '</span>';
       btn.onclick = function() { self.pickService(svc.id); };
-      grid.appendChild(btn);
-    });
+      return btn;
+    }
+
+    var primary = d.services.filter(function(x) { return !x.more; });
+    var extra   = d.services.filter(function(x) { return x.more; });
+    primary.forEach(function(svc) { grid.appendChild(card(svc)); });
+
+    if (extra.length) {
+      var openNow = extra.some(function(x) { return x.id === self.state.serviceType; });
+      var wrap = document.createElement('details');
+      wrap.className = 'svc-more';
+      wrap.open = openNow;
+      var sum = document.createElement('summary');
+      sum.textContent = d.svcMore;
+      wrap.appendChild(sum);
+      var inner = document.createElement('div');
+      inner.className = 'svc-grid';
+      extra.forEach(function(svc) { inner.appendChild(card(svc)); });
+      wrap.appendChild(inner);
+      grid.appendChild(wrap);
+    }
 
     var s = this.state;
     if (el('rideDate')) { el('rideDate').value = s.date; el('rideDate').min = new Date().toISOString().split('T')[0]; }
