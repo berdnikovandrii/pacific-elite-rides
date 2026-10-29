@@ -22,6 +22,183 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/style.css?v=dd44b3fa"/>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": [
+        "LimousineService",
+        "LocalBusiness"
+      ],
+      "@id": "https://pacificeliterides.com/#business",
+      "name": "Pacific Elite Rides LLC",
+      "description": "Private black car service in San Diego County — San Diego International (SAN) airport transfers at flat rates by zone, San Diego to LAX, hourly charter and event transport in a Cadillac Escalade ESV.",
+      "url": "https://pacificeliterides.com/",
+      "telephone": "+1-619-394-5340",
+      "email": "berdnikov@pacificeliterides.com",
+      "image": "https://pacificeliterides.com/web-photos/escalade-card.jpg",
+      "priceRange": "$$",
+      "currenciesAccepted": "USD",
+      "paymentAccepted": "Zelle, Venmo, Credit Card, Invoice",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "San Diego",
+        "addressRegion": "CA",
+        "addressCountry": "US"
+      },
+      "areaServed": [
+        {
+          "@type": "AdministrativeArea",
+          "name": "San Diego County, CA"
+        },
+        {
+          "@type": "City",
+          "name": "San Diego"
+        },
+        {
+          "@type": "City",
+          "name": "Carlsbad"
+        },
+        {
+          "@type": "City",
+          "name": "La Jolla"
+        },
+        {
+          "@type": "City",
+          "name": "Del Mar"
+        },
+        {
+          "@type": "City",
+          "name": "Coronado"
+        },
+        {
+          "@type": "City",
+          "name": "Oceanside"
+        },
+        {
+          "@type": "City",
+          "name": "Encinitas"
+        },
+        {
+          "@type": "City",
+          "name": "Chula Vista"
+        },
+        {
+          "@type": "City",
+          "name": "Escondido"
+        },
+        {
+          "@type": "City",
+          "name": "Temecula"
+        }
+      ],
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+          ],
+          "opens": "00:00",
+          "closes": "23:59"
+        }
+      ],
+      "sameAs": [
+        "https://www.instagram.com/pacificeliterides",
+        "https://www.facebook.com/1290356920824545",
+        "https://www.tiktok.com/@pacific.elite.ride"
+      ],
+      "knowsLanguage": [
+        "en",
+        "es"
+      ]
+    },
+    {
+      "@type": "Service",
+      "@id": "https://pacificeliterides.com/#san-transfers",
+      "name": "San Diego Airport (SAN) Transfers",
+      "serviceType": "Airport transfer",
+      "provider": {
+        "@id": "https://pacificeliterides.com/#business"
+      },
+      "areaServed": {
+        "@type": "AdministrativeArea",
+        "name": "San Diego County, CA"
+      },
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": "60",
+        "priceSpecification": {
+          "@type": "PriceSpecification",
+          "priceCurrency": "USD",
+          "minPrice": "60",
+          "maxPrice": "350"
+        },
+        "description": "Flat rate by zone, from $60 Downtown to $350 Riverside. Per vehicle, up to 6 passengers."
+      }
+    },
+    {
+      "@type": "Service",
+      "@id": "https://pacificeliterides.com/#lax",
+      "name": "San Diego to LAX Car Service",
+      "serviceType": "Long-distance airport transfer",
+      "provider": {
+        "@id": "https://pacificeliterides.com/#business"
+      },
+      "offers": [
+        {
+          "@type": "Offer",
+          "priceCurrency": "USD",
+          "price": "375",
+          "name": "One way"
+        },
+        {
+          "@type": "Offer",
+          "priceCurrency": "USD",
+          "price": "700",
+          "name": "Round trip"
+        }
+      ]
+    },
+    {
+      "@type": "Service",
+      "@id": "https://pacificeliterides.com/#hourly",
+      "name": "Hourly Charter",
+      "serviceType": "Chauffeured hourly charter",
+      "provider": {
+        "@id": "https://pacificeliterides.com/#business"
+      },
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": "95",
+        "unitCode": "HUR",
+        "description": "$95 per hour, two-hour minimum, as-directed."
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://pacificeliterides.com/#website",
+      "url": "https://pacificeliterides.com/",
+      "name": "Pacific Elite Rides",
+      "publisher": {
+        "@id": "https://pacificeliterides.com/#business"
+      },
+      "inLanguage": [
+        "en",
+        "es"
+      ]
+    }
+  ]
+}
+  </script>
   <!-- Note: booking submissions and email delivery are handled on booking.html, which has its own
        EmailJS + Google Sheets configuration. No online payment processing — pay driver or by invoice. -->
   <!-- Google tag (gtag.js) — replace G-MRH0C5ZBF1 with your real GA4 Measurement ID (analytics.google.com).
