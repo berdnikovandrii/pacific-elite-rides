@@ -1256,6 +1256,21 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
 .svc-card-check { color: var(--gold); font-size: 15px; }
 .svc-card-desc { font-size: 12.5px; color: rgba(243,239,230,.5); line-height: 1.4; }
 
+/* "Text us" beside the phone number. Some people will write rather than ring,
+   and competitors offer it — the link opens the phone's own messaging app.
+   Hidden below 980px, where the hamburger menu carries it instead, so the
+   header does not wrap on a laptop. */
+.nav-sms {
+  display: inline-flex; align-items: center;
+  font-size: 13.5px; letter-spacing: .02em;
+  color: rgba(243,239,230,.72); white-space: nowrap;
+  padding: 6px 12px; border-radius: 999px;
+  border: 1px solid rgba(201,168,76,.28);
+  transition: color .2s, border-color .2s;
+}
+.nav-sms:hover { color: var(--gold); border-color: var(--gold); }
+@media (max-width: 1100px) { .nav-sms { display: none; } }
+
 /* The less-common services, folded behind one line so the first screen shows
    four choices instead of eight. Spans the whole grid row; borrows the look of
    the "More options" toggle already used further down the form, so it reads as

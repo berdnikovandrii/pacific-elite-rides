@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/style.css?v=1351f2f7"/>
+  <link rel="stylesheet" href="css/style.css?v=dd44b3fa"/>
   <!-- Note: booking submissions and email delivery are handled on booking.html, which has its own
        EmailJS + Google Sheets configuration. No online payment processing — pay driver or by invoice. -->
   <!-- Google tag (gtag.js) — replace G-MRH0C5ZBF1 with your real GA4 Measurement ID (analytics.google.com).
@@ -49,6 +49,7 @@
     <a href="blog.html" onclick="closeMenu()">Blog</a>
     <a href="booking.html" onclick="closeMenu()">Book a Ride</a>
     <a href="tel:+16193945340" style="color:var(--gold)" onclick="closeMenu()">(619) 394-5340</a>
+    <a href="sms:+16193945340" style="color:var(--gold)" onclick="closeMenu()"><span class="lang-en">Text us</span><span class="lang-es">Escríbenos</span> · (619) 394-5340</a>
     <div style="display:flex;gap:8px;margin-top:8px">
       <button id="mbBtnEn" class="btn btn-sm btn-outline active" onclick="setLang('en')">EN</button>
       <button id="mbBtnEs" class="btn btn-sm btn-outline" onclick="setLang('es')">ES</button>
@@ -72,6 +73,7 @@
     </nav>
     <div class="nav-right">
       <a href="tel:+16193945340" class="nav-phone" id="cta-call" data-cta="call-header">(619) 394-5340</a>
+      <a href="sms:+16193945340" class="nav-sms" id="cta-sms" data-cta="sms-header" aria-label="Text us"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" style="vertical-align:-2px;margin-right:5px"><path d="M21 11.5a8.4 8.4 0 01-9 8.4 9.9 9.9 0 01-2.8-.4L3 21l1.9-5.1A8.4 8.4 0 1121 11.5z"/></svg><span class="lang-en">Text us</span><span class="lang-es">Escríbenos</span></a>
       <div style="display:flex;gap:6px">
         <button id="btnEn" class="btn btn-sm btn-outline active" onclick="setLang('en')">EN</button>
         <button id="btnEs" class="btn btn-sm btn-outline" onclick="setLang('es')">ES</button>
@@ -468,7 +470,7 @@ document.querySelectorAll('[data-gallery]').forEach(function(el) {
           <div class="rate-row"><span class="rate-route">Carlsbad / Encinitas / Solana Beach</span><span class="rate-price">$115</span></div>
           <div class="rate-row"><span class="rate-route">Oceanside / Vista / San Marcos</span><span class="rate-price">$130</span></div>
           <div class="rate-row"><span class="rate-route">Temecula / Murrieta / Wildomar</span><span class="rate-price">$195</span></div>
-          <p class="rate-note" style="margin-top:10px"><span class="lang-en">Selected zones &middot; all 26 rates on the SAN airport page.</span><span class="lang-es">Zonas seleccionadas &middot; las 26 tarifas en la p&aacute;gina del aeropuerto SAN.</span></p>
+          <p class="rate-note" style="margin-top:10px"><span class="lang-en">Selected zones &middot; all 26 rates on the SAN airport page. Minimum fare $75 on routes outside the zone table.</span><span class="lang-es">Zonas seleccionadas &middot; las 26 tarifas en la p&aacute;gina del aeropuerto SAN. Tarifa m&iacute;nima $75 en rutas fuera de la tabla de zonas.</span></p>
         </div>
         <div class="price-features">
           <div class="price-feature"><span class="price-check">✓</span><span class="lang-en">Flight tracking included</span><span class="lang-es">Seguimiento de vuelo incluido</span></div>
