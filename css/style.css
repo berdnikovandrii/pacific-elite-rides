@@ -1269,7 +1269,15 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
   transition: color .2s, border-color .2s;
 }
 .nav-sms:hover { color: var(--gold); border-color: var(--gold); }
-@media (max-width: 1100px) { .nav-sms { display: none; } }
+
+/* Header line-breaks. Flex items shrink below their text width by default, so
+   on a 1440px screen "Book a Ride" and the phone number were each wrapping onto
+   a second line and pushing the navbar to 106px. Measured 29.10: with nowrap
+   the header needs 907px and the bar drops back to 93px. */
+.nav-link, .nav-phone, .nav-sms, .nav-logo-name, .nav-logo-tag { white-space: nowrap; }
+.nav-links { gap: 28px; }
+@media (max-width: 1180px) { .nav-links { gap: 20px; } .nav-right { gap: 10px; } }
+@media (max-width: 1040px) { .nav-sms { display: none; } }
 
 /* The less-common services, folded behind one line so the first screen shows
    four choices instead of eight. Spans the whole grid row; borrows the look of
