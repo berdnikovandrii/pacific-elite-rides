@@ -758,6 +758,7 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
   transition: opacity .25s var(--ease), transform .25s var(--ease);
   z-index: 90; width: calc(100% - 32px); max-width: 360px;
 }
+.float-book { gap: 10px; }
 .float-book.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
 body.menu-open .float-book { opacity: 0; pointer-events: none; }
 .float-book a {
@@ -769,6 +770,21 @@ body.menu-open .float-book { opacity: 0; pointer-events: none; }
   transition: background var(--trans);
 }
 .float-book a:active { transform: scale(0.98); }
+.float-book .fb-book { flex: 1 1 auto; }
+.float-book .fb-call {
+  flex: 0 0 auto; padding: 16px 18px;
+  background: rgba(10,10,10,0.92); color: var(--gold);
+  border: 1px solid var(--gold); box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+}
+
+/* Call icon in the header, phones and tablets only (≤1040px, where the phone
+   number itself is folded into the menu). 44×44 so a thumb hits it. */
+.nav-call-icon {
+  display: none; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 50%;
+  color: var(--gold); border: 1px solid rgba(201,168,76,0.45);
+}
+.nav-call-icon:active { background: rgba(201,168,76,0.12); }
 
 /* ===== PAGE HERO (inner pages) ===== */
 .page-hero {
@@ -1149,7 +1165,7 @@ body.menu-open .float-book { opacity: 0; pointer-events: none; }
   .hero-actions .btn { text-align: center; justify-content: center; }
 
   /* ── Float book ── */
-  .float-book  { display: block; }
+  .float-book  { display: flex; }
   body { padding-bottom: 72px; }
 
   /* ── Tap targets (measured 29.10: 26 below 44px on the home page) ──
@@ -1315,7 +1331,8 @@ body.menu-open .float-book { opacity: 0; pointer-events: none; }
 @media (max-width: 1040px) {
   .nav-links { display: none; }
   .hamburger { display: flex; margin-right: -10px; }
-  .nav-right > :not(.hamburger) { display: none !important; }
+  .nav-right > :not(.hamburger):not(.nav-call-icon) { display: none !important; }
+  .nav-call-icon { display: flex !important; }
 }
 
 
@@ -1790,3 +1807,8 @@ input[type=time].wiz-input::-webkit-calendar-picker-indicator {
   .send-spinner { animation: none; border-top-color: rgba(201,168,76,0.5); }
   .send-overlay { transition: none; }
 }
+
+/* ── Desktop language: one button, showing only the language you can switch TO.
+   setLang() (main.js) and WIZ.setLang() (booking) both move .active, so hiding
+   the active one is all it takes. The mobile menu keeps both (mbBtnEn/mbBtnEs). */
+#btnEn.active, #btnEs.active { display: none; }
