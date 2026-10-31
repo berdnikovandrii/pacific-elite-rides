@@ -1812,3 +1812,8 @@ input[type=time].wiz-input::-webkit-calendar-picker-indicator {
    setLang() (main.js) and WIZ.setLang() (booking) both move .active, so hiding
    the active one is all it takes. The mobile menu keeps both (mbBtnEn/mbBtnEs). */
 #btnEn.active, #btnEs.active { display: none; }
+
+/* ── Line icons (replaced emoji, 2026-10-30) ── */
+.ico { width: 1em; height: 1em; display: inline-block; vertical-align: middle; color: var(--gold); flex-shrink: 0; }
+.coverage-icon, .sdb-icon, .value-icon, .trust-badge-icon { line-height: 1; color: var(--gold); }
+.fleet-photo-hint .ico { width: 1.15em; height: 1.15em; vertical-align: -0.22em; color: var(--gold-light); }
