@@ -15,18 +15,52 @@ const hamburger = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobileMenu');
 
 function openMenu() {
+  if (!mobileMenu) return;
   mobileMenu.classList.add('open');
+  mobileMenu.setAttribute('aria-hidden', 'false');
   hamburger.classList.add('open');
+  hamburger.setAttribute('aria-expanded', 'true');
+  hamburger.setAttribute('aria-label', 'Close menu');
   document.body.style.overflow = 'hidden';
+  document.body.classList.add('menu-open');
 }
 function closeMenu() {
+  if (!mobileMenu) return;
   mobileMenu.classList.remove('open');
+  mobileMenu.setAttribute('aria-hidden', 'true');
   hamburger.classList.remove('open');
+  hamburger.setAttribute('aria-expanded', 'false');
+  hamburger.setAttribute('aria-label', 'Menu');
   document.body.style.overflow = '';
+  document.body.classList.remove('menu-open');
 }
-if (hamburger) hamburger.addEventListener('click', () => {
-  mobileMenu.classList.contains('open') ? closeMenu() : openMenu();
-});
+if (hamburger) {
+  hamburger.setAttribute('aria-expanded', 'false');
+  hamburger.addEventListener('click', () => {
+    mobileMenu.classList.contains('open') ? closeMenu() : openMenu();
+  });
+}
+/* Escape closes the menu; so does rotating to a width where it no longer exists. */
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+window.addEventListener('resize', () => { if (innerWidth > 1040) closeMenu(); });
+
+/* ===== FLOATING BOOK BUTTON =====
+   Shown only after the page's own primary button has scrolled out of view,
+   so a phone never has two gold "Book" buttons on screen at once. Falls back
+   to "after 500px of scroll" on pages whose hero has no button. */
+(function () {
+  const fb = document.querySelector('.float-book');
+  if (!fb) return;
+  const target = document.querySelector('.hero-actions, .page-hero .cta-actions, .page-hero .btn-primary');
+  if (target && 'IntersectionObserver' in window) {
+    new IntersectionObserver(entries => {
+      entries.forEach(en => fb.classList.toggle('show', !en.isIntersecting && en.boundingClientRect.top < 0));
+    }, { threshold: 0 }).observe(target);
+  } else {
+    const onScroll = () => fb.classList.toggle('show', scrollY > 500);
+    addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  }
+})();
 
 /* ===== LANGUAGE SWITCHER ===== */
 function setLang(lang) {

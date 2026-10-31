@@ -216,23 +216,40 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
 .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px,-4.5px); }
 
-/* Mobile nav overlay */
+/* Mobile nav overlay.
+   It used to centre nine 2.2rem items in a full-screen box: on a phone the
+   list was taller than the screen, so its top slid under the fixed navbar and
+   "Home" printed across the logo. Now it starts below the bar, scrolls if it
+   must, and the contact options are two buttons instead of the phone number
+   written out twice. */
 .mobile-menu {
   position: fixed; inset: 0; z-index: 99;
-  background: rgba(8,8,8,0.97);
+  background: rgba(8,8,8,0.98);
   backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 36px;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.3s var(--ease);
+  display: flex; flex-direction: column; align-items: center;
+  padding: 100px 28px calc(32px + env(safe-area-inset-bottom));
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  opacity: 0; pointer-events: none; visibility: hidden;
+  transition: opacity 0.25s var(--ease), visibility 0s linear 0.25s;
 }
-.mobile-menu.open { opacity: 1; pointer-events: all; }
-.mobile-menu a {
-  font-family: var(--font-head); font-size: 2.2rem; font-weight: 600;
-  color: var(--white); transition: color var(--trans);
+.mobile-menu.open { opacity: 1; pointer-events: auto; visibility: visible; transition: opacity 0.25s var(--ease); }
+.mm-nav { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 340px; }
+.mm-nav a {
+  display: block; width: 100%; text-align: center;
+  font-family: var(--font-head); font-size: 1.7rem; font-weight: 600; line-height: 1.2;
+  color: var(--white); padding: 13px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  transition: color var(--trans);
 }
-.mobile-menu a:hover { color: var(--gold); }
-.mobile-menu .mobile-cta { margin-top: 12px; }
+.mm-nav a:last-child { border-bottom: 0; }
+.mm-nav a:hover, .mm-nav a:active { color: var(--gold); }
+.mm-actions { width: 100%; max-width: 340px; margin-top: 26px; display: flex; flex-direction: column; gap: 12px; }
+.mm-actions .btn { width: 100%; justify-content: center; min-height: 52px; font-size: 15px; }
+.mm-contact { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.mm-contact .btn { gap: 8px; }
+.mm-number { text-align: center; font-size: 13px; letter-spacing: .04em; color: rgba(255,255,255,.45); margin: 2px 0 0; }
+.mm-lang { display: flex; justify-content: center; gap: 10px; margin-top: 8px; }
+.mm-lang .btn { width: auto; min-width: 64px; min-height: 44px; }
 
 /* ===== HERO ===== */
 .hero {
@@ -703,7 +720,7 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
 }
 .footer-socials { display: flex; gap: 10px; margin-top: 24px; }
 .social-btn {
-  width: 38px; height: 38px; border-radius: 8px;
+  width: 44px; height: 44px; border-radius: 8px;
   border: 1px solid var(--black-border);
   display: flex; align-items: center; justify-content: center;
   color: var(--gray); transition: border-color var(--trans), color var(--trans), background var(--trans);
@@ -731,11 +748,18 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
 .footer-legal a { font-size: 12px; color: var(--gray); transition: color var(--trans); }
 .footer-legal a:hover { color: var(--gold); }
 
-/* Floating mobile CTA */
+/* Floating mobile CTA. Hidden until the hero's own Book button has scrolled
+   away — otherwise the first screen showed "Book Your Ride", the phone, and a
+   second gold "Book a Ride" bar sitting on top of the stats row. main.js adds
+   .show; without JS it simply never appears, which is the safe failure. */
 .float-book {
-  display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-  z-index: 90; width: calc(100% - 40px); max-width: 360px;
+  display: none; position: fixed; bottom: calc(16px + env(safe-area-inset-bottom)); left: 50%;
+  transform: translate(-50%, 16px); opacity: 0; pointer-events: none;
+  transition: opacity .25s var(--ease), transform .25s var(--ease);
+  z-index: 90; width: calc(100% - 32px); max-width: 360px;
 }
+.float-book.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+body.menu-open .float-book { opacity: 0; pointer-events: none; }
 .float-book a {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   background: var(--gold); color: var(--black);
@@ -1112,13 +1136,7 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
 @media (max-width: 768px) {
   :root { --section-py: 56px; }
 
-  /* ── Navbar ── */
-  .nav-links  { display: none; }
-  .nav-phone  { display: none; }
-  .hamburger  { display: flex; }
-  /* Hide lang buttons + Book Now from navbar on mobile (they live in mobile-menu) */
-  .nav-right > div   { display: none; }
-  .nav-right > a.btn { display: none; }
+  /* ── Navbar ── (header switch lives in the 1040px block below) */
   .navbar { padding: 16px 0; }
 
   /* ── Hero ── */
@@ -1133,6 +1151,15 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
   /* ── Float book ── */
   .float-book  { display: block; }
   body { padding-bottom: 72px; }
+
+  /* ── Tap targets (measured 29.10: 26 below 44px on the home page) ──
+     Footer and card links were 19–21px tall — fine for a mouse, a miss for a
+     thumb. Padding grows the hit area without changing how the text looks. */
+  .footer-links { gap: 0; }
+  .footer-links a { display: block; padding: 11px 0; }
+  .service-link { display: inline-flex; align-items: center; min-height: 44px; }
+  .footer-legal a { display: inline-block; padding: 12px 6px; }
+  .footer-contact-row a { display: inline-block; padding: 11px 0; }
 
   /* ── Forms ── */
   .form-row    { grid-template-columns: 1fr; }
@@ -1278,6 +1305,19 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
 .nav-links { gap: 28px; }
 @media (max-width: 1180px) { .nav-links { gap: 20px; } .nav-right { gap: 10px; } }
 @media (max-width: 1040px) { .nav-sms { display: none; } }
+
+/* ── Header: burger below 1040px ───────────────────────────────────────────
+   Phones AND tablets get the logo + burger; everything else is in the menu.
+   !important because 17 pages carry the EN/ES box with an inline
+   style="display:flex", which beats a plain stylesheet rule — that is why the
+   language buttons stayed visible and pushed the burger 48px past the right
+   edge of a 375px screen. */
+@media (max-width: 1040px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; margin-right: -10px; }
+  .nav-right > :not(.hamburger) { display: none !important; }
+}
+
 
 /* The less-common services, folded behind one line so the first screen shows
    four choices instead of eight. Spans the whole grid row; borrows the look of
