@@ -748,34 +748,29 @@ h1, h2, h3 { font-family: var(--font-head); line-height: 1.12; }
 .footer-legal a { font-size: 12px; color: var(--gray); transition: color var(--trans); }
 .footer-legal a:hover { color: var(--gold); }
 
-/* Floating mobile CTA. Hidden until the hero's own Book button has scrolled
-   away — otherwise the first screen showed "Book Your Ride", the phone, and a
-   second gold "Book a Ride" bar sitting on top of the stats row. main.js adds
-   .show; without JS it simply never appears, which is the safe failure. */
+/* Mobile action bar: Call · Text · Quote, docked to the bottom edge on phones
+   and always visible (14.11, modelled on what the LA competitors run). Quote
+   opens the booking form, which shows the fixed price before anything is
+   booked. Hidden while the menu is open; booking.html and thank-you.html
+   don't carry it. Visible without JS — nothing here depends on main.js. */
 .float-book {
-  display: none; position: fixed; bottom: calc(16px + env(safe-area-inset-bottom)); left: 50%;
-  transform: translate(-50%, 16px); opacity: 0; pointer-events: none;
-  transition: opacity .25s var(--ease), transform .25s var(--ease);
-  z-index: 90; width: calc(100% - 32px); max-width: 360px;
+  display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 90;
+  gap: 8px; padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  background: rgba(8,8,8,0.96); border-top: 1px solid var(--black-border);
 }
-.float-book { gap: 10px; }
-.float-book.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
-body.menu-open .float-book { opacity: 0; pointer-events: none; }
+body.menu-open .float-book { visibility: hidden; }
 .float-book a {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  background: var(--gold); color: var(--black);
-  font-size: 14px; font-weight: 700; padding: 16px 24px;
-  border-radius: var(--radius-sm);
-  box-shadow: 0 8px 32px rgba(201,168,76,0.45);
+  flex: 1 1 0; min-width: 0; min-height: 48px;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 0 6px; border-radius: var(--radius-sm);
+  font-size: 15px; font-weight: 600; letter-spacing: .2px; white-space: nowrap;
+  color: var(--white); background: transparent; border: 1px solid rgba(201,168,76,0.55);
   transition: background var(--trans);
 }
-.float-book a:active { transform: scale(0.98); }
-.float-book .fb-book { flex: 1 1 auto; }
-.float-book .fb-call {
-  flex: 0 0 auto; padding: 16px 18px;
-  background: rgba(10,10,10,0.92); color: var(--gold);
-  border: 1px solid var(--gold); box-shadow: 0 8px 32px rgba(0,0,0,0.45);
-}
+.float-book a svg { width: 17px; height: 17px; flex-shrink: 0; color: var(--gold); }
+.float-book a:active { background: rgba(201,168,76,0.12); }
+.float-book a.fb-quote { background: var(--gold); color: var(--black); border-color: var(--gold); font-weight: 700; }
+.float-book a.fb-quote:active { background: var(--gold-light); }
 
 /* Call icon in the header, phones and tablets only (≤1040px, where the phone
    number itself is folded into the menu). 44×44 so a thumb hits it. */
@@ -1166,7 +1161,7 @@ body.menu-open .float-book { opacity: 0; pointer-events: none; }
 
   /* ── Float book ── */
   .float-book  { display: flex; }
-  body { padding-bottom: 72px; }
+  body { padding-bottom: calc(70px + env(safe-area-inset-bottom)); }
 
   /* ── Tap targets (measured 29.10: 26 below 44px on the home page) ──
      Footer and card links were 19–21px tall — fine for a mouse, a miss for a

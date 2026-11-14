@@ -44,24 +44,6 @@ if (hamburger) {
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
 window.addEventListener('resize', () => { if (innerWidth > 1040) closeMenu(); });
 
-/* ===== FLOATING BOOK BUTTON =====
-   Shown only after the page's own primary button has scrolled out of view,
-   so a phone never has two gold "Book" buttons on screen at once. Falls back
-   to "after 500px of scroll" on pages whose hero has no button. */
-(function () {
-  const fb = document.querySelector('.float-book');
-  if (!fb) return;
-  const target = document.querySelector('.hero-actions, .page-hero .cta-actions, .page-hero .btn-primary');
-  if (target && 'IntersectionObserver' in window) {
-    new IntersectionObserver(entries => {
-      entries.forEach(en => fb.classList.toggle('show', !en.isIntersecting && en.boundingClientRect.top < 0));
-    }, { threshold: 0 }).observe(target);
-  } else {
-    const onScroll = () => fb.classList.toggle('show', scrollY > 500);
-    addEventListener('scroll', onScroll, { passive: true }); onScroll();
-  }
-})();
-
 /* ===== LANGUAGE SWITCHER ===== */
 function setLang(lang) {
   const isEs = lang === 'es';
@@ -138,6 +120,14 @@ document.querySelectorAll('a[href^="tel:"]').forEach(a => {
   a.addEventListener('click', () => {
     if (typeof gtag === 'function') {
       gtag('event', 'phone_click', { link_url: a.getAttribute('href') });
+    }
+  });
+});
+/* Same for "Text us" links (header and the mobile action bar). */
+document.querySelectorAll('a[href^="sms:"]').forEach(a => {
+  a.addEventListener('click', () => {
+    if (typeof gtag === 'function') {
+      gtag('event', 'sms_click', { link_url: a.getAttribute('href'), cta: a.dataset.cta || '' });
     }
   });
 });
@@ -359,7 +349,11 @@ window.initPlaces = function() {
           '#perCookieBanner p{flex:1 1 auto;min-width:0}' +
           '#perCookieBanner .pcb-actions{gap:6px}' +
           '#perCookieBanner .btn{padding:0 12px;min-width:74px;height:44px;font-size:12px;white-space:nowrap}' +
-        '}';
+        '}' +
+        /* On phones the Call · Text · Quote bar is docked at the bottom edge
+           (style.css, ≤768px); sit above it rather than on top of it, so a
+           first visit — i.e. every ad click — still shows the three buttons. */
+        '@media (max-width:768px){#perCookieBanner{bottom:calc(78px + env(safe-area-inset-bottom))}}';
       document.head.appendChild(css);
     }
 
