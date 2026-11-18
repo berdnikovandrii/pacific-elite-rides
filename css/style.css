@@ -1812,3 +1812,9 @@ input[type=time].wiz-input::-webkit-calendar-picker-indicator {
 .ico { width: 1em; height: 1em; display: inline-block; vertical-align: middle; color: var(--gold); flex-shrink: 0; }
 .coverage-icon, .sdb-icon, .value-icon, .trust-badge-icon { line-height: 1; color: var(--gold); }
 .fleet-photo-hint .ico { width: 1.15em; height: 1.15em; vertical-align: -0.22em; color: var(--gold-light); }
+
+/* Home "From the blog" — three equal cards (14.11/18.11); deliberately not
+   .blog-grid, whose first card is styled as the wide "Latest" feature. */
+.home-blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; max-width: 1080px; margin: 0 auto; }
+.home-blog-grid .blog-card-body { padding: 22px 24px 26px; }
+.home-blog-grid .blog-card-title { font-size: 1.15rem; }
