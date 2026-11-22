@@ -246,6 +246,20 @@
             </div>
           </div>
 
+          <div class="wiz-field">
+            <label class="wiz-label" id="lSeats">Child Seats</label>
+            <div class="wiz-select-wrap">
+              <select id="seats" class="wiz-input" onchange="WIZ.state.seats=parseInt(this.value,10)||0;WIZ.updateEstimate()">
+                <option value="0" data-en="None" data-es="Ninguna">None</option>
+                <option value="1" data-en="1 &mdash; free" data-es="1 &mdash; gratis">1 &mdash; free</option>
+                <option value="2" data-en="2 &mdash; +$20" data-es="2 &mdash; +$20">2 &mdash; +$20</option>
+                <option value="3" data-en="3 &mdash; +$40" data-es="3 &mdash; +$40">3 &mdash; +$40</option>
+                <option value="4" data-en="4 &mdash; +$60" data-es="4 &mdash; +$60">4 &mdash; +$60</option>
+              </select>
+              <span class="wiz-chev">&#9662;</span>
+            </div>
+          </div>
+
           <details class="wiz-more">
             <summary id="moreOptions">More options</summary>
             <div class="wiz-more-body">
@@ -349,7 +363,7 @@
           <div class="wiz-field">
             <label class="wiz-label" id="lNotes">Special Requests <span style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
             <textarea id="notes" class="wiz-input" rows="3" style="resize:vertical"
-              placeholder="How many bags? Stroller? Child seat, meet &amp; greet&#8230;"
+              placeholder="How many bags? Stroller? Ages of children for car seatsplaceholder="How many bags? Stroller? Child seat, meet &amp; greet&#8230;"#8230;"
               oninput="WIZ.state.notes=this.value"></textarea>
           </div>
           <div class="wiz-field">
@@ -451,6 +465,9 @@ var DICT = {
     lRetTime: 'Return Pickup Time * (San Diego time)',
     fareRT:   'round trip, both legs',
     lPax:     'Passengers',
+    lSeats:   'Child Seats',
+    fareNight: 'includes $20 night pickup',
+    fareSeats: 'includes {n} extra child seat(s)',
     lVehicle: 'Vehicle Preference',
     lFlight:  'Flight Number',
     lPickup:  'Pickup Address *',
@@ -480,7 +497,7 @@ var DICT = {
       '5.0 ★ on Google',
       'Available 24 / 7'
     ],
-    wizNote: "We'll confirm within 15 minutes. No charge until confirmed.",
+    wizNote: "We'll confirm within 15 minutes. No charge until confirmed. Free cancellation up to 4 hours before pickup.",
     succTitle: 'Booking Confirmed!',
     succMsg:   "Thank you! We'll review your request and send a payment invoice to your email within 15 minutes. Your ride is locked in once payment is received.",
     succBtn:   'Book Another Ride',
@@ -549,6 +566,9 @@ var DICT = {
     lRetTime: 'Hora de recogida de regreso * (hora de San Diego)',
     fareRT:   'ida y vuelta, ambos trayectos',
     lPax:     'Pasajeros',
+    lSeats:   'Sillas para niños',
+    fareNight: 'incluye $20 por recogida nocturna',
+    fareSeats: 'incluye {n} silla(s) adicional(es)',
     lVehicle: 'Preferencia de vehículo',
     lFlight:  'Número de vuelo',
     lPickup:  'Dirección de recogida *',
@@ -578,7 +598,7 @@ var DICT = {
       '5.0 ★ en Google',
       'Disponible 24 / 7'
     ],
-    wizNote: 'Confirmamos en 15 minutos. Sin cargo hasta confirmar.',
+    wizNote: 'Confirmamos en 15 minutos. Sin cargo hasta confirmar. Cancelación gratis hasta 4 horas antes de la recogida.',
     succTitle: '¡Reserva confirmada!',
     succMsg:   '¡Gracias! Revisaremos tu solicitud y enviaremos una factura de pago a tu correo en 15 minutos. Tu viaje queda asegurado una vez recibido el pago.',
     succBtn:   'Reservar otro viaje',
@@ -636,6 +656,7 @@ window.WIZ = {
     returnDate:  '',
     returnTime:  '',
     passengers:  '1',
+    seats:       0,
     flight:      '',
     pickup:      '',
     pickupLoc:   null,
@@ -700,7 +721,7 @@ window.WIZ = {
        optional and live inside the collapsed "More options" block. */
     txt('s0title', d.s0title);
     txt('s0sub',   d.s0sub);
-    txt('lDate', d.lDate); txt('lTime', d.lTime); txt('lPax', d.lPax);
+    txt('lDate', d.lDate); txt('lTime', d.lTime); txt('lPax', d.lPax); txt('lSeats', d.lSeats);
     txt('lRT', d.lRT); txt('lRTsub', d.lRTsub);
     txt('lRetDate', d.lRetDate); txt('lRetTime', d.lRetTime);
     txt('lVehicle', d.lVehicle);
@@ -763,6 +784,7 @@ window.WIZ = {
       }
     }
     if (el('passengers')) el('passengers').value = s.passengers;
+    if (el('seats'))      el('seats').value      = String(s.seats || 0);
     if (el('vehicle'))    el('vehicle').value    = s.vehicle;
     if (el('flight'))     el('flight').value     = s.flight;
 
@@ -948,7 +970,42 @@ window.WIZ = {
     return null;
   },
 
+  /* Night pickup and child seats (Andrii, 2026-11-18) — identical to the CRM
+     voice agent / auto-quote (supabase/functions/voice-agent: NIGHT_FEE,
+     seatsOf): +$20 for a pickup from midnight to 4:59 AM San Diego time, on
+     SAN-airport and LAX rides only, per ride (a LAX round trip checks the
+     return pickup too); the first child seat is free, each additional one is
+     $20 per ride (x2 on a round trip). Both ride on top of exact zone prices
+     and of drive-time estimates alike. */
+  NIGHT_FEE: 20,
+  EXTRA_SEAT_FEE: 20,
+  _isNightTime: function(t) {
+    var m = /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec(String(t || '').trim());
+    if (!m) return false;
+    var h = parseInt(m[1], 10) % 12 + (m[3].toUpperCase() === 'PM' ? 12 : 0);
+    return h < 5;
+  },
+  _extras: function(res) {
+    var night = 0;
+    if (res && (res.kind === 'airport' || res.kind === 'lax')) {
+      if (this._isNightTime(this.state.time)) night += this.NIGHT_FEE;
+      if (res.roundTrip && this._isNightTime(this.state.returnTime)) night += this.NIGHT_FEE;
+    }
+    var n = parseInt(this.state.seats, 10) || 0;
+    var extraSeats = Math.max(0, n - 1);
+    var seatFee = extraSeats * this.EXTRA_SEAT_FEE * ((res && res.roundTrip) ? 2 : 1);
+    return { night: night, seatFee: seatFee, extraSeats: extraSeats };
+  },
   estimateFare: function() {
+    var res = this._baseFare();
+    if (!res) return res;
+    var x = this._extras(res);
+    res.nightFee = x.night; res.seatFee = x.seatFee; res.extraSeats = x.extraSeats;
+    if (!res.custom) res.amount += x.night + x.seatFee;
+    return res;
+  },
+
+  _baseFare: function() {
     var pu = (this.state.pickup || '').toLowerCase();
     var dr = (this.state.dropoff || '').toLowerCase();
     if (!pu.trim() || !dr.trim()) return null;
@@ -985,7 +1042,7 @@ window.WIZ = {
     if (puLAX || drLAX) {
       var laxBase = this.state.roundTrip ? 700 : 375;
       return { amount: laxBase + extra, exact: true, roundTrip: this.state.roundTrip,
-               rtKind: 'lax', stops: stops.length, stopFee: extra };
+               rtKind: 'lax', kind: 'lax', stops: stops.length, stopFee: extra };
     }
 
     /* LA / Orange County event venues — flat ROUND TRIP including up to 5 hrs
@@ -1031,7 +1088,7 @@ window.WIZ = {
     /* Published zone rates are exact and are never clamped by a minimum.
        The $75 floor (this.MIN_FARE) applies only to custom, drive-time
        quotes — see estimateByDriveTime below. */
-    return { amount: zone + extra, exact: true, stops: stops.length, stopFee: extra };
+    return { amount: zone + extra, exact: true, kind: 'airport', stops: stops.length, stopFee: extra };
   },
 
   updateEstimate: function() {
@@ -1069,11 +1126,11 @@ window.WIZ = {
           var amount = Math.max(self.MIN_FARE, Math.round(billedHrs * self.HOURLY_RATE / 5) * 5); /* round to nearest $5, $75 floor */
           /* Stop fee rides on top of the hourly figure too, and after the $75
              floor — the floor is the price of the ride, not of the stops. */
-          amount += (res.stopFee || 0);
+          amount += (res.stopFee || 0) + (res.seatFee || 0);
           self._lastFare = amount;
           txt('fareEstLabel', d.fareTimeLabel);
           txt('fareEstAmount', '~$' + amount);
-          txt('fareEstNote', self.stopNote(d, d.fareTimeNote, res.stopFee ? res.stops : 0));
+          txt('fareEstNote', self.extrasNote(d, self.stopNote(d, d.fareTimeNote, res.stopFee ? res.stops : 0), res));
         });
       } else {
         txt('fareEstLabel', d.fareCustomLabel);
@@ -1091,13 +1148,19 @@ window.WIZ = {
          wrong for a LAX round trip, which is two separate airport runs. */
       var baseNote = isEventRT ? d.fareEventNote
                    : (res.roundTrip ? d.fareNote + ' \u00b7 ' + d.fareRT : d.fareNote);
-      txt('fareEstNote', this.stopNote(d, baseNote, res.stopFee ? res.stops : 0));
+      txt('fareEstNote', this.extrasNote(d, this.stopNote(d, baseNote, res.stopFee ? res.stops : 0), res));
       box.classList.remove('is-custom');
     }
   },
 
   /* Appends "· includes 2 stops" so the customer can see what the extra $50 is
      for. Silent when there are no stops, which is the usual case. */
+  extrasNote: function(d, note, res) {
+    if (res && res.nightFee) note += ' \u00b7 ' + d.fareNight;
+    if (res && res.extraSeats) note += ' \u00b7 ' + d.fareSeats.replace('{n}', res.extraSeats);
+    return note;
+  },
+
   stopNote: function(d, note, n) {
     if (!n) return note;
     return note + ' · ' + (n === 1 ? d.fareOneStop : d.fareNStops.replace('{n}', n));
@@ -1303,6 +1366,7 @@ window.WIZ = {
     } else {
       this.state.time = '';
     }
+    this.updateEstimate();
   },
 
   /* Same three selects, for the return leg. */
@@ -1318,6 +1382,7 @@ window.WIZ = {
     } else {
       this.state.returnTime = '';
     }
+    this.updateEstimate();
   },
 
   setRoundTrip: function(on) {
@@ -1594,7 +1659,7 @@ window.WIZ = {
       clientName:   s.name,
       clientPhone:  s.phone,
       clientEmail:  s.email,
-      notes:        s.notes,
+      notes:        [s.notes, s.seats ? 'Child seats: ' + s.seats : ''].filter(Boolean).join(' | '),
       payment:      s.pay,
       route:        route
     };
@@ -1659,7 +1724,8 @@ window.WIZ = {
           flight_number: s.flight  || null,
           vehicle:       s.vehicle || null,
           passengers:    s.passengers || null,
-          notes:         [s.notes, (s.stops && s.stops.length) ? 'Stops: ' + s.stops.join(', ') : '']
+          notes:         [s.notes, (s.stops && s.stops.length) ? 'Stops: ' + s.stops.join(', ') : '',
+                          s.seats ? 'Child seats: ' + s.seats : '']
                            .filter(function(x) { return x && String(x).trim(); }).join('\n') || null,
           price:         (typeof this._lastFare === 'number') ? this._lastFare : null,
           sms_consent:   !!s.smsConsent,
@@ -1778,6 +1844,7 @@ window.WIZ = {
       returnDate:  '',
       returnTime:  '',
       passengers:  '1',
+      seats:       0,
       flight:      '',
       pickup:      '',
       pickupLoc:   null,
