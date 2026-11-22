@@ -132,6 +132,15 @@ document.querySelectorAll('a[href^="sms:"]').forEach(a => {
   });
 });
 
+/* App Store badge clicks (footer, home page, thank-you page). */
+document.querySelectorAll('a.app-badge').forEach(a => {
+  a.addEventListener('click', () => {
+    if (typeof gtag === 'function') {
+      gtag('event', 'app_store_click', { cta: a.dataset.cta || '' });
+    }
+  });
+});
+
 /* ===== GOOGLE ADS CLICK IDS =====
    Google stamps the landing URL with gclid on most ad clicks, and with gbraid
    or wbraid on iOS where gclid is often absent — so all three are captured,

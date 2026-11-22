@@ -1818,3 +1818,10 @@ input[type=time].wiz-input::-webkit-calendar-picker-indicator {
 .home-blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; max-width: 1080px; margin: 0 auto; }
 .home-blog-grid .blog-card-body { padding: 22px 24px 26px; }
 .home-blog-grid .blog-card-title { font-size: 1.15rem; }
+
+/* ===== APP STORE BADGE ===== */
+/* Apple's own artwork, never recolored; 40px is Apple's minimum on-screen height. */
+.app-badge { display: inline-block; margin-top: 18px; line-height: 0; }
+.app-badge img { height: 40px; width: auto; }
+.app-cta-note, .cta-banner .app-cta-note { margin: 28px auto 0; font-size: 14px; color: rgba(255,255,255,.6); }
+.app-cta-note + .app-badge { margin-top: 12px; }
